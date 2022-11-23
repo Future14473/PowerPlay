@@ -1,18 +1,13 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
 
-import static org.firstinspires.ftc.teamcode.trajectorysequence.AutoPark.createParkOne;
 import static org.firstinspires.ftc.teamcode.trajectorysequence.AutoPark.createParkThree;
-import static org.firstinspires.ftc.teamcode.trajectorysequence.AutoPark.createParkTwo;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.checkerframework.checker.units.qual.C;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.ComputerVision.SleeveDetection;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Claw;
@@ -24,7 +19,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Autonomous
-public class CVParkTEST extends LinearOpMode {
+public class PreloadPark extends LinearOpMode {
 
 
     public OpenCvCamera camera;
