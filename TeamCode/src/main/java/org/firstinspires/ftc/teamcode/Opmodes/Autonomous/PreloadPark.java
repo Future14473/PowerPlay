@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
 
-import static org.firstinspires.ftc.teamcode.trajectorysequence.AutoPark.createParkThree;
+  import static org.firstinspires.ftc.teamcode.trajectorysequence.AutoPark.createParkThree;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -18,9 +19,10 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
+@Config
+// this is the safest option if everything else fails
 @Autonomous
 public class PreloadPark extends LinearOpMode {
-
 
     public OpenCvCamera camera;
     public SleeveDetection cv;
@@ -32,16 +34,16 @@ public class PreloadPark extends LinearOpMode {
     }
 
     Pose2d startPos;
-    public static int marker1 = 30;
+
+    //extend slides
+    public static int marker1 = 37;
     //claw open
     public static int marker2 = 49;
-
     //retract
     public static int marker3 = 67;
 
     Slides slides;
     Claw claw;
-
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -57,7 +59,6 @@ public class PreloadPark extends LinearOpMode {
         camera = cameraInit();
         startStream();
 
-
         //ensure cv is started and working
         Locations color1 = getSleeveColor(cv);
         telemetry.addData("Sleeve Color", color1);
@@ -65,7 +66,6 @@ public class PreloadPark extends LinearOpMode {
         startPos = new Pose2d(35, 72, Math.toRadians(270));
 
         waitForStart();
-
 
         Locations color2 = getSleeveColor(cv);
         telemetry.addData("Sleeve Color", color2);
@@ -78,9 +78,11 @@ public class PreloadPark extends LinearOpMode {
                 break;
             case TWO:
                 drive.followTrajectorySequence(createTrajectory());
+                break;
             case THREE:
                 drive.followTrajectorySequence(createTrajectory());
                 drive.followTrajectorySequence(createParkThree(drive));
+                break;
         }
 
     }
@@ -98,22 +100,23 @@ public class PreloadPark extends LinearOpMode {
                 .lineTo(new Vector2d(35, 36))
                 .turn(Math.toRadians(90))
                 .forward(20)
-                .addDisplacementMarker(marker2, () -> {
-                    claw.openWide();
-                })
-                .addDisplacementMarker(marker3,() -> {
-                    slides.retract();
-                })
+
 
                 //revert to 0 ready for park
                 .back(14)
+                //correct for strafing inconsistencies
                 .turn(Math.toRadians(-80))
 
 
                 // prepare first outtake
                 .addDisplacementMarker(marker1, () -> {
                     slides.extendLow();
-
+                })
+                .addDisplacementMarker(marker2, () -> {
+                    claw.openWide();
+                })
+                .addDisplacementMarker(marker3,() -> {
+                    slides.retract();
                 })
 
 
