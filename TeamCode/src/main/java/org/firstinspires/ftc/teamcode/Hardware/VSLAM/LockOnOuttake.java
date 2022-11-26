@@ -15,6 +15,7 @@ public class LockOnOuttake {
     public static double xOffset = 0.0;
     public static double yOffset = 0.0;
     double distancePub;
+    double trim = 0;
 
 
     private enum Direction {
@@ -89,6 +90,7 @@ public class LockOnOuttake {
 
     /**
      * Locks on to the nearest pole to the robot
+     *
      * @param rPos Pose2d object representing position of robot
      */
 
@@ -113,22 +115,22 @@ public class LockOnOuttake {
         if (angle == 0) {
             return OUT_POS_TURRET;
         } else {
-            double trim = 0;
+
 
             //todo test on robot
-            if (rPos.getHeading() > 0 && rPos.getHeading() < 90) {
-                trim = OUT_POS_TURRET - (rPos.getHeading() / Constants.MAX_ROTATION_DEGREES);
-            } else if (rPos.getHeading() > 90) {
-                trim = OUT_POS_TURRET - ((90 - rPos.getHeading()) / Constants.MAX_ROTATION_DEGREES);
-            } else if (rPos.getHeading() < 0 && rPos.getHeading() > -90) {
+            if (rPos.getHeading() > 0 && rPos.getHeading() < 85) {
                 trim = OUT_POS_TURRET + (rPos.getHeading() / Constants.MAX_ROTATION_DEGREES);
-            } else if (rPos.getHeading() < -90) {
+            } else if (rPos.getHeading() > 85) {
+                trim = (OUT_POS_TURRET + ((90-rPos.getHeading()) / Constants.MAX_ROTATION_DEGREES));
+            } else if (rPos.getHeading() < 0 && rPos.getHeading() > -85) {
+                trim = OUT_POS_TURRET - (Math.abs(rPos.getHeading()) / Constants.MAX_ROTATION_DEGREES);
+            } else if (rPos.getHeading() < -85) {
                 trim = OUT_POS_TURRET - ((90 + rPos.getHeading()) / Constants.MAX_ROTATION_DEGREES);
             }
 
 
             if (angle > 0) {
-                moveAngle = trim - ((angle) / Constants.MAX_ROTATION_DEGREES);
+                moveAngle = trim - Math.abs(((angle) / Constants.MAX_ROTATION_DEGREES));
             } else if (angle < 0) {
                 moveAngle = trim + ((Math.abs(angle)) / Constants.MAX_ROTATION_DEGREES);
             }
@@ -163,6 +165,7 @@ public class LockOnOuttake {
     public double getDistance() {
         return distancePub;
     }
+    public  double getTrim() {return trim;}
 
 
 }

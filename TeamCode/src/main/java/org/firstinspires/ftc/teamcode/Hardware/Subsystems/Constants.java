@@ -28,7 +28,7 @@ public class Constants {
 
 //   turret
     public static double HOME_POS_TURRET = 0.1;
-    public static double OUT_POS_TURRET = 0.69;
+    public static double OUT_POS_TURRET = 0.5;
     public static double MANUAL_INCREMENT_STEP = 0.05;
 
 
