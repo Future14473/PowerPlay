@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
 
-  import static org.firstinspires.ftc.teamcode.trajectorysequence.AutoPark.createParkThree;
+import static org.firstinspires.ftc.teamcode.trajectorysequence.AutoPark.createParkThree;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -24,8 +24,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 @Autonomous
 public class PreloadPark extends LinearOpMode {
 
-    public OpenCvCamera camera;
-    public SleeveDetection cv;
+//    public OpenCvCamera camera;
+//    public SleeveDetection cv;
 
     SampleMecanumDrive drive;
 
@@ -36,11 +36,11 @@ public class PreloadPark extends LinearOpMode {
     Pose2d startPos;
 
     //extend slides
-    public static int marker1 = 37;
+    public static int marker1 = 35;
     //claw open
     public static int marker2 = 49;
     //retract
-    public static int marker3 = 67;
+    public static int marker3 = 55;
 
     Slides slides;
     Claw claw;
@@ -56,34 +56,36 @@ public class PreloadPark extends LinearOpMode {
         //drivetrain
         drive = new SampleMecanumDrive(hardwareMap);
 
-        camera = cameraInit();
-        startStream();
+//        camera = cameraInit();
+//        startStream();
 
         //ensure cv is started and working
-        Locations color1 = getSleeveColor(cv);
-        telemetry.addData("Sleeve Color", color1);
-        telemetry.update();
+//        Locations color1 = getSleeveColor(cv);
+//        telemetry.addData("Sleeve Color", color1);
+//        telemetry.update();
         startPos = new Pose2d(35, 72, Math.toRadians(270));
 
         waitForStart();
 
-        Locations color2 = getSleeveColor(cv);
-        telemetry.addData("Sleeve Color", color2);
-        telemetry.update();
+//        Locations color2 = getSleeveColor(cv);
+//        telemetry.addData("Sleeve Color", color2);
+//        telemetry.update();
 
-        switch(color2) {
-            case ONE:
-                drive.followTrajectorySequence(createTrajectory());
-                drive.followTrajectory(createParkOne());
-                break;
-            case TWO:
-                drive.followTrajectorySequence(createTrajectory());
-                break;
-            case THREE:
-                drive.followTrajectorySequence(createTrajectory());
-                drive.followTrajectorySequence(createParkThree(drive));
-                break;
-        }
+        drive.followTrajectorySequence(createTrajectory());
+
+//        switch(color2) {
+//            case ONE:
+//                drive.followTrajectorySequence(createTrajectory());
+//                drive.followTrajectory(createParkOne());
+//                break;
+//            case TWO:
+//                drive.followTrajectorySequence(createTrajectory());
+//                break;
+//            case THREE:
+//                drive.followTrajectorySequence(createTrajectory());
+//                drive.followTrajectorySequence(createParkThree(drive));
+//                break;
+//        }
 
     }
 
@@ -95,15 +97,16 @@ public class PreloadPark extends LinearOpMode {
                 .build();
         return traj;
     }
+
     public TrajectorySequence createTrajectory() {
         TrajectorySequence traj = drive.trajectorySequenceBuilder(startPos)
                 .lineTo(new Vector2d(35, 36))
                 .turn(Math.toRadians(90))
-                .forward(20)
+                .forward(13)
 
 
                 //revert to 0 ready for park
-                .back(14)
+                .back(12)
                 //correct for strafing inconsistencies
                 .turn(Math.toRadians(-80))
 
@@ -115,7 +118,7 @@ public class PreloadPark extends LinearOpMode {
                 .addDisplacementMarker(marker2, () -> {
                     claw.openWide();
                 })
-                .addDisplacementMarker(marker3,() -> {
+                .addDisplacementMarker(marker3, () -> {
                     slides.retract();
                 })
 
@@ -124,49 +127,50 @@ public class PreloadPark extends LinearOpMode {
 
         return traj;
     }
-    public Locations getSleeveColor(SleeveDetection cv) {
-
-        if (cv.getSleeveColor() == null) {
-            telemetry.addData("Sleeve Color", "Null");
-        } else {
-            switch (cv.getSleeveColor()) {
-                case PINK:
-                    return Locations.ONE;
-
-                case GREEN:
-                    return Locations.TWO;
-
-                case ORANGE:
-                    return Locations.THREE;
-
-                case NONE:
-                    return Locations.NONE;
-            }
-        }
-        return Locations.NONE;
-    }
-
-
-    public OpenCvCamera cameraInit() {
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        return OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-    }
-
-    public void startStream() {
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                // GPU-accelerated render!
-                camera.setViewportRenderer(OpenCvCamera.ViewportRenderer.GPU_ACCELERATED);
-                camera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode) {
-                requestOpModeStop();
-            }
-        });
-        cv = new SleeveDetection(telemetry);
-        camera.setPipeline(cv);
-    }
 }
+//    public Locations getSleeveColor(SleeveDetection cv) {
+//
+//        if (cv.getSleeveColor() == null) {
+//            telemetry.addData("Sleeve Color", "Null");
+//        } else {
+//            switch (cv.getSleeveColor()) {
+//                case PINK:
+//                    return Locations.ONE;
+//
+//                case GREEN:
+//                    return Locations.TWO;
+//
+//                case ORANGE:
+//                    return Locations.THREE;
+//
+//                case NONE:
+//                    return Locations.NONE;
+//            }
+//        }
+//        return Locations.NONE;
+//    }
+//
+//
+//    public OpenCvCamera cameraInit() {
+//        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+//        return OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+//    }
+//
+//    public void startStream() {
+//        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+//            @Override
+//            public void onOpened() {
+//                // GPU-accelerated render!
+//                camera.setViewportRenderer(OpenCvCamera.ViewportRenderer.GPU_ACCELERATED);
+//                camera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+//            }
+//
+//            @Override
+//            public void onError(int errorCode) {
+//                requestOpModeStop();
+//            }
+//        });
+//        cv = new SleeveDetection(telemetry);
+//        camera.setPipeline(cv);
+//    }
+//}
