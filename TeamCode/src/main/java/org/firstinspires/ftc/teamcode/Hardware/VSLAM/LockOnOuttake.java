@@ -16,6 +16,8 @@ public class LockOnOuttake {
     public static double yOffset = 0.0;
     double distancePub;
     double trim = 0;
+    double angle = 0;
+    double moveAngle = 0;
 
 
     private enum Direction {
@@ -96,8 +98,7 @@ public class LockOnOuttake {
 
     @NonNull
     public double lockOn(Pose2d rPos) {
-        double angle = 0;
-        double moveAngle = 0;
+
 
         // getting the angle from the closest pole
         for (Pose2d p : poles) {
@@ -121,7 +122,7 @@ public class LockOnOuttake {
             if (rPos.getHeading() > 0 && rPos.getHeading() < 85) {
                 trim = OUT_POS_TURRET + (rPos.getHeading() / Constants.MAX_ROTATION_DEGREES);
             } else if (rPos.getHeading() > 85) {
-                trim = (OUT_POS_TURRET + ((90-rPos.getHeading()) / Constants.MAX_ROTATION_DEGREES));
+                trim = (OUT_POS_TURRET + ((90 - rPos.getHeading()) / Constants.MAX_ROTATION_DEGREES));
             } else if (rPos.getHeading() < 0 && rPos.getHeading() > -85) {
                 trim = OUT_POS_TURRET - (Math.abs(rPos.getHeading()) / Constants.MAX_ROTATION_DEGREES);
             } else if (rPos.getHeading() < -85) {
@@ -129,9 +130,15 @@ public class LockOnOuttake {
             }
 
 
-            if (angle > 0) {
+            if (angle > 0 && (rPos.getHeading() > 0 && rPos.getHeading() < 85)) {
                 moveAngle = trim - Math.abs(((angle) / Constants.MAX_ROTATION_DEGREES));
-            } else if (angle < 0) {
+            } else if (angle < 0 && rPos.getHeading() > 85) {
+                moveAngle = trim - ((Math.abs(angle)) / Constants.MAX_ROTATION_DEGREES);
+            }
+
+            else if (angle > 0 && (rPos.getHeading() < 0 && rPos.getHeading() > -85)) {
+                moveAngle = trim + ((Math.abs(angle)) / Constants.MAX_ROTATION_DEGREES);
+            } else if (angle < 0 && (rPos.getHeading() < -85)) {
                 moveAngle = trim + ((Math.abs(angle)) / Constants.MAX_ROTATION_DEGREES);
             }
             return moveAngle;
