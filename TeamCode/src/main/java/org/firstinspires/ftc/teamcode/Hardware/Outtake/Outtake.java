@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.Hardware.Outtake;
 
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.SLIDES_OUT;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.TURRET_OUT;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.V4B_OUT;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ClawCompliant;
@@ -23,35 +27,30 @@ public class Outtake {
 
     public void outtake(Timer timer) {
         claw.openWide(false);
-        timer.safeDelay(1000);
     }
 
     //TODO condense to one function (use low/mid/high parameters)
     public void outtakeReadyLow(Timer timer) {
         slides.extendLow();
-        timer.safeDelay(1000);
-        v4b.outHigh();
-        timer.safeDelay(1000);
+        timer.safeDelay(SLIDES_OUT);
+        v4b.outLow();
+        timer.safeDelay(V4B_OUT);
         turret.setOut();
-        timer.safeDelay(1000);
     }
 
     public void outtakeReadyMid(Timer timer) {
-        slides.extendLow();
-        timer.safeDelay(1000);
-        v4b.outHigh();
-        timer.safeDelay(1000);
+        slides.extendMid();
+        timer.safeDelay(SLIDES_OUT);
+        v4b.outMid();
+        timer.safeDelay(V4B_OUT);
         turret.setOut();
-        timer.safeDelay(1000);
     }
+
     public void outtakeReadyHigh(Timer timer) {
-        slides.extendLow();
-        timer.safeDelay(1000);
+        slides.extendHigh();
+        timer.safeDelay(SLIDES_OUT);
         v4b.outHigh();
-        timer.safeDelay(1000);
+        timer.safeDelay(V4B_OUT);
         turret.setOut();
-        timer.safeDelay(1000);
     }
-
-
 }

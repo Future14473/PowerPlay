@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.Hardware.Intake;
 
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.SLIDES_HOME;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.TURRET_HOME;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.V4B_HOME;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ClawCompliant;
@@ -24,32 +28,26 @@ public class Intake {
     // intake the cones on the stack
     //TODO change timings between each operation
     public void autoIntakeReady(int stackNum, Timer timer) {
-        v4b.autoIntake(stackNum);
-        timer.safeDelay(1000);
-        slides.retract();
-        timer.safeDelay(1000);
         turret.setHome();
-        timer.safeDelay(1000);
+        timer.safeDelay(TURRET_HOME);
+        v4b.autoIntake(stackNum);
+        timer.safeDelay(V4B_HOME);
+        slides.retract();
+        timer.safeDelay(SLIDES_HOME);
         claw.openWide(true);
-        timer.safeDelay(1000);
-    }
-
-    public void autoIntake(Timer timer){
-        claw.shutUp();
-        timer.safeDelay(1000);
     }
 
     public void teleopIntakeReady(Timer timer) {
-        v4b.setHome();
-        timer.safeDelay(1000);
-        slides.retract();
-        timer.safeDelay(1000);
         turret.setHome();
-        timer.safeDelay(1000);
+        timer.safeDelay(TURRET_HOME);
+        v4b.setHome();
+        timer.safeDelay(V4B_HOME);
+        slides.retract();
+        timer.safeDelay(SLIDES_HOME);
         claw.openWide(true);
     }
 
-    public void teleopIntake(Timer timer) {
+    public void intake(Timer timer) {
         claw.shutUp();
     }
 }

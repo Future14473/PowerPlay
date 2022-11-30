@@ -40,4 +40,13 @@ public class HardwareConstants {
     public static double COMPLIANT_INTAKE_SPEED = 1;
     public static double COMPLIANT_OUT_SPEED = 1;
 
+//  intake timings
+    public static long TURRET_HOME = 2000;
+    public static long V4B_HOME = 2000;
+    public static long SLIDES_HOME = 2000;
+
+    public static long TURRET_OUT = 2000;
+    public static long SLIDES_OUT = 2000;
+
+
 }
