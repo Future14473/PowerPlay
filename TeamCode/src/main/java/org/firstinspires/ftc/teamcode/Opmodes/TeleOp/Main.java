@@ -22,7 +22,7 @@ public class Main extends LinearOpMode {
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
     public static double rotMult = 0.9;
-    public static double mvmtMult = 0.7;
+    public static double mvmtMult = 0.9;
 
 
     Slides slides;

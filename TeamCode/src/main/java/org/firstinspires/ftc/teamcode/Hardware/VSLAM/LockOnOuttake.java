@@ -71,8 +71,6 @@ public class LockOnOuttake {
     @Deprecated
     public double lockOnOld(Pose2d rPos) {
         double angle = 0;
-
-
         // getting the angle from the closest pole
         for (Pose2d p : poles) {
             double distance = getMagnitude(rPos, p);
@@ -84,10 +82,7 @@ public class LockOnOuttake {
                 distancePub = 0;
             }
         }
-
-
         return angle;
-
     }
 
     /**
@@ -117,7 +112,6 @@ public class LockOnOuttake {
             return OUT_POS_TURRET;
         } else {
 
-
             //todo test on robot
             if (rPos.getHeading() > 0 && rPos.getHeading() < 85) {
                 trim = OUT_POS_TURRET + (rPos.getHeading() / Constants.MAX_ROTATION_DEGREES);
@@ -129,18 +123,31 @@ public class LockOnOuttake {
                 trim = OUT_POS_TURRET - ((90 + rPos.getHeading()) / Constants.MAX_ROTATION_DEGREES);
             }
 
-
+            // TESTED and works
             if (angle > 0 && (rPos.getHeading() > 0 && rPos.getHeading() < 85)) {
-                moveAngle = trim - Math.abs(((angle) / Constants.MAX_ROTATION_DEGREES));
-            } else if (angle < 0 && rPos.getHeading() > 85) {
-                moveAngle = trim - ((Math.abs(angle)) / Constants.MAX_ROTATION_DEGREES);
+                moveAngle = trim + (angle / Constants.MAX_ROTATION_DEGREES);
+            } else if (angle < 0 && (rPos.getHeading() > 0 && rPos.getHeading() < 85)) {
+                moveAngle = trim + Math.abs((angle / Constants.MAX_ROTATION_DEGREES));
+            } else if (angle > 0 && (rPos.getHeading() < 0 && rPos.getHeading() > -85)) {
+                moveAngle = trim - (angle/Constants.MAX_ROTATION_DEGREES);
+            } else if (angle < 0 && (rPos.getHeading() < 0 && rPos.getHeading() > -85)) {
+                moveAngle = trim - (Math.abs(angle)/Constants.MAX_ROTATION_DEGREES);
             }
 
-            else if (angle > 0 && (rPos.getHeading() < 0 && rPos.getHeading() > -85)) {
-                moveAngle = trim + ((Math.abs(angle)) / Constants.MAX_ROTATION_DEGREES);
-            } else if (angle < 0 && (rPos.getHeading() < -85)) {
-                moveAngle = trim + ((Math.abs(angle)) / Constants.MAX_ROTATION_DEGREES);
+            // UNTESTED
+            else if (angle > 0 && rPos.getHeading() > 85) {
+                moveAngle = trim - ((Math.abs(angle)) / Constants.MAX_ROTATION_DEGREES);
+            } else if (angle < 0 && rPos.getHeading() > 85) {
+                moveAngle = trim + ((Math.abs(angle))/Constants.MAX_ROTATION_DEGREES);
             }
+
+            else if (angle > 0 && rPos.getHeading() < -85) {
+                moveAngle = trim + ((Math.abs(angle)) / Constants.MAX_ROTATION_DEGREES);
+            } else if (angle < 0 && rPos.getHeading() < -85) {
+                moveAngle = trim - ((Math.abs(angle))/Constants.MAX_ROTATION_DEGREES);
+            }
+
+
             return moveAngle;
         }
     }

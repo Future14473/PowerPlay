@@ -12,5 +12,7 @@ public class CVConstants {
     //orange
     public static Scalar LOWB = new Scalar(0, 151, 20);
     public static Scalar HIGHB = new Scalar(31, 222, 255);
-
+    //yellow
+    public static Scalar LOWY = new Scalar(0, 151, 20);
+    public static Scalar HIGHY = new Scalar(31, 222, 255);
 }

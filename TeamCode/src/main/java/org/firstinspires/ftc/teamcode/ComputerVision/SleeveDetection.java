@@ -4,9 +4,11 @@ package org.firstinspires.ftc.teamcode.ComputerVision;
 import static org.firstinspires.ftc.teamcode.ComputerVision.CVConstants.HIGHB;
 import static org.firstinspires.ftc.teamcode.ComputerVision.CVConstants.HIGHG;
 import static org.firstinspires.ftc.teamcode.ComputerVision.CVConstants.HIGHR;
+import static org.firstinspires.ftc.teamcode.ComputerVision.CVConstants.HIGHY;
 import static org.firstinspires.ftc.teamcode.ComputerVision.CVConstants.LOWB;
 import static org.firstinspires.ftc.teamcode.ComputerVision.CVConstants.LOWG;
 import static org.firstinspires.ftc.teamcode.ComputerVision.CVConstants.LOWR;
+import static org.firstinspires.ftc.teamcode.ComputerVision.CVConstants.LOWY;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Core;
@@ -32,6 +34,7 @@ public class SleeveDetection extends OpenCvPipeline {
     Mat matR = new Mat();
     Mat matB = new Mat();
     Mat matG = new Mat();
+    Mat matY = new Mat();
 
 
     public SleeveDetection(Telemetry t) {
@@ -44,6 +47,8 @@ public class SleeveDetection extends OpenCvPipeline {
     Scalar highThreshG = HIGHG;
     Scalar lowThreshB = LOWB;
     Scalar highThreshB = HIGHB;
+    Scalar lowThreshY = LOWY;
+    Scalar highThreshY = HIGHY;
 
 
     Rect maxRect;
@@ -51,13 +56,18 @@ public class SleeveDetection extends OpenCvPipeline {
     double centerX, centerY;
     public static int MINAREA = 500;
     private static int MINFILTER = 500;
+    private static int MINPOLEFILTER = 300;
 
     private double maxAreaR;
     private double maxAreaG;
     private double maxAreaB;
+    private  double maxAreaY;
     private Rect maxRectR = new Rect();
     private Rect maxRectG = new Rect();
     private Rect maxRectB = new Rect();
+    private Rect maxRectY = new Rect();
+
+    boolean foundPole = false;
 
     public enum SleeveColor {
         PINK, GREEN, ORANGE, NONE
@@ -74,6 +84,7 @@ public class SleeveDetection extends OpenCvPipeline {
         maxAreaR = 0;
         maxAreaG = 0;
         maxAreaB = 0;
+        maxAreaY = 0;
         // IMAGE CLEANUP
 
         // Convert img to HSV
@@ -83,15 +94,14 @@ public class SleeveDetection extends OpenCvPipeline {
         Core.inRange(base, lowThreshR, highThreshR, matR);
         Core.inRange(base, lowThreshG, highThreshG, matG);
         Core.inRange(base, lowThreshB, highThreshB, matB);
+        Core.inRange(base, lowThreshY, highThreshY, matY);
 
-
-        //PLAN - make 3 mats - inRange for all three - whichever has highest thing - its that color
-        // OR USE COLOR SENSOR - TALK TO THE REST OF SOFTWARE ABOUT THIS
 
         //threshold after hsv for initial noise removal
         Imgproc.threshold(matR, matR, 0, 255, Imgproc.THRESH_OTSU);
         Imgproc.threshold(matG, matG, 0, 255, Imgproc.THRESH_OTSU);
         Imgproc.threshold(matB, matB, 0, 255, Imgproc.THRESH_OTSU);
+        Imgproc.threshold(matY, matY, 0, 255, Imgproc.THRESH_OTSU);
 
         // remove noise
         Imgproc.morphologyEx(matR, matR, Imgproc.MORPH_OPEN, new Mat());
@@ -100,6 +110,8 @@ public class SleeveDetection extends OpenCvPipeline {
         Imgproc.morphologyEx(matG, matG, Imgproc.MORPH_CLOSE, new Mat());
         Imgproc.morphologyEx(matB, matB, Imgproc.MORPH_OPEN, new Mat());
         Imgproc.morphologyEx(matB, matB, Imgproc.MORPH_CLOSE, new Mat());
+        Imgproc.morphologyEx(matY, matY, Imgproc.MORPH_OPEN, new Mat());
+        Imgproc.morphologyEx(matY, matY, Imgproc.MORPH_CLOSE, new Mat());
 
         // blurring - reduces clarity of detections though - use only if high noise
 //        Imgroc.GaussianBlur(mat, mat, new Size(5.0, 15.0), 0.00);
@@ -108,6 +120,7 @@ public class SleeveDetection extends OpenCvPipeline {
         Imgproc.threshold(matR, matR, 0, 255, Imgproc.THRESH_OTSU);
         Imgproc.threshold(matG, matG, 0, 255, Imgproc.THRESH_OTSU);
         Imgproc.threshold(matB, matB, 0, 255, Imgproc.THRESH_OTSU);
+        Imgproc.threshold(matY, matY, 0, 255, Imgproc.THRESH_OTSU);
 
         // contour detection
         List<MatOfPoint> contoursR = new ArrayList<>();
@@ -119,6 +132,8 @@ public class SleeveDetection extends OpenCvPipeline {
         List<MatOfPoint> contoursB = new ArrayList<>();
         Imgproc.findContours(matB, contoursB, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
 //        Imgproc.drawContours(matB, contoursB, -1, new Scalar(255, 0, 0));
+        List<MatOfPoint> contoursY = new ArrayList<>();
+        Imgproc.findContours(matY, contoursY, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
 
         // draw bounding boxes and get cords
         synchronized (sync) {
@@ -162,9 +177,30 @@ public class SleeveDetection extends OpenCvPipeline {
                 }
             }
 
+            for (MatOfPoint contour : contoursY) {
+                Point[] contourArray = contour.toArray();
+                if (contourArray.length >= 15) {
+                    Rect rect = Imgproc.boundingRect(contour);
+                    if (rect.area() > maxAreaY) {
+                        maxAreaY = rect.area();
+                        maxRectY = rect;
+                    }
+                }
+            }
+
         }
 
+        if (maxAreaY >= MINPOLEFILTER) {
+            foundPole = true;
+            centerX = (maxRectY.tl().x+maxRectY.br().x)/2;
+            telemetry.addData("pole center", centerX);
 
+
+        } else {
+            foundPole = false;
+        }
+
+        // for park
         DoubleStream areas = DoubleStream.of(maxAreaR, maxAreaG, maxAreaB);
         OptionalDouble avgArea = areas.average();
         if (avgArea.getAsDouble() > MINFILTER) {
