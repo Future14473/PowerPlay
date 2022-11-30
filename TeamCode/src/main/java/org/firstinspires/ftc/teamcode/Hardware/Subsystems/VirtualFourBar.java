@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.Hardware.Subsystems;
 
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.AUTO_1_INTAKE;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.AUTO_2_INTAKE;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.AUTO_3_INTAKE;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.HIGH_V4B;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.HOME_POS_V4B;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.LOW_V4B;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.MAX_ROTATION_DEGREES;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.MID_V4B;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.AUTO_1_INTAKE;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.AUTO_2_INTAKE;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.AUTO_3_INTAKE;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.HIGH_V4B;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.HOME_POS_V4B;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.LOW_V4B;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.MAX_ROTATION_DEGREES;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.MID_V4B;
 
 import androidx.annotation.NonNull;
 

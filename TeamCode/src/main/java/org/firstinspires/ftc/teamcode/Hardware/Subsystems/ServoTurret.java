@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.Hardware.Subsystems;
 
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.HOME_POS_TURRET;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.MANUAL_INCREMENT_STEP;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.MAX_ROTATION_DEGREES;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.OUT_POS_TURRET;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.HOME_POS_TURRET;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.MANUAL_INCREMENT_STEP;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.MAX_ROTATION_DEGREES;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.OUT_POS_TURRET;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;

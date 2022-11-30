@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.Opmodes.TeleOp.Testing;
 
 
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.CLOSE_POS_CLAW;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.HIGH_V4B;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.HOME_POS_V4B;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.OUT_POS_CLAW;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.CLOSE_POS_CLAW;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.HIGH_V4B;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.HOME_POS_V4B;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.OUT_POS_CLAW;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;

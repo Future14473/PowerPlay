@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -21,7 +22,7 @@ public class DriveBase extends LinearOpMode {
 
     public static double YMult = 1.1;
     public static double mvmtMult = 1.0;
-    public static double rotMult = 0.7;
+    public static double rotMult = 0.9;
     Slides slides;
 
 
@@ -61,20 +62,13 @@ public class DriveBase extends LinearOpMode {
     public void drive() {
         new Thread(() -> {
             while (opModeIsActive()) {
-                double y = -gamepad1.left_stick_y;
-                double x = -gamepad1.left_stick_x * YMult;
-                double rx = gamepad1.right_stick_x * rotMult;
-                boolean high = gamepad2.y;
-                boolean mid = gamepad2.b;
-                boolean low = gamepad2.a;
-
-                double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-                double leftFront = ((y + x + rx) / denominator) * mvmtMult;
-                double leftRear = ((y - x + rx) / denominator) * mvmtMult;
-                double rightRear = ((y + x - rx) / denominator) * mvmtMult;
-                double rightFront = ((y - x - rx) / denominator) * mvmtMult;
-
-                drive.setMotorPowers(leftFront, leftRear, rightRear, rightFront);
+                drive.setWeightedDrivePower(
+                        new Pose2d(
+                                -gamepad1.left_stick_y,
+                                -gamepad1.left_stick_x,
+                                -gamepad1.right_stick_x
+                        )
+                );
             }
         }).start();
     }

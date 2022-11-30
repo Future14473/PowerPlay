@@ -1,14 +1,14 @@
 package org.firstinspires.ftc.teamcode.ComputerVision;
 
 
-import static org.firstinspires.ftc.teamcode.ComputerVision.CVConstants.HIGHB;
-import static org.firstinspires.ftc.teamcode.ComputerVision.CVConstants.HIGHG;
-import static org.firstinspires.ftc.teamcode.ComputerVision.CVConstants.HIGHR;
-import static org.firstinspires.ftc.teamcode.ComputerVision.CVConstants.HIGHY;
-import static org.firstinspires.ftc.teamcode.ComputerVision.CVConstants.LOWB;
-import static org.firstinspires.ftc.teamcode.ComputerVision.CVConstants.LOWG;
-import static org.firstinspires.ftc.teamcode.ComputerVision.CVConstants.LOWR;
-import static org.firstinspires.ftc.teamcode.ComputerVision.CVConstants.LOWY;
+import static org.firstinspires.ftc.teamcode.Constants.CVConstants.HIGHB;
+import static org.firstinspires.ftc.teamcode.Constants.CVConstants.HIGHG;
+import static org.firstinspires.ftc.teamcode.Constants.CVConstants.HIGHR;
+import static org.firstinspires.ftc.teamcode.Constants.CVConstants.HIGHY;
+import static org.firstinspires.ftc.teamcode.Constants.CVConstants.LOWB;
+import static org.firstinspires.ftc.teamcode.Constants.CVConstants.LOWG;
+import static org.firstinspires.ftc.teamcode.Constants.CVConstants.LOWR;
+import static org.firstinspires.ftc.teamcode.Constants.CVConstants.LOWY;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Core;
@@ -54,6 +54,9 @@ public class SleeveDetection extends OpenCvPipeline {
     Rect maxRect;
     double x, y, w, h;
     double centerX, centerY;
+    double frameCenter;
+
+
     public static int MINAREA = 500;
     private static int MINFILTER = 500;
     private static int MINPOLEFILTER = 300;
@@ -190,10 +193,11 @@ public class SleeveDetection extends OpenCvPipeline {
 
         }
 
+        // todo change to height if incorrect center
         if (maxAreaY >= MINPOLEFILTER) {
             foundPole = true;
             centerX = (maxRectY.tl().x+maxRectY.br().x)/2;
-            telemetry.addData("pole center", centerX);
+            frameCenter = input.width()/2;
 
 
         } else {
@@ -236,12 +240,27 @@ public class SleeveDetection extends OpenCvPipeline {
         return input;
 
     }
-    //    public double getCenterX() {
+
+    public double lockOnCV () {
+        double dist = 0;
+        synchronized (sync) {
+            if (foundPole) {
+                if (centerX + 10 > frameCenter) {
+                    dist = centerX - frameCenter;
+                } else if (centerX - 10 < frameCenter) {
+                    dist = -(frameCenter - centerX);
+                }
+            }
+            return dist;
+        }
+    }
+
+//    public double getCenterX() {
 //        synchronized (sync) {
 //            return centerX;
 //        }
 //    }
-//
+
 //    public double getCenterY() {
 //        synchronized (sync) {
 //            return centerY;

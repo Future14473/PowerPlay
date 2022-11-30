@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.Hardware.Subsystems;
+package org.firstinspires.ftc.teamcode.Constants;
 
-public class Constants {
+public class HardwareConstants {
 //    slides
     public static int highGoal = 2000;
     public static int midGoal = 2000;
@@ -15,6 +15,7 @@ public class Constants {
     public static int home = 0;
     public static int velocity = 5000;
 
+//  all servos
     public static double MAX_ROTATION_DEGREES = 330;
 
 //   v4b

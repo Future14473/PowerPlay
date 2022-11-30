@@ -19,7 +19,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Config
+
 // this is the safest option if everything else fails
 @Autonomous
 public class PreloadPark extends LinearOpMode {

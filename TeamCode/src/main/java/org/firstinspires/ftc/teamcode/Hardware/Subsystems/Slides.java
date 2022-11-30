@@ -1,16 +1,16 @@
 package org.firstinspires.ftc.teamcode.Hardware.Subsystems;
 
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.highGoal;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.home;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.junction;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.lowGoal;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.midGoal;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.stack1;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.stack2;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.stack3;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.stack4;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.stack5;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.velocity;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.highGoal;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.home;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.junction;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.lowGoal;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.midGoal;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.stack1;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.stack2;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.stack3;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.stack4;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.stack5;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.velocity;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;

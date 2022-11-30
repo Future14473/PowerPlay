@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Hardware.Subsystems;
 
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.CLOSE_POS_CLAW;
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.OUT_POS_CLAW;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.CLOSE_POS_CLAW;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.OUT_POS_CLAW;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;

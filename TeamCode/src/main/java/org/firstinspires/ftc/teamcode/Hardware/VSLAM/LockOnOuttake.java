@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.Hardware.VSLAM;
 
-import static org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants.OUT_POS_TURRET;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.OUT_POS_TURRET;
 
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 
-import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Constants;
+import org.firstinspires.ftc.teamcode.Constants.HardwareConstants;
 
 @Config
 public class LockOnOuttake {
@@ -114,37 +114,37 @@ public class LockOnOuttake {
 
             //todo test on robot
             if (rPos.getHeading() > 0 && rPos.getHeading() < 85) {
-                trim = OUT_POS_TURRET + (rPos.getHeading() / Constants.MAX_ROTATION_DEGREES);
+                trim = OUT_POS_TURRET + (rPos.getHeading() / HardwareConstants.MAX_ROTATION_DEGREES);
             } else if (rPos.getHeading() > 85) {
-                trim = (OUT_POS_TURRET + ((90 - rPos.getHeading()) / Constants.MAX_ROTATION_DEGREES));
+                trim = (OUT_POS_TURRET + ((90 - rPos.getHeading()) / HardwareConstants.MAX_ROTATION_DEGREES));
             } else if (rPos.getHeading() < 0 && rPos.getHeading() > -85) {
-                trim = OUT_POS_TURRET - (Math.abs(rPos.getHeading()) / Constants.MAX_ROTATION_DEGREES);
+                trim = OUT_POS_TURRET - (Math.abs(rPos.getHeading()) / HardwareConstants.MAX_ROTATION_DEGREES);
             } else if (rPos.getHeading() < -85) {
-                trim = OUT_POS_TURRET - ((90 + rPos.getHeading()) / Constants.MAX_ROTATION_DEGREES);
+                trim = OUT_POS_TURRET - ((90 + rPos.getHeading()) / HardwareConstants.MAX_ROTATION_DEGREES);
             }
 
             // TESTED and works
             if (angle > 0 && (rPos.getHeading() > 0 && rPos.getHeading() < 85)) {
-                moveAngle = trim + (angle / Constants.MAX_ROTATION_DEGREES);
+                moveAngle = trim + (angle / HardwareConstants.MAX_ROTATION_DEGREES);
             } else if (angle < 0 && (rPos.getHeading() > 0 && rPos.getHeading() < 85)) {
-                moveAngle = trim + Math.abs((angle / Constants.MAX_ROTATION_DEGREES));
+                moveAngle = trim + Math.abs((angle / HardwareConstants.MAX_ROTATION_DEGREES));
             } else if (angle > 0 && (rPos.getHeading() < 0 && rPos.getHeading() > -85)) {
-                moveAngle = trim - (angle/Constants.MAX_ROTATION_DEGREES);
+                moveAngle = trim - (angle/ HardwareConstants.MAX_ROTATION_DEGREES);
             } else if (angle < 0 && (rPos.getHeading() < 0 && rPos.getHeading() > -85)) {
-                moveAngle = trim - (Math.abs(angle)/Constants.MAX_ROTATION_DEGREES);
+                moveAngle = trim - (Math.abs(angle)/ HardwareConstants.MAX_ROTATION_DEGREES);
             }
 
             // UNTESTED
             else if (angle > 0 && rPos.getHeading() > 85) {
-                moveAngle = trim - ((Math.abs(angle)) / Constants.MAX_ROTATION_DEGREES);
+                moveAngle = trim - ((Math.abs(angle)) / HardwareConstants.MAX_ROTATION_DEGREES);
             } else if (angle < 0 && rPos.getHeading() > 85) {
-                moveAngle = trim + ((Math.abs(angle))/Constants.MAX_ROTATION_DEGREES);
+                moveAngle = trim + ((Math.abs(angle))/ HardwareConstants.MAX_ROTATION_DEGREES);
             }
 
             else if (angle > 0 && rPos.getHeading() < -85) {
-                moveAngle = trim + ((Math.abs(angle)) / Constants.MAX_ROTATION_DEGREES);
+                moveAngle = trim + ((Math.abs(angle)) / HardwareConstants.MAX_ROTATION_DEGREES);
             } else if (angle < 0 && rPos.getHeading() < -85) {
-                moveAngle = trim - ((Math.abs(angle))/Constants.MAX_ROTATION_DEGREES);
+                moveAngle = trim - ((Math.abs(angle))/ HardwareConstants.MAX_ROTATION_DEGREES);
             }
 
 

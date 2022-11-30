@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.Opmodes.TeleOp;
 
 
+import static org.firstinspires.ftc.teamcode.Constants.OpmodeConstants.mvmtMult;
+import static org.firstinspires.ftc.teamcode.Constants.OpmodeConstants.rotMult;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -11,8 +14,6 @@ import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Claw;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Slides;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-//
-@Config
 
 @TeleOp(name = "Main", group = "Linear Opmode")
 public class Main extends LinearOpMode {
@@ -21,8 +22,6 @@ public class Main extends LinearOpMode {
 
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
-    public static double rotMult = 0.9;
-    public static double mvmtMult = 0.9;
 
 
     Slides slides;

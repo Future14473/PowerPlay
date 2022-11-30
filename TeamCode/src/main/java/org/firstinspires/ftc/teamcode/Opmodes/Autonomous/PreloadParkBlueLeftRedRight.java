@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Claw;
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Subsystems.VirtualFourBar;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
+@Disabled
 // red side closest to the garage door
 @Autonomous(name = "BlueLeftRedRight",group = "!!!!!!!!!!!!!" )
 public class PreloadParkBlueLeftRedRight extends LinearOpMode {
