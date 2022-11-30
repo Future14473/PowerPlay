@@ -23,6 +23,7 @@ public class HardwareConstants {
     public static double HIGH_V4B = 0.5;
     public static double MID_V4B = 0.43;
     public static double LOW_V4B = 0.45;
+
     public static double AUTO_1_INTAKE = 0;
     public static double AUTO_2_INTAKE = 0;
     public static double AUTO_3_INTAKE = 0;
