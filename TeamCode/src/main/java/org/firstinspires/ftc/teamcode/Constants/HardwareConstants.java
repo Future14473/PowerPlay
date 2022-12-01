@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Constants;
 
 public class HardwareConstants {
-//    slides
+//  slides
     public static int highGoal = 2000;
     public static int midGoal = 2000;
     public static int lowGoal = 1200;

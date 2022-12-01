@@ -1,8 +1,7 @@
 package org.firstinspires.ftc.teamcode.Hardware.Outtake;
 
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.SLIDES_OUT;
-import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.TURRET_OUT;
-import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.V4B_OUT;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.V4B_HOME;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -34,7 +33,7 @@ public class Outtake {
         slides.extendLow();
         timer.safeDelay(SLIDES_OUT);
         v4b.outLow();
-        timer.safeDelay(V4B_OUT);
+        timer.safeDelay(V4B_HOME);
         turret.setOut();
     }
 
@@ -42,7 +41,7 @@ public class Outtake {
         slides.extendMid();
         timer.safeDelay(SLIDES_OUT);
         v4b.outMid();
-        timer.safeDelay(V4B_OUT);
+        timer.safeDelay(V4B_HOME);
         turret.setOut();
     }
 
@@ -50,7 +49,7 @@ public class Outtake {
         slides.extendHigh();
         timer.safeDelay(SLIDES_OUT);
         v4b.outHigh();
-        timer.safeDelay(V4B_OUT);
+        timer.safeDelay(V4B_HOME);
         turret.setOut();
     }
 }

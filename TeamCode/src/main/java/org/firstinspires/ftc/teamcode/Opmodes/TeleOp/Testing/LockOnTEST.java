@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoController;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ServoTurret;
@@ -19,29 +20,21 @@ import org.firstinspires.ftc.teamcode.Hardware.VSLAM.t265RRLocalizer;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.opmode.TwoWheelTrackingLocalizer;
 
-//
-@Config
 @TeleOp(name = "LockOnTEST", group = "Testing")
 public class LockOnTEST extends LinearOpMode {
 
 
     t265RRLocalizer slamra;
 
-    public static double rotMult = 0.6, mvmtMult = 0.6;
-
     Servo pointServo;
 
     Pose2d robotPosVSLAM = new Pose2d();
-
 
     public LockOnOuttake lockon = new LockOnOuttake();
 
 
     @Override
     public void runOpMode() throws InterruptedException {
-
-
-
 
         //vslam
         slamra = new t265RRLocalizer(hardwareMap);
@@ -51,7 +44,6 @@ public class LockOnTEST extends LinearOpMode {
         pointServo.setPosition(0.5);
 
         waitForStart();
-
 
         while (opModeIsActive()) {
             robotPosVSLAM = slamra.getPoseEstimate();
@@ -70,9 +62,9 @@ public class LockOnTEST extends LinearOpMode {
     @SuppressLint("DefaultLocale")
     public void telemetryConfig(Telemetry telemetry) {
         telemetry.addData("Servo Position", pointServo.getPosition());
-        telemetry.addData("Robot Position VSLAM", String.format("(%1$f, %2$f, %3$f)", robotPosVSLAM.getX(), robotPosVSLAM.getY(), robotPosVSLAM.getHeading()));
-        telemetry.addData("Lockon output", lockon.lockOn(robotPosVSLAM));
+        telemetry.addData("moveAngle", lockon.lockOn(robotPosVSLAM));
         telemetry.addData("trim", lockon.getTrim());
+        telemetry.addData("Robot Position VSLAM", String.format("(%1$f, %2$f, %3$f)", robotPosVSLAM.getX(), robotPosVSLAM.getY(), robotPosVSLAM.getHeading()));
         telemetry.update();
     }
 
