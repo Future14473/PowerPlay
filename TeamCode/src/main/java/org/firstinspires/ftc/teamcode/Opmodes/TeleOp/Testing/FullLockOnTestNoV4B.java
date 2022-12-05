@@ -79,7 +79,6 @@ public class FullLockOnTestNoV4B extends LinearOpMode {
 
     public void gamepadOneControls() {
         if (gamepad1.x) {
-            servoTurret.setFractional(lockon.lockOn(robotPosVSLAM));
         }
         if (gamepad1.a) {
             servoTurret.setHome();

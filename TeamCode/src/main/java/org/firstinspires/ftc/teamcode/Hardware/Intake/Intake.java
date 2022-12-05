@@ -18,13 +18,12 @@ public class Intake {
     VirtualFourBar v4b;
     ServoTurret turret;
 
-    public Intake(HardwareMap hardwareMap) {
-        slides = new Slides(hardwareMap);
-        claw = new ClawCompliant(hardwareMap);
-        v4b = new VirtualFourBar(hardwareMap);
-        turret = new ServoTurret(hardwareMap);
+    public Intake(Slides slides, ClawCompliant claw, VirtualFourBar v4b, ServoTurret turret) {
+        this.slides = slides;
+        this.claw = claw;
+        this.v4b = v4b;
+        this.turret = turret;
     }
-
     // intake the cones on the stack
     //TODO change timings between each operation
     public void autoIntakeReady(int stackNum, Timer timer) {
@@ -37,17 +36,24 @@ public class Intake {
         claw.openWide(true);
     }
 
-    public void teleopIntakeReady(Timer timer) {
+    public void teleopIntake(Timer timer) {
         turret.setHome();
         timer.safeDelay(TURRET_HOME);
-        v4b.setHome();
+        v4b.intake();
         timer.safeDelay(V4B_HOME);
         slides.retract();
         timer.safeDelay(SLIDES_HOME);
         claw.openWide(true);
     }
 
-    public void intake(Timer timer) {
+    public void teleopIntakeReady() {
+        slides.resetEncoders();
+        claw.openNoComplaint();
+        v4b.intake();
+        turret.setHome();
+    }
+
+    public void intake() {
         claw.shutUp();
     }
 }

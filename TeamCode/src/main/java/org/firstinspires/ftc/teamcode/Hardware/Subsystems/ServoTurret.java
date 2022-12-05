@@ -25,15 +25,11 @@ public class ServoTurret {
     }
 
 
-    public void setAngle(double angle) {
-        servoTurret.setPosition(angle / MAX_ROTATION_DEGREES);
-    }
-
     public void setOut() {
         servoTurret.setPosition(OUT_POS_TURRET);
     }
 
-    public void setFractional(double angle) {
+    public void setCustom(double angle) {
         servoTurret.setPosition(angle);
     }
 
@@ -42,10 +38,10 @@ public class ServoTurret {
     }
 
     public void incrementUp() {
-        servoTurret.setPosition(servoTurret.getPosition() + (MANUAL_INCREMENT_STEP));
+        servoTurret.setPosition(servoTurret.getPosition() + MANUAL_INCREMENT_STEP);
     }
 
     public void incrementDown() {
-        servoTurret.setPosition(servoTurret.getPosition() - (MANUAL_INCREMENT_STEP ));
+        servoTurret.setPosition(servoTurret.getPosition() - MANUAL_INCREMENT_STEP);
     }
 }

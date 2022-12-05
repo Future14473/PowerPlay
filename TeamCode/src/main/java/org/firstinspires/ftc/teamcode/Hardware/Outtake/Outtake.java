@@ -17,14 +17,14 @@ public class Outtake {
     VirtualFourBar v4b;
     ServoTurret turret;
 
-    public Outtake(HardwareMap hardwareMap) {
-        slides = new Slides(hardwareMap);
-        claw = new ClawCompliant(hardwareMap);
-        v4b = new VirtualFourBar(hardwareMap);
-        turret = new ServoTurret(hardwareMap);
+    public Outtake(Slides slides, ClawCompliant claw, VirtualFourBar v4b, ServoTurret turret) {
+        this.slides = slides;
+        this.claw = claw;
+        this.v4b = v4b;
+        this.turret = turret;
     }
 
-    public void outtake(Timer timer) {
+    public void outtake() {
         claw.openWide(false);
     }
 
@@ -32,7 +32,7 @@ public class Outtake {
     public void outtakeReadyLow(Timer timer) {
         slides.extendLow();
         timer.safeDelay(SLIDES_OUT);
-        v4b.outLow();
+        v4b.outtake();
         timer.safeDelay(V4B_HOME);
         turret.setOut();
     }
@@ -40,7 +40,7 @@ public class Outtake {
     public void outtakeReadyMid(Timer timer) {
         slides.extendMid();
         timer.safeDelay(SLIDES_OUT);
-        v4b.outMid();
+        v4b.outtake();
         timer.safeDelay(V4B_HOME);
         turret.setOut();
     }
@@ -48,8 +48,11 @@ public class Outtake {
     public void outtakeReadyHigh(Timer timer) {
         slides.extendHigh();
         timer.safeDelay(SLIDES_OUT);
-        v4b.outHigh();
+        v4b.outtake();
         timer.safeDelay(V4B_HOME);
         turret.setOut();
+    }
+    public void outtakeReadyJunction() {
+        slides.extendJunction();
     }
 }

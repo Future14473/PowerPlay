@@ -14,20 +14,24 @@ public class ServoTurretTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-
         servoTurret = new ServoTurret(hardwareMap);
-        servoTurret.setHome();
 
         waitForStart();
 
         while(opModeIsActive()) {
             if (gamepad1.x) {
                 servoTurret.setHome();
-            } if (gamepad1.b) {
+            }
+
+            if (gamepad1.b) {
                 servoTurret.setOut();
-            } if (gamepad1.left_stick_x > 0) {
+            }
+
+            if (gamepad1.dpad_right) {
                 servoTurret.incrementUp();
-            } if (gamepad1.left_stick_x < 0) {
+            }
+
+            if (gamepad1.dpad_left) {
                 servoTurret.incrementDown();
             }
 

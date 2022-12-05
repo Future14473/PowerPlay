@@ -13,8 +13,6 @@ import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Slides;
 public class SlidesTest extends LinearOpMode {
 
 
-
-
     @Override
     public void runOpMode() throws InterruptedException {
         Slides slides = new Slides(hardwareMap);
@@ -35,8 +33,4 @@ public class SlidesTest extends LinearOpMode {
         }
 
     }
-
-
-
-
 }
