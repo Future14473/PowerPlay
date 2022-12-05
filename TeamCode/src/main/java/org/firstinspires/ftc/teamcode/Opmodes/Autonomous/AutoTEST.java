@@ -11,13 +11,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
-@Disabled
 @Config
-@Autonomous(group = "drive")
+@Autonomous(name="lineTolinearheading TEST", group = "drive")
 public class AutoTEST extends LinearOpMode {
-    public static double DISTANCE = 60;
-    public static double DISPLACEMENT_DISTANCE = 30;
-    public static double DEGREES = 45;
+
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -26,14 +23,16 @@ public class AutoTEST extends LinearOpMode {
         Pose2d startPos = new Pose2d(-35, -72, Math.toRadians(0));
 
         TrajectorySequence traj = drive.trajectorySequenceBuilder(startPos)
-                .forward(DISTANCE)
-                .addDisplacementMarker(DISPLACEMENT_DISTANCE, () -> {
-                    drive.turn(Math.toRadians(DEGREES));
-                })
+                //move forward 60
+                .lineToLinearHeading(new Pose2d(36, 12,  Math.toRadians(-135)))
+                .lineToLinearHeading(new Pose2d(62, 12, Math.toRadians(0)))
+
                 .build();
 
         waitForStart();
         drive.followTrajectorySequence(traj);
+
+
         while (opModeIsActive() && !isStopRequested()) {}
 
 

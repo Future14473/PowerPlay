@@ -22,30 +22,27 @@ public class Base {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(35, 72, Math.toRadians(-90)))
-                                .lineTo(new Vector2d(35, 36))
-                                .turn(Math.toRadians(90))
-                                .forward(20)
-
-
-                                //revert to 0 ready for park
-                                .back(14)
-                                //correct for strafing inconsistencies
-                                .turn(Math.toRadians(-80))
-
-
-                                // prepare first outtake
-                                .addDisplacementMarker(marker1, () -> {
-
-                                })
-                                .addDisplacementMarker(marker2, () -> {
-
-                                })
-                                .addDisplacementMarker(marker3,() -> {
-
-                                })
-
-
+                        drive.trajectorySequenceBuilder(new Pose2d(36, 72, Math.toRadians(-90)))
+                                //move forward 60
+                                .lineToLinearHeading(new Pose2d(36, 12,  Math.toRadians(-135)))
+                                .lineToLinearHeading(new Pose2d(62, 12, Math.toRadians(0)))
+                                .back(24)
+                                .waitSeconds(1)
+                                .forward(24)
+                                .waitSeconds(1)
+                                .back(24)
+                                .waitSeconds(1)
+                                .forward(24)
+                                .waitSeconds(1)
+                                .back(24)
+                                .waitSeconds(1)
+                                .forward(24)
+                                .waitSeconds(1)
+                                .back(24)
+                                .waitSeconds(1)
+                                .forward(24)
+                                .waitSeconds(1)
+                                .back(24)
                                 .build()
                 );
 

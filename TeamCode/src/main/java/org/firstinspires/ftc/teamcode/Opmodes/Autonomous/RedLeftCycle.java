@@ -12,53 +12,35 @@ import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Slides;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.VirtualFourBar;
 import org.firstinspires.ftc.teamcode.Hardware.util.Timer;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.opmode.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
-@Disabled
 @Autonomous
 public class RedLeftCycle extends LinearOpMode {
+
+    Pose2d startPos = new Pose2d(36, 72, Math.toRadians(90));
+
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
-        double maxVel = 10;
-        double maxAngularVel = 10;
-        double trackWidth = 11.5;
-        double outtakeTime = 1;
-        double intakeTime = 3;
-        double moveDist = 7;
-
-        Timer timer = new Timer(this);
-        Slides slides = new Slides(hardwareMap);
-        VirtualFourBar v4b = new VirtualFourBar(hardwareMap);
-        ServoTurret servoTurret = new ServoTurret(hardwareMap);
-
-
-        Pose2d startPos = new Pose2d(-34.5, -72, Math.toRadians(90));
-        v4b.setHome();
+        drive.setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, drive));
+        drive.setPoseEstimate(startPos);
 
 
 
         TrajectorySequence traj = drive.trajectorySequenceBuilder(startPos)
-                //first outtake position
-                .lineTo(new Vector2d(-34.5, -8))
-                .turn(Math.toRadians(180))
+                //move forward 60
+                .lineTo(new Vector2d(36, 12))
+                .turn(45)
+                .turn(-135)
+                .forward(30)
 
-                .forward(3)
-                .waitSeconds(outtakeTime)
-                .forward(10)
-                .addDisplacementMarker(70, () -> {
-                    slides.extendHigh();
-                    timer.safeDelay(100);
-                    v4b.outHigh();
-                })
 
                 .build();
         waitForStart();
 
         drive.followTrajectorySequence(traj);
         while (opModeIsActive() && !isStopRequested()) {}
-
 
     }
 }
