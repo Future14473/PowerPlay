@@ -5,7 +5,7 @@ public class HardwareConstants {
     public static int highGoal = 2000;
     public static int midGoal = 2000;
     public static int lowGoal = 1200;
-    public static int junction = 100;
+    public static int junction = 250;
     public static int stack1 = 0;
     public static int stack2 = 0;
     public static int stack3 = 0;
@@ -13,7 +13,7 @@ public class HardwareConstants {
     public static int stack5 = 0;
 
     public static int home = 0;
-    public static int velocity = 5000;
+    public static int velocity = 6000;
 
 //  all servos
     public static double MAX_ROTATION_DEGREES = 330;

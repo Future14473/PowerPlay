@@ -60,19 +60,18 @@ public class Main extends LinearOpMode {
             }
 
             // gamepad 2 controls
-            if (gamepad2.b) {
+            if (gamepad1.b) {
                 slides.extendLow();
             }
 
-            if (gamepad2.y) {
+            if (gamepad1.y) {
                 slides.extendMid();
 
-            } if (gamepad2.a) {
+            } if (gamepad1.a) {
                 slides.extendJunction();
             }
 
-            if (gamepad2.x) {
-                claw.shutUp();
+            if (gamepad1.x) {
                 slides.retract();
             }
         }
