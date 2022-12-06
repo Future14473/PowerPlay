@@ -199,7 +199,6 @@ public class SleeveDetection extends OpenCvPipeline {
             centerX = (maxRectY.tl().x+maxRectY.br().x)/2;
             frameCenter = input.width()/2;
 
-
         } else {
             foundPole = false;
         }
@@ -248,7 +247,7 @@ public class SleeveDetection extends OpenCvPipeline {
                 if (centerX + 10 > frameCenter) {
                     dist = centerX - frameCenter;
                 } else if (centerX - 10 < frameCenter) {
-                    dist = -(frameCenter - centerX);
+                    dist = centerX - frameCenter;
                 }
             }
             return dist;

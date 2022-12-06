@@ -121,24 +121,22 @@ public class LockOnOuttake {
                 trim = OUT_POS_TURRET + (rPos.getHeading() / MAX_ROTATION_DEGREES);
 //            } else if (rPos.getHeading() > 85) {
 //                trim = (OUT_POS_TURRET + ((90 - rPos.getHeading()) / MAX_ROTATION_DEGREES));
-            } else if (rPos.getHeading() < 0) {
+            } else if (rPos.getHeading() < 0 ) {
                 trim = OUT_POS_TURRET - (Math.abs(rPos.getHeading()) / MAX_ROTATION_DEGREES);
 //            } else if (rPos.getHeading() < -85) {
 //                trim = OUT_POS_TURRET - ((90 + rPos.getHeading()) / MAX_ROTATION_DEGREES);
             }
 
 
-            if (angle > 0 && angle < 0.8) {
+            if (angle > 0) {
                 moveAngle = trim - Math.abs(((angle) / MAX_ROTATION_DEGREES));
-            } else if (angle > 0.8) {
-                moveAngle = 0.5+( trim - Math.abs(((angle) / MAX_ROTATION_DEGREES)));//change to 0.5 -
             }
 
-            else if (angle < 0 && angle > -0.8) {
+            else if (angle < 0) {
                 moveAngle = trim + ((Math.abs(angle)) / MAX_ROTATION_DEGREES);
-            } else if (angle < -0.8) {
-                moveAngle = 0.5-( trim + ((Math.abs(angle)) / MAX_ROTATION_DEGREES)); // chang eto 0,5 +
             }
+
+
             return moveAngle;
         }
     }
@@ -155,6 +153,8 @@ public class LockOnOuttake {
 
     }
 
+
+    // THE ISSUE IS HERE WITH ARCTAN
     private double getAngle(Pose2d robotPosition, Pose2d poleLoc) {
         double rX = robotPosition.getX() + xOffset;
         double rY = robotPosition.getY() + yOffset;
@@ -162,9 +162,17 @@ public class LockOnOuttake {
         double pX = poleLoc.getX();
         double pY = poleLoc.getY();
 
-        return Math.toDegrees(Math.atan((rY - pY) / (rX - pX)));
+        double angle = Math.toDegrees(Math.atan((rY - pY) / (rX - pX)));
 
+        if (Math.abs(angle) > 90) {
+            if (angle < 0) {
+                return -(angle+90);
+            } else if (angle > 0) {
+                return -(angle-90);
+            }
+        } else return angle;
 
+        return 0;
     }
 
     public double getDistance() {
