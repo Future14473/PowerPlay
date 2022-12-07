@@ -116,16 +116,16 @@ public class LockOnOuttake {
         } else {
 
 
-            //todo test on robot
-            if (rPos.getHeading() > 0) {
-                trim = OUT_POS_TURRET + (rPos.getHeading() / MAX_ROTATION_DEGREES);
-//            } else if (rPos.getHeading() > 85) {
-//                trim = (OUT_POS_TURRET + ((90 - rPos.getHeading()) / MAX_ROTATION_DEGREES));
-            } else if (rPos.getHeading() < 0 ) {
-                trim = OUT_POS_TURRET - (Math.abs(rPos.getHeading()) / MAX_ROTATION_DEGREES);
-//            } else if (rPos.getHeading() < -85) {
-//                trim = OUT_POS_TURRET - ((90 + rPos.getHeading()) / MAX_ROTATION_DEGREES);
-            }
+            //todo test on robot after testing angle
+//            if (rPos.getHeading() > 0) {
+//                trim = OUT_POS_TURRET + (rPos.getHeading() / MAX_ROTATION_DEGREES);
+////            } else if (rPos.getHeading() > 85) {
+////                trim = (OUT_POS_TURRET + ((90 - rPos.getHeading()) / MAX_ROTATION_DEGREES));
+//            } else if (rPos.getHeading() < 0 ) {
+//                trim = OUT_POS_TURRET - (Math.abs(rPos.getHeading()) / MAX_ROTATION_DEGREES);
+////            } else if (rPos.getHeading() < -85) {
+////                trim = OUT_POS_TURRET - ((90 + rPos.getHeading()) / MAX_ROTATION_DEGREES);
+//            }
 
 
             if (angle > 0) {
