@@ -28,7 +28,7 @@ public class HardwareConstants {
 
 //   v4b
     public static double HOME_POS_V4B = 0;
-    public static double OUT_V4B = 0.5;
+    public static double OUT_V4B = 0.4;
 
     public static double AUTO_1_INTAKE = 0;
     public static double AUTO_2_INTAKE = 0;

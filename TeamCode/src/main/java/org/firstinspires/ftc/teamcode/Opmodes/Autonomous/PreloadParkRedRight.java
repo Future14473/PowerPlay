@@ -49,7 +49,7 @@ public class PreloadParkRedRight extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     slides.retract();
                     claw.shutUp();
-                    v4b.setHome();
+//                    v4b.setHome();
                 })
                 .waitSeconds(3)
 

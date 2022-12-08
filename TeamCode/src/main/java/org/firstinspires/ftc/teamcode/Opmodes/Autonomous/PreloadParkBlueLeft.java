@@ -45,7 +45,7 @@ public class PreloadParkBlueLeft extends LinearOpMode {
         slides.resetEncoders();
 
         claw.shutUp();
-        v4b.setHome();
+//        v4b.setHome();
 
         startPos = new Pose2d(-35, 72, Math.toRadians(-90));
 
@@ -92,7 +92,7 @@ public class PreloadParkBlueLeft extends LinearOpMode {
                 .addDisplacementMarker(89, () -> {
                     slides.retract();
                     claw.shutUp();
-                    v4b.setHome();
+//                    v4b.setHome();
                 })
 
 

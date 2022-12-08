@@ -115,7 +115,6 @@ public class LockOnOuttake {
             return OUT_POS_TURRET;
         } else {
 
-
             //todo test on robot after testing angle
 //            if (rPos.getHeading() > 0) {
 //                trim = OUT_POS_TURRET + (rPos.getHeading() / MAX_ROTATION_DEGREES);
@@ -127,15 +126,13 @@ public class LockOnOuttake {
 ////                trim = OUT_POS_TURRET - ((90 + rPos.getHeading()) / MAX_ROTATION_DEGREES);
 //            }
 
+            trim = OUT_POS_TURRET;
 
             if (angle > 0) {
-                moveAngle = trim - Math.abs(((angle) / MAX_ROTATION_DEGREES));
-            }
-
-            else if (angle < 0) {
+                moveAngle = trim - Math.abs((angle / MAX_ROTATION_DEGREES));
+            } else if (angle < 0) {
                 moveAngle = trim + ((Math.abs(angle)) / MAX_ROTATION_DEGREES);
             }
-
 
             return moveAngle;
         }
@@ -166,9 +163,9 @@ public class LockOnOuttake {
 
         if (Math.abs(angle) > 90) {
             if (angle < 0) {
-                return -(angle+90);
+                return -(angle + 90);
             } else if (angle > 0) {
-                return -(angle-90);
+                return -(angle - 90);
             }
         } else return angle;
 
