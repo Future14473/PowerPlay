@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Slides;
+import org.firstinspires.ftc.teamcode.Hardware.Subsystems.VirtualFourBar;
+import org.firstinspires.ftc.teamcode.Hardware.util.Timer;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 //
@@ -24,6 +26,8 @@ public class DriveBase extends LinearOpMode {
     public static double mvmtMult = 1.0;
     public static double rotMult = 0.9;
     Slides slides;
+    VirtualFourBar v4b;
+    Timer timer;
 
 
     @Override
@@ -33,7 +37,11 @@ public class DriveBase extends LinearOpMode {
         drive = new SampleMecanumDrive(hardwareMap);
 
         slides = new Slides(hardwareMap);
+        v4b = new VirtualFourBar(hardwareMap);
+        timer = new Timer(this);
 
+        slides.resetEncoders();
+        v4b.intake();
 
         waitForStart();
 
@@ -41,13 +49,18 @@ public class DriveBase extends LinearOpMode {
 
         while (opModeIsActive()) {
             telemetryConfig(telemetry);
-
+            if (gamepad1.x) {
+                slides.retract();
+                v4b.intake();
+            }
             if (gamepad1.a) {
                 slides.extendLow();
             } else if (gamepad1.b) {
                 slides.extendMid();
             } else if (gamepad1.y) {
                 slides.extendHigh();
+                v4b.outtake();
+
             }
         }
     }

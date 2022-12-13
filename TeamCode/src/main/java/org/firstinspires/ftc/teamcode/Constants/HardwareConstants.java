@@ -24,11 +24,11 @@ public class HardwareConstants {
     public static int stack5 = 0;
 
     public static int home = 0;
-    public static int velocity = 5000;
+    public static int velocity = 7000;
 
 //   v4b
     public static double HOME_POS_V4B = 0;
-    public static double OUT_V4B = 0.4;
+    public static double OUT_V4B = 0.7;
 
     public static double AUTO_1_INTAKE = 0;
     public static double AUTO_2_INTAKE = 0;
