@@ -8,7 +8,7 @@ public class Timer {
         this.opMode = opMode;
     }
 
-    public void safeDelay(long delay){
+    public void safeDelay(double delay){
         long start = System.currentTimeMillis();
         while((System.currentTimeMillis() - start < delay) && opMode.opModeIsActive()){
             //wait

@@ -40,10 +40,10 @@ public class Intake {
     public void teleopIntake(Timer timer) {
         v4b.intake();
         timer.safeDelay(V4B_HOME);
-        turret.setHome();
-        timer.safeDelay(TURRET_HOME);
         slides.retract();
         timer.safeDelay(SLIDES_HOME);
+        turret.setHome();
+        timer.safeDelay(TURRET_HOME);
         claw.openWide();
     }
 

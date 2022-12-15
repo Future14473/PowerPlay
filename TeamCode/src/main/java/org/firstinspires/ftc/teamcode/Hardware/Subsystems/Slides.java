@@ -54,11 +54,6 @@ public class Slides {
         rightSlide.setVelocity(velocity);
     }
 
-    public void EMERGENCY() {
-        leftSlide.setVelocity(2000);
-        rightSlide.setVelocity(2000);
-    }
-
     public void incrementUp() {
         leftSlide.setTargetPosition(leftSlide.getCurrentPosition() + incrementAmt);
         rightSlide.setTargetPosition(leftSlide.getCurrentPosition() + incrementAmt);
@@ -134,8 +129,8 @@ public class Slides {
     }
 
     public void retract() {
-        leftSlide.setTargetPosition(home-50);
-        rightSlide.setTargetPosition(home);
+        leftSlide.setTargetPosition(home-70);
+        rightSlide.setTargetPosition(home-70);
         leftSlide.setVelocity(velocity);
         rightSlide.setVelocity(velocity);
     }
