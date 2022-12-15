@@ -59,6 +59,7 @@ public class DriveBase extends LinearOpMode {
                 slides.extendMid();
             } else if (gamepad1.y) {
                 slides.extendHigh();
+                timer.safeDelay(1000);
                 v4b.outtake();
 
             }

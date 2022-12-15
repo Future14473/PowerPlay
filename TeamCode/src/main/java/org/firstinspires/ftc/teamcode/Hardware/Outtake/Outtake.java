@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.V4B_HOM
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Claw;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ClawCompliant;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ServoTurret;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Slides;
@@ -14,11 +15,11 @@ import org.firstinspires.ftc.teamcode.Hardware.util.Timer;
 
 public class Outtake {
     Slides slides;
-    ClawCompliant claw;
+    Claw claw;
     VirtualFourBar v4b;
     ServoTurret turret;
 
-    public Outtake(Slides slides, ClawCompliant claw, VirtualFourBar v4b, ServoTurret turret) {
+    public Outtake(Slides slides, Claw claw, VirtualFourBar v4b, ServoTurret turret) {
         this.slides = slides;
         this.claw = claw;
         this.v4b = v4b;
@@ -26,7 +27,7 @@ public class Outtake {
     }
 
     public void outtake() {
-        claw.openWide(false);
+        claw.openWide();
     }
 
     //TODO condense to one function (use low/mid/high parameters)
@@ -57,8 +58,8 @@ public class Outtake {
         timer.safeDelay(TURRET_OUT);
         v4b.outtake();
         timer.safeDelay(V4B_HOME);
-        turret.setOut();
     }
+
     public void outtakeReadyJunction() {
         slides.extendJunction();
     }

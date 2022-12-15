@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.V4B_HOM
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Claw;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ClawCompliant;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ServoTurret;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Slides;
@@ -14,11 +15,11 @@ import org.firstinspires.ftc.teamcode.Hardware.util.Timer;
 
 public class Intake {
     Slides slides;
-    ClawCompliant claw;
+    Claw claw;
     VirtualFourBar v4b;
     ServoTurret turret;
 
-    public Intake(Slides slides, ClawCompliant claw, VirtualFourBar v4b, ServoTurret turret) {
+    public Intake(Slides slides, Claw claw, VirtualFourBar v4b, ServoTurret turret) {
         this.slides = slides;
         this.claw = claw;
         this.v4b = v4b;
@@ -33,7 +34,7 @@ public class Intake {
         timer.safeDelay(V4B_HOME);
         slides.retract();
         timer.safeDelay(SLIDES_HOME);
-        claw.openWide(true);
+        claw.openWide();
     }
 
     public void teleopIntake(Timer timer) {
@@ -43,12 +44,12 @@ public class Intake {
         timer.safeDelay(TURRET_HOME);
         slides.retract();
         timer.safeDelay(SLIDES_HOME);
-        claw.openWide(true);
+        claw.openWide();
     }
 
     public void teleopIntakeReady() {
         slides.resetEncoders();
-        claw.openNoComplaint();
+        claw.openWide();
         v4b.intake();
         turret.setHome();
     }
@@ -56,4 +57,5 @@ public class Intake {
     public void intake() {
         claw.shutUp();
     }
+
 }

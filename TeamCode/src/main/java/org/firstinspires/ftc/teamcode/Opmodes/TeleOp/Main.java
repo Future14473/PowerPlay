@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Hardware.Intake.Intake;
 import org.firstinspires.ftc.teamcode.Hardware.Outtake.Outtake;
+import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Claw;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ClawCompliant;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ServoTurret;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Slides;
@@ -26,12 +27,14 @@ public class Main extends LinearOpMode {
 
 
     Slides slides;
-    ClawCompliant claw;
+    Claw claw;
     VirtualFourBar v4b;
     ServoTurret servoTurret;
 
     Intake intake;
     Outtake outtake;
+
+    boolean intaked = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -41,7 +44,7 @@ public class Main extends LinearOpMode {
 
         //subsystems
         slides = new Slides(hardwareMap);
-        claw = new ClawCompliant(hardwareMap);
+        claw = new Claw(hardwareMap);
         v4b = new VirtualFourBar(hardwareMap);
         servoTurret = new ServoTurret(hardwareMap);
 
@@ -61,7 +64,7 @@ public class Main extends LinearOpMode {
                 outtake.outtake();
             }
 
-            if (gamepad1.left_bumper) {
+            if (gamepad1.left_bumper && !intaked) {
                 intake.intake();
             }
 

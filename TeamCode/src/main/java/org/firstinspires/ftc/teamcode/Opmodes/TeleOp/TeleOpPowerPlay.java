@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Hardware.Intake.Intake;
 import org.firstinspires.ftc.teamcode.Hardware.Outtake.Outtake;
+import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Claw;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ClawCompliant;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ServoTurret;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Slides;
@@ -35,7 +36,7 @@ public class TeleOpPowerPlay extends LinearOpMode {
     }
 
     Slides slides;
-    ClawCompliant claw;
+    Claw claw;
     VirtualFourBar v4b;
     ServoTurret servoTurret;
     Timer timer = new Timer(this);
@@ -59,7 +60,7 @@ public class TeleOpPowerPlay extends LinearOpMode {
 
             //subsystems
             slides = new Slides(hardwareMap);
-            claw = new ClawCompliant(hardwareMap);
+            claw = new Claw(hardwareMap);
             v4b = new VirtualFourBar(hardwareMap);
             servoTurret = new ServoTurret(hardwareMap);
 
