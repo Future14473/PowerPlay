@@ -12,7 +12,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Config
+
 @TeleOp(name = "CVTest", group = "Testing")
 public class CVTest extends LinearOpMode {
 

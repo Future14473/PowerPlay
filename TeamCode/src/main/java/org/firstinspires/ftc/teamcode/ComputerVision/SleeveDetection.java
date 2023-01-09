@@ -2,11 +2,9 @@ package org.firstinspires.ftc.teamcode.ComputerVision;
 
 
 import static org.firstinspires.ftc.teamcode.Constants.CVConstants.HIGHB;
-import static org.firstinspires.ftc.teamcode.Constants.CVConstants.HIGHG;
 import static org.firstinspires.ftc.teamcode.Constants.CVConstants.HIGHR;
 import static org.firstinspires.ftc.teamcode.Constants.CVConstants.HIGHY;
 import static org.firstinspires.ftc.teamcode.Constants.CVConstants.LOWB;
-import static org.firstinspires.ftc.teamcode.Constants.CVConstants.LOWG;
 import static org.firstinspires.ftc.teamcode.Constants.CVConstants.LOWR;
 import static org.firstinspires.ftc.teamcode.Constants.CVConstants.LOWY;
 
@@ -43,8 +41,6 @@ public class SleeveDetection extends OpenCvPipeline {
 
     Scalar lowThreshR = LOWR;
     Scalar highThreshR = HIGHR;
-    Scalar lowThreshG = LOWG;
-    Scalar highThreshG = HIGHG;
     Scalar lowThreshB = LOWB;
     Scalar highThreshB = HIGHB;
     Scalar lowThreshY = LOWY;
@@ -95,7 +91,6 @@ public class SleeveDetection extends OpenCvPipeline {
 
         // outputs objects that are in rage of the hsv values given
         Core.inRange(base, lowThreshR, highThreshR, matR);
-        Core.inRange(base, lowThreshG, highThreshG, matG);
         Core.inRange(base, lowThreshB, highThreshB, matB);
         Core.inRange(base, lowThreshY, highThreshY, matY);
 

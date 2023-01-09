@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 
-@Config
 public class LockOnOuttake {
     public static double MIN_DIST = 9.0;
     public static double xOffset = 0.0;

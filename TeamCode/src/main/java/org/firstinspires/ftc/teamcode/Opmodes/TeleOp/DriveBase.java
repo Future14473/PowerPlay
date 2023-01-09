@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.Hardware.util.Timer;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 //
-@Config
+
 @TeleOp(name = "DriveBASE", group = "Testing")
 public class DriveBase extends LinearOpMode {
     SampleMecanumDrive drive;
@@ -36,11 +36,8 @@ public class DriveBase extends LinearOpMode {
 
         drive = new SampleMecanumDrive(hardwareMap);
 
-        slides = new Slides(hardwareMap);
         v4b = new VirtualFourBar(hardwareMap);
-        timer = new Timer(this);
 
-        slides.resetEncoders();
         v4b.intake();
 
         waitForStart();
@@ -49,20 +46,6 @@ public class DriveBase extends LinearOpMode {
 
         while (opModeIsActive()) {
             telemetryConfig(telemetry);
-            if (gamepad1.x) {
-                slides.retract();
-                v4b.intake();
-            }
-            if (gamepad1.a) {
-                slides.extendLow();
-            } else if (gamepad1.b) {
-                slides.extendMid();
-            } else if (gamepad1.y) {
-                slides.extendHigh();
-                timer.safeDelay(1000);
-                v4b.outtake();
-
-            }
         }
     }
 

@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.Opmodes.TeleOp;
 
 
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.mvmtMult;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.rotMult;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -10,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Intake.Intake;
 import org.firstinspires.ftc.teamcode.Hardware.Outtake.Outtake;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Claw;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ClawCompliant;
+import org.firstinspires.ftc.teamcode.Hardware.Subsystems.OdoRetraction;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ServoTurret;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Slides;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.VirtualFourBar;
@@ -34,7 +38,7 @@ public class Main extends LinearOpMode {
     Intake intake;
     Outtake outtake;
 
-    boolean intaked = false;
+    OdoRetraction retraction;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -47,11 +51,13 @@ public class Main extends LinearOpMode {
         claw = new Claw(hardwareMap);
         v4b = new VirtualFourBar(hardwareMap);
         servoTurret = new ServoTurret(hardwareMap);
+        retraction = new OdoRetraction(hardwareMap);
 
         intake = new Intake(slides, claw, v4b, servoTurret);
         outtake = new Outtake(slides, claw, v4b, servoTurret);
 
         intake.teleopIntakeReady();
+        retraction.retract();
 
         waitForStart();
 
@@ -61,10 +67,10 @@ public class Main extends LinearOpMode {
 
             //bumpers open and close claw only
             if (gamepad1.right_bumper) {
-                outtake.outtake();
+                outtake.outtakeTeleOp(timer);
             }
 
-            if (gamepad1.left_bumper && !intaked) {
+            if (gamepad1.left_bumper) {
                 intake.intake();
             }
 
@@ -75,6 +81,11 @@ public class Main extends LinearOpMode {
             if (gamepad1.dpad_down) {
                 outtake.outtakeReadyJunction();
             }
+
+            if (gamepad1.dpad_left) {
+                outtake.outtake();
+            }
+
             if (gamepad1.a) {
                 outtake.outtakeReadyLow(timer);
             }
@@ -92,13 +103,19 @@ public class Main extends LinearOpMode {
     public void drive() {
         new Thread(() -> {
             while (opModeIsActive()) {
-                drive.setWeightedDrivePower(
-                        new Pose2d(
-                                -gamepad1.left_stick_y,
-                                gamepad1.left_stick_x,
-                                -gamepad1.right_stick_x
-                        )
-                );
+                while (opModeIsActive()) {
+                    double y = -gamepad1.left_stick_y;
+                    double x = -gamepad1.left_stick_x;
+                    double rx = -gamepad1.right_stick_x * rotMult;
+
+                    double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+                    double leftFront = ((y + x + rx) / denominator) * mvmtMult;
+                    double leftRear = ((y - x + rx) / denominator) * mvmtMult;
+                    double rightRear = ((y + x - rx) / denominator) * mvmtMult;
+                    double rightFront = ((y - x - rx) / denominator) * mvmtMult;
+
+                    drive.setMotorPowers(leftFront * Math.abs(leftFront), leftRear * Math.abs(leftRear), rightRear * Math.abs(rightRear), rightFront * Math.abs(rightFront));
+                }
             }
         }).start();
     }

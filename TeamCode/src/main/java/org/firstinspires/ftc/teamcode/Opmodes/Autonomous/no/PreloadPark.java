@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
+package org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Claw;
@@ -12,10 +12,11 @@ import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Slides;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
-@Config
-// this is the safest option if everything else fails
+
+// this is the safest option if everything else fails\
+@Disabled
 @Autonomous
-public class PreloadParkBLUERIGHTCOCK extends LinearOpMode {
+public class PreloadPark extends LinearOpMode {
 
 //    public OpenCvCamera camera;
 //    public SleeveDetection cv;
@@ -94,14 +95,14 @@ public class PreloadParkBLUERIGHTCOCK extends LinearOpMode {
     public TrajectorySequence createTrajectory() {
         TrajectorySequence traj = drive.trajectorySequenceBuilder(startPos)
                 .lineTo(new Vector2d(35, 36))
-                .turn(Math.toRadians(-90))
+                .turn(Math.toRadians(90))
                 .forward(13)
 
 
                 //revert to 0 ready for park
                 .back(12)
                 //correct for strafing inconsistencies
-                .turn(Math.toRadians(80))
+                .turn(Math.toRadians(-80))
 
 
                 // prepare first outtake

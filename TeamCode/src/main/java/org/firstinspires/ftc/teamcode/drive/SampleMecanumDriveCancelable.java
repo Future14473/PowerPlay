@@ -50,7 +50,7 @@ import java.util.List;
  * Trajectory-cancelable version of the simple mecanum drive hardware implementation for REV hardware.
  * Ensure that this is copied into your project.
  */
-@Config
+
 public class SampleMecanumDriveCancelable extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);

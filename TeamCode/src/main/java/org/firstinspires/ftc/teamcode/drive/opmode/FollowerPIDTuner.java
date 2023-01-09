@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  * If you are using SampleMecanumDrive, you should be tuning TRANSLATIONAL_PID and HEADING_PID.
  * These coefficients can be tuned live in dashboard.
  */
-@Config
+
 @Disabled
 @Autonomous(group = "drive")
 public class FollowerPIDTuner extends LinearOpMode {

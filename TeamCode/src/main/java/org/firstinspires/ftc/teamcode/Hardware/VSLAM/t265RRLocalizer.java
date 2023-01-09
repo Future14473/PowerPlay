@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * a Road Runner localizer that uses the Intel T265 Realsense
  */
-@Config
+
 public class t265RRLocalizer implements Localizer {
 
     private Pose2d poseOffset;

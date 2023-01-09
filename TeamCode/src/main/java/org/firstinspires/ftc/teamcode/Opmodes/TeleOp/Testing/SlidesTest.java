@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Slides;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.VirtualFourBar;
 
 //
-@Config
+
 @TeleOp(name = "SlidesTEST", group = "Testing")
 public class SlidesTest extends LinearOpMode {
 

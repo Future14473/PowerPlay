@@ -58,7 +58,7 @@ import java.util.List;
 /*
  * Simple tank drive hardware implementation for REV hardware.
  */
-@Config
+
 public class SampleTankDrive extends TankDrive {
 
     // axial pid can't be 0. This is the one for going forwrard and backward. The values 5-8 worked well in back and forth testing (for kP)

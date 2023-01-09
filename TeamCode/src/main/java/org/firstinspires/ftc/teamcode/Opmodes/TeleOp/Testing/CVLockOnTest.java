@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.ComputerVision.SleeveDetection;
+import org.firstinspires.ftc.teamcode.ComputerVision.AprilTag;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -23,12 +23,23 @@ public class CVLockOnTest extends LinearOpMode {
     Servo pointServo;
 
     public OpenCvCamera camera;
-    public SleeveDetection cv;
+    public AprilTag cv;
 
+    // Lens intrinsics
+    // UNITS ARE PIXELS
+    // NOTE: this calibration is for the C920 webcam at 800x448.
+    // You will need to do your own calibration for other configurations!
+    double fx = 578.272;
+    double fy = 578.272;
+    double cx = 402.145;
+    double cy = 221.506;
+
+    // UNITS ARE METERS
+    double tagsize = 0.166;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        pointServo = hardwareMap.get(Servo.class, "pointServo");
+        pointServo = hardwareMap.get(Servo.class, "servoTurret");
 
         camera = cameraInit();
         startStream();
@@ -41,20 +52,14 @@ public class CVLockOnTest extends LinearOpMode {
         }
     }
 
-    public void computerVision(SleeveDetection cv) {
+    public void computerVision(AprilTag cv) {
         new Thread(() -> {
             while (true) {
-                if (cv.lockOnCV() == 0) {
+                if (cv.lockOnCV(1) == 0) {
                     telemetry.addLine("Pole not found");
                     pointServo.setPosition(HOME_POS_TURRET);
                 } else {
-                    if (cv.lockOnCV() > 0) {
-                        pointServo.setPosition(OUT_POS_TURRET - (cv.lockOnCV() / MAX_ROTATION_DEGREES));
-                    } else if (cv.lockOnCV() < 0) {
-                        pointServo.setPosition(OUT_POS_TURRET + (cv.lockOnCV() / MAX_ROTATION_DEGREES));
-                    }
-
-                    telemetry.addData("DistancePixels", cv.lockOnCV());
+                    telemetry.addData("DistancePixels", cv.lockOnCV(1));
                     telemetry.addData("Servo Position", pointServo.getPosition());
 
                 }
@@ -66,7 +71,7 @@ public class CVLockOnTest extends LinearOpMode {
 
     public OpenCvCamera cameraInit() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        return OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        return OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "back"), cameraMonitorViewId);
     }
 
     public void startStream() {
@@ -84,7 +89,7 @@ public class CVLockOnTest extends LinearOpMode {
             }
         });
         dashboard.startCameraStream(camera, 0);
-        cv = new SleeveDetection(telemetry);
+        cv = new AprilTag(tagsize, fx, fy, cx, cy);
         camera.setPipeline(cv);
     }
 }

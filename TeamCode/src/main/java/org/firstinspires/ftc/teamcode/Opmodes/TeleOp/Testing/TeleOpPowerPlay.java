@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Opmodes.TeleOp;
+package org.firstinspires.ftc.teamcode.Opmodes.TeleOp.Testing;
 
 
 import android.annotation.SuppressLint;
@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -21,7 +22,7 @@ import org.firstinspires.ftc.teamcode.Hardware.util.Timer;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 //
-@Config
+@Disabled
 @TeleOp(name = "TeleOpPowerPlay", group = "Testing")
 public class TeleOpPowerPlay extends LinearOpMode {
     SampleMecanumDrive drive;
@@ -136,7 +137,10 @@ public class TeleOpPowerPlay extends LinearOpMode {
     public void drive() {
         new Thread(() -> {
             while (opModeIsActive()) {
-                double y = -gamepad1.left_stick_y;
+                double y =
+
+
+                        -gamepad1.left_stick_y;
                 double x = gamepad1.left_stick_x * YMult;
                 double rx = gamepad1.right_stick_x * rotMult;
 

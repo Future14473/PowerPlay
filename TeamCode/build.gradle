@@ -33,6 +33,7 @@ dependencies {
     implementation 'org.openftc:easyopencv:1.5.2'
     implementation 'com.spartronics4915.lib:ftc265:2.1.9'
     implementation 'com.github.technototes:TechnoLib:1.1.2'
+    implementation 'org.openftc:apriltag:1.1.0'
 }
 
 repositories {

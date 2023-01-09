@@ -18,7 +18,7 @@ public class ServoTurretTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        servoTurret = hardwareMap.get(Servo.class, "servoTurret");
+        servoTurret = hardwareMap.get(Servo.class, "s");
 
         waitForStart();
 

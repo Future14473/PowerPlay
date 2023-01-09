@@ -12,13 +12,12 @@ import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.stack4;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.stack5;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.velocity;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-@Config
+
 public class Slides {
     DcMotorEx leftSlide;
     DcMotorEx rightSlide;
@@ -29,7 +28,7 @@ public class Slides {
     public Slides(HardwareMap hardwareMap) {
         leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
         rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
-        leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftSlide.setTargetPosition(0);
@@ -99,38 +98,48 @@ public class Slides {
     }
 
     public void extendStack(int num) {
-        switch (num) {
-            case 1:
-                leftSlide.setTargetPosition(stack1);
-                rightSlide.setTargetPosition(stack1);
-                leftSlide.setVelocity(velocity);
-                rightSlide.setVelocity(velocity);
-            case 2:
-                leftSlide.setTargetPosition(stack2);
-                rightSlide.setTargetPosition(stack2);
-                leftSlide.setVelocity(velocity);
-                rightSlide.setVelocity(velocity);
-            case 3:
-                leftSlide.setTargetPosition(stack3);
-                rightSlide.setTargetPosition(stack3);
-                leftSlide.setVelocity(velocity);
-                rightSlide.setVelocity(velocity);
-            case 4:
-                leftSlide.setTargetPosition(stack4);
-                rightSlide.setTargetPosition(stack4);
-                leftSlide.setVelocity(velocity);
-                rightSlide.setVelocity(velocity);
-            case 5:
-                leftSlide.setTargetPosition(stack5);
-                rightSlide.setTargetPosition(stack5);
-                leftSlide.setVelocity(velocity);
-                rightSlide.setVelocity(velocity);
+        if (num == 1) {
+            leftSlide.setTargetPosition(stack1);
+            rightSlide.setTargetPosition(stack1);
+            leftSlide.setVelocity(velocity);
+            rightSlide.setVelocity(velocity);
+        }
+        if (num == 2) {
+            leftSlide.setTargetPosition(stack2);
+            rightSlide.setTargetPosition(stack2);
+            leftSlide.setVelocity(velocity);
+            rightSlide.setVelocity(velocity);
+        }
+        if (num == 3) {
+            leftSlide.setTargetPosition(stack3);
+            rightSlide.setTargetPosition(stack3);
+            leftSlide.setVelocity(velocity);
+            rightSlide.setVelocity(velocity);
+        }
+        if (num == 4) {
+            leftSlide.setTargetPosition(stack4);
+            rightSlide.setTargetPosition(stack4);
+            leftSlide.setVelocity(velocity);
+            rightSlide.setVelocity(velocity);
+        }
+        if (num == 5) {
+            leftSlide.setTargetPosition(stack5);
+            rightSlide.setTargetPosition(stack5);
+            leftSlide.setVelocity(velocity);
+            rightSlide.setVelocity(velocity);
         }
     }
 
     public void retract() {
-        leftSlide.setTargetPosition(home-70);
-        rightSlide.setTargetPosition(home-70);
+        leftSlide.setTargetPosition(home);
+        rightSlide.setTargetPosition(home);
+        leftSlide.setVelocity(velocity);
+        rightSlide.setVelocity(velocity);
+    }
+
+    public void setCustom(int height) {
+        leftSlide.setTargetPosition(height);
+        rightSlide.setTargetPosition(height);
         leftSlide.setVelocity(velocity);
         rightSlide.setVelocity(velocity);
     }
