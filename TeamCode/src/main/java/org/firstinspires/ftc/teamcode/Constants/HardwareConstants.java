@@ -19,11 +19,11 @@ public class HardwareConstants {
     public static int junction = 250;
 
     public static int home = 0;
-    public static int velocity = 5000;
+    public static int velocity = 6000;
 
-    public static int stack1 = 450;
-    public static int stack2 = 400;
-    public static int stack3 = 350;
+    public static int stack1 = 400;
+    public static int stack2 = 300;
+    public static int stack3 = 250;
     public static int stack4 = 300;
     public static int stack5 = 0;
 
@@ -38,8 +38,6 @@ public class HardwareConstants {
 //   v4b
     public static double HOME_POS_V4B = 0;
     public static double OUT_V4B = 0.6;
-
-
 
 
 //  turret

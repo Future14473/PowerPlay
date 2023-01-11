@@ -32,20 +32,16 @@ public class Outtake {
     public void outtakeReadyLow(Timer timer) {
         slides.extendLow();
         timer.safeDelay(SLIDES_OUT);
-        turret.setOut();
-        timer.safeDelay(TURRET_OUT);
         v4b.outtake();
-        timer.safeDelay(V4B_HOME);
+        timer.safeDelay(TURRET_OUT);
         turret.setOut();
     }
 
     public void outtakeReadyMid(Timer timer) {
         slides.extendMid();
         timer.safeDelay(SLIDES_OUT);
-        turret.setOut();
-        timer.safeDelay(TURRET_OUT);
         v4b.outtake();
-        timer.safeDelay(V4B_HOME);
+        timer.safeDelay(TURRET_OUT);
         turret.setOut();
     }
 
@@ -59,8 +55,6 @@ public class Outtake {
     }
 
     public void outtakeAuto(Timer timer) {
-        this.outtakeReadyHigh(timer);
-        timer.safeDelay(500);
         slides.setCustom(1300);
         timer.safeDelay(130);
         this.outtake();

@@ -1,22 +1,23 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
 
 
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.linearR;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.linearX;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.linearY;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.moveBackFromStack;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.moveBackIntoPole;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.moveBackIntoPoleCycle;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.moveStraightFromPoleCycle;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.moveStraightToStack;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.moveStraightToStackCycle;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.preloadAngle;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.preloadDistance;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.strafeR;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.strafeToStackFromPole;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.strafeX;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.strafeY;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.turnToPole;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.linearR;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.linearX;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.linearY;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.moveBackFromStack;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.moveBackIntoPole;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.moveBackIntoPoleCycle;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.moveStraightFromPoleCycle;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.moveStraightToStack;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.moveStraightToStackCycle;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.preloadAngle;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.preloadDistance;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.prepareForPreloadOuttake;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.strafeR;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.strafeToStackFromPole;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.strafeX;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.strafeY;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.turnToPole;
 import android.annotation.SuppressLint;
 
 import com.outoftheboxrobotics.photoncore.PhotonCore;
@@ -177,13 +178,13 @@ public class Red extends LinearOpMode
             telemetry.update();
             sleep(20);
         }
+
+
         double targetAngle = drive.getHeading()+90;
 
         telemetry.addData("Target heading", targetAngle);
 
-        intake.intake();
-        timer.safeDelay(100);
-        slides.extendJunction();
+
 
         /*
          * The START command just came in: now work off the latest snapshot acquired
@@ -209,8 +210,14 @@ public class Red extends LinearOpMode
 
         //drive to preload
         drive.setPower(linearY,linearX,linearR);
+        intake.intake();
+        timer.safeDelay(100);
+        slides.extendJunction();
         while (opModeIsActive()) {
             double currPos = drive.getPosition().get(0);
+            if (Math.abs(currPos - initPos) >= prepareForPreloadOuttake) {
+                new Thread(() -> {outtake.outtakeReadyHigh(timer);}).start();
+            }
             if (Math.abs(currPos - initPos) >= preloadDistance) {
                 drive.setPower(0,0,0);
                 break;
@@ -218,13 +225,10 @@ public class Red extends LinearOpMode
         }
 
         //turn to drop preload
-        drive.setPower(0,0,0.7);
+        drive.setPower(0,0,0.6);
         double initAngle = drive.getHeading();
         while (opModeIsActive()) {
             double currAngle = drive.getHeading();
-
-            telemetry.addData("heading", currAngle);
-            telemetry.update();
 
             if(drive.getRelativeAngle(initAngle, currAngle) >= preloadAngle) {
                 drive.setPower(0,0,0);
@@ -302,8 +306,6 @@ public class Red extends LinearOpMode
         double initPos13 = drive.getPosition().get(0);
         drive.setPower(linearY-0.1,linearX,linearR);
         while(opModeIsActive()) {
-            telemetry.addData("heading", drive.getHeading());
-            telemetry.update();
             double currPos = drive.getPosition().get(0);
             if(Math.abs(currPos - initPos13) >= moveStraightToStack) {
                 drive.setPower(0,0,0);
@@ -331,7 +333,7 @@ public class Red extends LinearOpMode
         }
 
         intake.intake();
-        timer.safeDelay(500);
+        timer.safeDelay(100);
         slides.setCustom(800);
         timer.safeDelay(200);
 
@@ -365,16 +367,16 @@ public class Red extends LinearOpMode
             }
         }
 
-        //turn to outtake
+        //turn to outtake and prepare subsystems
+        new Thread(() -> {outtake.outtakeReadyHigh(timer);}).start();
         drive.setPower(0,0,0.7);
 
+        double initAngle2 = drive.getHeading();
         while (opModeIsActive()) {
             double currAngle = drive.getHeading();
 
-            telemetry.addData("heading", currAngle);
-            telemetry.update();
-
-            if(currAngle >= turnToPole -  1 && currAngle <= turnToPole + 1) {
+            if(drive.getRelativeAngle(initAngle2, currAngle) >= turnToPole) {
+                drive.setPower(0,0,0);
                 drive.setPower(-0.5,0,0);
                 double initPOS = drive.getPosition().get(0);
                 while (opModeIsActive()) {
@@ -429,8 +431,6 @@ public class Red extends LinearOpMode
         double initPos69 = drive.getPosition().get(0);
         drive.setPower(linearY-0.1,linearX,linearR);
         while(opModeIsActive()) {
-            telemetry.addData("heading", drive.getHeading());
-            telemetry.update();
             double currPos = drive.getPosition().get(0);
             if(Math.abs(currPos - initPos69) >= moveStraightToStackCycle) {
                 drive.setPower(0,0,0);
@@ -458,7 +458,7 @@ public class Red extends LinearOpMode
         }
 
         intake.intake();
-        timer.safeDelay(500);
+        timer.safeDelay(100);
         slides.setCustom(800);
         timer.safeDelay(200);
 
@@ -473,6 +473,7 @@ public class Red extends LinearOpMode
 
                 if (initPos6 > targetAngle) {
                     drive.setPower(0,0,-0.5);
+                    new Thread(() -> {outtake.outtakeReadyHigh(timer);}).start();
                     while (opModeIsActive()) {
                         if (drive.getHeading() < targetAngle) {
                             drive.setPower(0,0,0);
@@ -481,6 +482,7 @@ public class Red extends LinearOpMode
                     }
                 } else {
                     drive.setPower(0,0,0.5);
+                    new Thread(() -> {outtake.outtakeReadyHigh(timer);}).start();
                     while (opModeIsActive()) {
                         if (drive.getHeading() > targetAngle) {
                             drive.setPower(0,0,0);
@@ -494,14 +496,12 @@ public class Red extends LinearOpMode
 
         //turn to outtake
         drive.setPower(0,0,0.7);
-
+        double initAngle3 = drive.getHeading();
         while (opModeIsActive()) {
             double currAngle = drive.getHeading();
 
-            telemetry.addData("heading", currAngle);
-            telemetry.update();
 
-            if(currAngle >= turnToPole -  1 && currAngle <= turnToPole + 1) {
+            if(drive.getRelativeAngle(initAngle3, currAngle) > turnToPole) {
                 drive.setPower(-0.5,0,0);
                 double initPOS = drive.getPosition().get(0);
                 while (opModeIsActive()) {
@@ -525,9 +525,6 @@ public class Red extends LinearOpMode
         timer.safeDelay(500);
         drive.setPower(0,0,0);
         intake.teleopIntake(timer);
-
-
-
 
 
 

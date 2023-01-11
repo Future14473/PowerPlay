@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.Opmodes.TeleOp.Testing;
 
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.home;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.linearR;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.linearX;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.linearY;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.teleOpMoveBackToPole;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.teleOpMoveStraightToIntake;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.teleOpReset;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.linearR;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.linearX;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.linearY;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.teleOpMoveBackToPole;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.teleOpMoveStraightToIntake;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.teleOpReset;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no;
+package org.firstinspires.ftc.teamcode.Constants;
 
 import com.acmerobotics.dashboard.config.Config;
 
@@ -7,6 +7,10 @@ public class AutoConstants {
 
     //distance to drop preload
     public static double preloadDistance = 52;
+
+    //prepare for preload outtake
+    public static double prepareForPreloadOuttake = 30;
+
     //turn angle to drop preload
     public static double preloadAngle = 90;
 
@@ -17,7 +21,7 @@ public class AutoConstants {
 
     public static double moveBackFromStack = 21.6;
 
-    public static double turnToPole = -7;
+    public static double turnToPole = 45;
 
     public static double moveBackIntoPoleCycle = 0.8;
 

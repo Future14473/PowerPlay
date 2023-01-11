@@ -17,11 +17,7 @@ public class Drivetrain {
     public static double WHEEL_RADIUS = 0.688975; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double PARALLEL_X = 0; // X is the up and down direction
-    public static double PARALLEL_Y = 5.25; // Y is the strafe direction
 
-    public static double PERPENDICULAR_X = -5.25;
-    public static double PERPENDICULAR_Y = 0;
 
     public static double X_MULTIPLIER = 1.054945; // Multiplier in the X direction
     public static double Y_MULTIPLIER = 1.0644827; // Multiplier in the Y direction
@@ -66,6 +62,11 @@ public class Drivetrain {
             return 360 - Math.abs(init - target);
         }
 
+    }
+
+    //TODO need to test for this
+    public static double setTargetAngle(double angle) {
+        return 0.0;
     }
 
     public static double encoderTicksToInches(double ticks) {
