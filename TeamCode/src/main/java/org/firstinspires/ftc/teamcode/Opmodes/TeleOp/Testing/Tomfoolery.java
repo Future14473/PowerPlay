@@ -41,7 +41,7 @@ public class Tomfoolery extends LinearOpMode {
         AUTO
     }
 
-    private Mode mode = Mode.DRIVER;
+    Mode mode = Mode.DRIVER;
 
 
     double targetHeading;

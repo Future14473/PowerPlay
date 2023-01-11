@@ -61,8 +61,8 @@ public class Outtake {
     public void outtakeAuto(Timer timer) {
         this.outtakeReadyHigh(timer);
         timer.safeDelay(500);
-        slides.setCustom(1400);
-        timer.safeDelay(100);
+        slides.setCustom(1300);
+        timer.safeDelay(130);
         this.outtake();
         slides.setCustom(1800);
     }

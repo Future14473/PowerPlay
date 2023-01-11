@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Hardware.Subsystems;
 
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.preloadDistance;
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -11,7 +9,6 @@ import org.firstinspires.ftc.teamcode.drive.opmode.util.AxisDirection;
 import org.firstinspires.ftc.teamcode.drive.opmode.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.drive.opmode.util.Encoder;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,6 +25,7 @@ public class Drivetrain {
 
     public static double X_MULTIPLIER = 1.054945; // Multiplier in the X direction
     public static double Y_MULTIPLIER = 1.0644827; // Multiplier in the Y direction
+
 
     SampleMecanumDrive drive;
 
@@ -61,14 +59,23 @@ public class Drivetrain {
         return imu.getAngularOrientation().firstAngle;
     }
 
+    public double getRelativeAngle(double init, double target) {
+        if (Math.abs(init - target) <= 180) {
+            return Math.abs(init - target);
+        } else {
+            return 360 - Math.abs(init - target);
+        }
+
+    }
+
     public static double encoderTicksToInches(double ticks) {
         return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
     }
 
     public List<Double> getPosition() {
         return Arrays.asList(
-            encoderTicksToInches(parallelEncoder.getCurrentPosition()) * X_MULTIPLIER,
-            encoderTicksToInches(perpendicularEncoder.getCurrentPosition()) * Y_MULTIPLIER
+                encoderTicksToInches(parallelEncoder.getCurrentPosition()) * X_MULTIPLIER,
+                encoderTicksToInches(perpendicularEncoder.getCurrentPosition()) * Y_MULTIPLIER
         );
     }
 

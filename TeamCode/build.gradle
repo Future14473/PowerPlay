@@ -34,6 +34,7 @@ dependencies {
     implementation 'com.spartronics4915.lib:ftc265:2.1.9'
     implementation 'com.github.technototes:TechnoLib:1.1.2'
     implementation 'org.openftc:apriltag:1.1.0'
+    implementation 'com.github.Eeshwar-Krishnan:PhotonFTC:v2.0.1'
 }
 
 repositories {

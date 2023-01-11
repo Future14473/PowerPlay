@@ -1,15 +1,13 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
 
 
-import static org.firstinspires.ftc.teamcode.Constants.CVConstants.poleWidth;
 import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.linearR;
 import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.linearX;
 import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.linearY;
 import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.moveBackFromStack;
 import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.moveBackIntoPole;
 import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.moveBackIntoPoleCycle;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.moveStraighFromPoleCycle;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.moveStraightAfterTurning;
+import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.moveStraightFromPoleCycle;
 import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.moveStraightToStack;
 import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.moveStraightToStackCycle;
 import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.preloadAngle;
@@ -18,12 +16,10 @@ import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants
 import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.strafeToStackFromPole;
 import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.strafeX;
 import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.strafeY;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.targetAngle;
 import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.turnToPole;
-import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.turnToStack;
-
 import android.annotation.SuppressLint;
 
+import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -84,6 +80,7 @@ public class Red extends LinearOpMode
     @Override
     public void runOpMode()
     {
+        PhotonCore.enable();
         drive = new Drivetrain(hardwareMap);
         Timer timer = new Timer(this);
         slides = new Slides(hardwareMap);
@@ -180,6 +177,9 @@ public class Red extends LinearOpMode
             telemetry.update();
             sleep(20);
         }
+        double targetAngle = drive.getHeading()+90;
+
+        telemetry.addData("Target heading", targetAngle);
 
         intake.intake();
         timer.safeDelay(100);
@@ -211,9 +211,6 @@ public class Red extends LinearOpMode
         drive.setPower(linearY,linearX,linearR);
         while (opModeIsActive()) {
             double currPos = drive.getPosition().get(0);
-            telemetry.addData("heading", drive.getHeading());
-            telemetry.update();
-
             if (Math.abs(currPos - initPos) >= preloadDistance) {
                 drive.setPower(0,0,0);
                 break;
@@ -222,14 +219,16 @@ public class Red extends LinearOpMode
 
         //turn to drop preload
         drive.setPower(0,0,0.7);
-
+        double initAngle = drive.getHeading();
         while (opModeIsActive()) {
             double currAngle = drive.getHeading();
 
             telemetry.addData("heading", currAngle);
             telemetry.update();
 
-            if(currAngle >= preloadAngle -  1 && currAngle <= preloadAngle + 1) {
+            if(drive.getRelativeAngle(initAngle, currAngle) >= preloadAngle) {
+                drive.setPower(0,0,0);
+                timer.safeDelay(50);
                 drive.setPower(-0.5,0,0);
                 double initPOS = drive.getPosition().get(0);
                 while (opModeIsActive()) {
@@ -296,39 +295,6 @@ public class Red extends LinearOpMode
                 break;
             }
         }
-
-
-//        //drive forward
-//
-//        double initPos18 = drive.getPosition().get(0);
-//        drive.setPower(linearY,linearX,linearR);
-//
-//        while(opModeIsActive()) {
-//            double currPos = drive.getPosition().get(0);
-//            if(Math.abs(currPos - initPos18) >= moveStraightAfterTurning) {
-//                drive.setPower(0,0,0);
-//                double initPos6 = drive.getHeading();
-//
-//                if (initPos6 > targetAngle) {
-//                    drive.setPower(0,0,-0.5);
-//                    while (opModeIsActive()) {
-//                        if (drive.getHeading() < targetAngle) {
-//                            drive.setPower(0,0,0);
-//                            break;
-//                        }
-//                    }
-//                } else {
-//                    drive.setPower(0,0,0.5);
-//                    while (opModeIsActive()) {
-//                        if (drive.getHeading() > targetAngle) {
-//                            drive.setPower(0,0,0);
-//                            break;
-//                        }
-//                    }
-//                }
-//                break;
-//            }
-//        }
 
         intake.autoIntakeReady(1,timer);
 
@@ -432,7 +398,7 @@ public class Red extends LinearOpMode
 
         while(opModeIsActive()) {
             double currPos = drive.getPosition().get(0);
-            if(Math.abs(currPos - initPos21) >= moveStraighFromPoleCycle) {
+            if(Math.abs(currPos - initPos21) >= moveStraightFromPoleCycle) {
                 drive.setPower(0,0,0);
                 double initPos6 = drive.getHeading();
 
@@ -457,6 +423,8 @@ public class Red extends LinearOpMode
             }
         }
         intake.autoIntakeReady(2, timer);
+
+
         // drive forward to stack to pick up cone
         double initPos69 = drive.getPosition().get(0);
         drive.setPower(linearY-0.1,linearX,linearR);
@@ -551,174 +519,6 @@ public class Red extends LinearOpMode
         outtake.outtakeAuto(timer);
 
 
-//
-//        // strafe to pole
-//        double initPos5 = drive.getPosition().get(1);
-//        drive.setPower(-strafeY, -strafeX,strafeR);
-//        while(opModeIsActive()) {
-//            double currPos = drive.getPosition().get(1);
-//            if (Math.abs(currPos - initPos5) >= strafeToPoleFromStack) {
-//                drive.setPower(0,0,0);
-//                double initPos6 = drive.getHeading();
-//
-//                if (initPos6 > targetAngle) {
-//                    drive.setPower(0,0,-0.7);
-//                    while (opModeIsActive()) {
-//                        if (drive.getHeading() < targetAngle) {
-//                            drive.setPower(0,0,0);
-//                            break;
-//                        }
-//                    }
-//                } else {
-//                    drive.setPower(0,0,0.7);
-//                    while (opModeIsActive()) {
-//                        if (drive.getHeading() > targetAngle) {
-//                            drive.setPower(0,0,0);
-//                            break;
-//                        }
-//                    }
-//                }
-//                break;
-//            }
-//        }
-//
-//
-//        //outtake cone
-//        outtake.outtakeAuto(timer);
-//
-//
-//        // START CYCLE 2
-//        //strafe to stack
-//        double initPos7 = drive.getPosition().get(1);
-//        drive.setPower(strafeY, strafeX,strafeR);
-//        while(opModeIsActive()) {
-//            double currPos = drive.getPosition().get(1);
-//            if (Math.abs(currPos - initPos7) >= strafeToStackFromPole) {
-//                drive.setPower(0,0,0);
-//                double initPos6 = drive.getHeading();
-//
-//                if (initPos6 > targetAngle) {
-//                    drive.setPower(0,0,-0.7);
-//                    while (opModeIsActive()) {
-//                        if (drive.getHeading() < targetAngle) {
-//                            drive.setPower(0,0,0);
-//                            break;
-//                        }
-//                    }
-//                } else {
-//                    drive.setPower(0,0,0.7);
-//                    while (opModeIsActive()) {
-//                        if (drive.getHeading() > targetAngle) {
-//                            drive.setPower(0,0,0);
-//                            break;
-//                        }
-//                    }
-//                }
-//                break;
-//            }
-//        }
-//
-//
-//
-//        // drive forward to stack
-//        double initPos8 = drive.getPosition().get(0);
-//        drive.setPower(linearY,linearX,linearR);
-//        intake.autoIntakeReady(2,timer);
-//
-//        while(opModeIsActive()) {
-//            double currPos = drive.getPosition().get(0);
-//            if(Math.abs(currPos - initPos8) >= moveStraightToStack) {
-//                drive.setPower(0,0,0);
-//                double initPos6 = drive.getHeading();
-//
-//                if (initPos6 > targetAngle) {
-//                    drive.setPower(0,0,-0.7);
-//                    while (opModeIsActive()) {
-//                        if (drive.getHeading() < targetAngle) {
-//                            drive.setPower(0,0,0);
-//                            break;
-//                        }
-//                    }
-//                } else {
-//                    drive.setPower(0,0,0.7);
-//                    while (opModeIsActive()) {
-//                        if (drive.getHeading() > targetAngle) {
-//                            drive.setPower(0,0,0);
-//                            break;
-//                        }
-//                    }
-//                }
-//                break;
-//            }
-//        }
-//
-//        // intake from stack
-//        intake.intake();
-//        timer.safeDelay(500);
-//        slides.setCustom(800);
-//        timer.safeDelay(500);
-//
-//        // drive back from stack
-//        double initPos9 = drive.getPosition().get(0);
-//        drive.setPower(-linearY,-linearX,-linearR);
-//        while(opModeIsActive()) {
-//            double currPos = drive.getPosition().get(0);
-//            if(Math.abs(currPos - initPos9) >= moveBackFromStack) {
-//                drive.setPower(0,0,0);
-//                double initPos6 = drive.getHeading();
-//
-//                if (initPos6 > targetAngle) {
-//                    drive.setPower(0,0,-0.7);
-//                    while (opModeIsActive()) {
-//                        if (drive.getHeading() < targetAngle) {
-//                            drive.setPower(0,0,0);
-//                            break;
-//                        }
-//                    }
-//                } else {
-//                    drive.setPower(0,0,0.7);
-//                    while (opModeIsActive()) {
-//                        if (drive.getHeading() > targetAngle) {
-//                            drive.setPower(0,0,0);
-//                            break;
-//                        }
-//                    }
-//                }
-//                break;
-//            }
-//        }
-//
-//        // strafe to pole
-//        double initPos10 = drive.getPosition().get(1);
-//        drive.setPower(-strafeY, -strafeX,strafeR);
-//        while(opModeIsActive()) {
-//            double currPos = drive.getPosition().get(1);
-//            if (Math.abs(currPos - initPos10) >= strafeToPoleFromStack) {
-//                drive.setPower(0,0,0);
-//                double initPos6 = drive.getHeading();
-//
-//                if (initPos6 > targetAngle) {
-//                    drive.setPower(0,0,-0.7);
-//                    while (opModeIsActive()) {
-//                        if (drive.getHeading() < targetAngle) {
-//                            drive.setPower(0,0,0);
-//                            break;
-//                        }
-//                    }
-//                } else {
-//                    drive.setPower(0,0,0.7);
-//                    while (opModeIsActive()) {
-//                        if (drive.getHeading() > targetAngle) {
-//                            drive.setPower(0,0,0);
-//                            break;
-//                        }
-//                    }
-//                }
-//                break;
-//            }
-//        }
-//
-//        outtake.outtakeAuto(timer);
 
         //drive forward to end (TEMPORARY)
         drive.setPower(0.7,0,0);
