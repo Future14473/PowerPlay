@@ -8,6 +8,7 @@ import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants
 import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.teleOpMoveStraightToIntake;
 import static org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no.AutoConstants.teleOpReset;
 
+import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -48,6 +49,7 @@ public class Tomfoolery extends LinearOpMode {
 
     @Override
     public void  runOpMode() throws InterruptedException {
+        PhotonCore.enable();
 
         timer = new Timer(this);
 
@@ -79,7 +81,7 @@ public class Tomfoolery extends LinearOpMode {
                     drive.setPower(gamepad1.left_stick_y*0.7, gamepad1.left_stick_x*0.7, gamepad1.right_stick_x*0.5);
                     //bumpers open and close claw only
                     if (gamepad1.right_bumper) {
-                        outtake.outtake();
+                        outtake.outtakeTeleOp(timer);
                     }
 
                     if (gamepad1.left_bumper) {
@@ -92,6 +94,10 @@ public class Tomfoolery extends LinearOpMode {
 
                     if (gamepad1.dpad_down) {
                         outtake.outtakeReadyJunction();
+                    }
+
+                    if (gamepad1.dpad_left) {
+                        outtake.outtake();
                     }
                     if (gamepad1.a) {
                         outtake.outtakeReadyLow(timer);
@@ -149,6 +155,11 @@ public class Tomfoolery extends LinearOpMode {
                         drive.setPower(-linearY, -linearX, -linearR);
                         while(opModeIsActive() && !gamepad1.dpad_left) {
                             double currPos = drive.getPosition().get(0);
+
+                            if (Math.abs(currPos - initPos) >= teleOpMoveBackToPole/2) {
+                                outtake.outtakeReadyHigh(timer);
+                            }
+
                             if (Math.abs(currPos - initPos) >= teleOpMoveBackToPole) {
                                 drive.setPower(0,0,0);
                                 double initPos2 = drive.getHeading();
@@ -177,19 +188,19 @@ public class Tomfoolery extends LinearOpMode {
                         outtake.outtakeAuto(timer);
 
                         //move forward to pick next cone
-                        double initPos3 = drive.getPosition().get(0);
+                        double initPos2 = drive.getPosition().get(0);
                         drive.setPower(linearY, linearX, linearR);
                         while (opModeIsActive() && !gamepad1.dpad_left) {
                             double currPos = drive.getPosition().get(0);
-                            if (Math.abs(currPos - initPos3) > teleOpReset) {
+                            if (Math.abs(currPos - initPos2) > teleOpReset) {
                                 intake.teleopIntake(timer);
                             }
 
-                            if (Math.abs(currPos - initPos3) > teleOpMoveStraightToIntake) {
+                            if (Math.abs(currPos - initPos2) > teleOpMoveStraightToIntake) {
                                 drive.setPower(0,0,0);
-                                double initPos2 = drive.getHeading();
+                                double initPos3 = drive.getHeading();
 
-                                if (initPos2 > targetHeading) {
+                                if (initPos3 > targetHeading) {
                                     drive.setPower(0,0,-0.5);
                                     while (opModeIsActive()) {
                                         if (drive.getHeading() < targetHeading) {

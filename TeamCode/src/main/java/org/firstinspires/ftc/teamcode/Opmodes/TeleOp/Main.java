@@ -65,7 +65,6 @@ public class Main extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            //bumpers open and close claw only
             if (gamepad1.right_bumper) {
                 outtake.outtakeTeleOp(timer);
             }
@@ -100,6 +99,7 @@ public class Main extends LinearOpMode {
         }
     }
 
+    //TODO make a strafe multiplier on left_stick_y
     public void drive() {
         new Thread(() -> {
             while (opModeIsActive()) {
@@ -114,7 +114,7 @@ public class Main extends LinearOpMode {
                     double rightRear = ((y + x - rx) / denominator) * mvmtMult;
                     double rightFront = ((y - x - rx) / denominator) * mvmtMult;
 
-                    drive.setMotorPowers(leftFront * Math.abs(leftFront), leftRear * Math.abs(leftRear), rightRear * Math.abs(rightRear), rightFront * Math.abs(rightFront));
+                    drive.setMotorPowers(leftFront, leftRear, rightRear, rightFront);
                 }
             }
         }).start();

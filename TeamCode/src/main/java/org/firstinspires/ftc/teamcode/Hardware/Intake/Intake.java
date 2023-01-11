@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Hardware.Intake;
 
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.SLIDES_HOME;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.home;
+
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Claw;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ServoTurret;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Slides;
@@ -36,14 +38,16 @@ public class Intake {
     }
 
     public void teleopIntake(Timer timer) {
-        claw.openWide();
-        v4b.intake();
-        timer.safeDelay(200);
-        turret.setHome();
-        timer.safeDelay(100);
-        slides.retract();
-        timer.safeDelay(SLIDES_HOME);
-        claw.shutUp();
+        if (slides.getHeight() != home) {
+            claw.openWide();
+            v4b.intake();
+            timer.safeDelay(200);
+            turret.setHome();
+            timer.safeDelay(100);
+            slides.retract();
+            timer.safeDelay(SLIDES_HOME);
+            claw.shutUp();
+        }
     }
 
     public void teleopIntakeReady() {

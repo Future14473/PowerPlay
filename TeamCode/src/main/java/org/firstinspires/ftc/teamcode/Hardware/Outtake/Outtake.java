@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.SLIDES_
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.V4B_OUT;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.TURRET_OUT;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.V4B_HOME;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.home;
 
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Claw;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ServoTurret;
@@ -30,32 +31,37 @@ public class Outtake {
 
     //TODO condense to one function (use low/mid/high parameters)
     public void outtakeReadyLow(Timer timer) {
-        slides.extendLow();
-        timer.safeDelay(SLIDES_OUT);
-        turret.setOut();
-        timer.safeDelay(TURRET_OUT);
-        v4b.outtake();
-        timer.safeDelay(V4B_HOME);
-        turret.setOut();
+        if (slides.getHeight() == home) {
+            slides.extendLow();
+            timer.safeDelay(SLIDES_OUT);
+            turret.setOut();
+            timer.safeDelay(TURRET_OUT);
+            v4b.outtake();
+            timer.safeDelay(V4B_HOME);
+            turret.setOut();
+        }
     }
 
     public void outtakeReadyMid(Timer timer) {
-        slides.extendMid();
-        timer.safeDelay(SLIDES_OUT);
-        turret.setOut();
-        timer.safeDelay(TURRET_OUT);
-        v4b.outtake();
-        timer.safeDelay(V4B_HOME);
-        turret.setOut();
+        if (slides.getHeight() == home) {
+            slides.extendMid();
+            timer.safeDelay(SLIDES_OUT);
+            turret.setOut();
+            timer.safeDelay(TURRET_OUT);
+            v4b.outtake();
+            timer.safeDelay(V4B_HOME);
+            turret.setOut();
+        }
     }
 
     public void outtakeReadyHigh(Timer timer) {
-        slides.extendHigh();
-        timer.safeDelay(V4B_OUT);
-        v4b.outtake();
-        timer.safeDelay(TURRET_OUT);
-        turret.setOut();
-
+        if (slides.getHeight() == home) {
+            slides.extendHigh();
+            timer.safeDelay(V4B_OUT);
+            v4b.outtake();
+            timer.safeDelay(TURRET_OUT);
+            turret.setOut();
+        }
     }
 
     public void outtakeAuto(Timer timer) {
@@ -68,10 +74,12 @@ public class Outtake {
     }
 
     public void outtakeTeleOp(Timer timer) {
-        slides.setCustom(slides.getHeight() - 300);
-        timer.safeDelay(100);
-        this.outtake();
-        slides.setCustom(slides.getHeight() + 400);
+        if (slides.getHeight() != home) {
+            slides.setCustom(slides.getHeight() - 300);
+            timer.safeDelay(100);
+            this.outtake();
+            slides.setCustom(slides.getHeight() + 400);
+        }
     }
 
     public void outtakeReadyJunction() {
