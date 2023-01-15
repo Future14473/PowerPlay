@@ -1,46 +1,35 @@
-package org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no;
+package org.firstinspires.ftc.teamcode.Constants.no;
 
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.ComputerVision.AprilTag;
-import org.firstinspires.ftc.teamcode.Hardware.Intake.Intake;
-import org.firstinspires.ftc.teamcode.Hardware.Outtake.Outtake;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Claw;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ServoTurret;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Slides;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.VirtualFourBar;
-import org.firstinspires.ftc.teamcode.Hardware.util.Timer;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.opmode.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera;
+
 
 import java.util.ArrayList;
 
 @Disabled
 @Autonomous
-public class CVParkRightPreload extends LinearOpMode
+public class BlueRight extends LinearOpMode
 {
     OpenCvCamera camera;
     AprilTag aprilTagDetectionPipeline;
-
-    Slides slides;
-    Claw claw;
-    VirtualFourBar v4b;
-    ServoTurret servoTurret;
-
-    Intake intake;
-    Outtake outtake;
 
     static final double FEET_PER_METER = 3.28084;
 
@@ -65,21 +54,8 @@ public class CVParkRightPreload extends LinearOpMode
     @Override
     public void runOpMode()
     {
-        Timer timer = new Timer(this);
-        slides = new Slides(hardwareMap);
-        claw = new Claw(hardwareMap);
-        v4b = new VirtualFourBar(hardwareMap);
-        servoTurret = new ServoTurret(hardwareMap);
-
-        intake = new Intake(slides, claw, v4b, servoTurret);
-        outtake = new Outtake(slides, claw, v4b, servoTurret);
-
-        intake.teleopIntakeReady();
-
-        intake.intake();
-
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "blue"), cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTag(tagsize, fx, fy, cx, cy);
 
         camera.setPipeline(aprilTagDetectionPipeline);
@@ -124,7 +100,6 @@ public class CVParkRightPreload extends LinearOpMode
                 if(tagFound)
                 {
                     telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
-                    tagToTelemetry(tagOfInterest);
                 }
                 else
                 {
@@ -137,7 +112,6 @@ public class CVParkRightPreload extends LinearOpMode
                     else
                     {
                         telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                        tagToTelemetry(tagOfInterest);
                     }
                 }
 
@@ -153,7 +127,6 @@ public class CVParkRightPreload extends LinearOpMode
                 else
                 {
                     telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                    tagToTelemetry(tagOfInterest);
                 }
 
             }
@@ -170,8 +143,6 @@ public class CVParkRightPreload extends LinearOpMode
         /* Update the telemetry */
         if(tagOfInterest != null)
         {
-            telemetry.addLine("Tag snapshot:\n");
-            tagToTelemetry(tagOfInterest);
             telemetry.update();
         }
         else
@@ -180,64 +151,67 @@ public class CVParkRightPreload extends LinearOpMode
             telemetry.update();
         }
 
-        Pose2d startPos = new Pose2d(-35, 72, Math.toRadians(0));
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        drive.setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, drive));
         /* Actually do something useful */
         if (tagOfInterest.id == LEFT) {
-            claw.openWide(); // CLOSES the claw
-            TrajectorySequence left1 = drive.trajectorySequenceBuilder(startPos)
-                    .strafeRight(70)
-                    .addDisplacementMarker(20, () -> {
-                        outtake.outtakeReadyHigh(timer);
-                    })
-                    .addDisplacementMarker(69.99999999, () -> {
-                        outtake.outtake();
-                    })
-                    .build();
-
-
-
-            TrajectorySequence left2 = drive.trajectorySequenceBuilder(startPos)
-                    .strafeLeft(30)
-                    .addDisplacementMarker(75, () -> {
-                        intake.teleopIntake(timer);
-                    })
-                    .back(35)
-                    .build();
-
-
-            drive.followTrajectorySequence(left1);
-            sleep(2000);
-            drive.followTrajectorySequence(left2);
-
-
+            telemetry.addLine("LEFT");
         } else if (tagOfInterest == null || tagOfInterest.id == MIDDLE) {
-            TrajectorySequence middle = drive.trajectorySequenceBuilder(startPos)
-                    .strafeRight(75)
-                    .build();
+            telemetry.addLine("MIDDLE");
+        } else if (tagOfInterest.id == RIGHT) {
+            telemetry.addLine("RIGHT");
+        }
+        telemetry.update();
+        Pose2d startPos = new Pose2d(35, 72, Math.toRadians(270));
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
+        waitForStart();
+
+        TrajectorySequence toHigh = drive.trajectorySequenceBuilder(startPos)
+                .lineToLinearHeading(new Pose2d(35, 12, Math.toRadians(270)))
+                .build();
+
+        drive.followTrajectorySequence(toHigh);
+
+        Slides slides = new Slides(hardwareMap);
+        slides.extendHigh();
+        ServoTurret servoTurret = new ServoTurret(hardwareMap);
+        servoTurret.setOut();
+        VirtualFourBar virtualFourBar = new VirtualFourBar(hardwareMap);
+        virtualFourBar.outtake();
+        Claw claw = new Claw(hardwareMap);
+        claw.openWide();
+
+        TrajectorySequence backitUp = drive.trajectorySequenceBuilder(new Pose2d(35, 12, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(35, 36, Math.toRadians(270)))
+                .build();
+
+        drive.followTrajectorySequence(backitUp);
+
+        TrajectorySequence left = drive.trajectorySequenceBuilder(new Pose2d(35, 36, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(11, 36, Math.toRadians(270)))
+                .build();
+
+        TrajectorySequence middle = drive.trajectorySequenceBuilder(new Pose2d(35, 36, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(35, 36, Math.toRadians(270)))
+                .build();
+
+        TrajectorySequence right = drive.trajectorySequenceBuilder(new Pose2d(35, 36, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(59, 36, Math.toRadians(270)))
+                .build();
+
+        if (tagOfInterest.id == LEFT) {
+            drive.followTrajectorySequence(left);
+        } else if (tagOfInterest == null || tagOfInterest.id == MIDDLE) {
             drive.followTrajectorySequence(middle);
         } else if (tagOfInterest.id == RIGHT) {
-            TrajectorySequence right = drive.trajectorySequenceBuilder(startPos)
-                    .strafeRight(75)
-                    .forward(25)
-                    .build();
             drive.followTrajectorySequence(right);
         }
 
 
-        /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-        while (opModeIsActive()) {sleep(20);}
+
+
+     // GAY MEN IN MY ARSE ARE SO SLAY TTTYYYY I TUNE D ROAD RUNNER COCK
+
     }
 
-    void tagToTelemetry(AprilTagDetection detection)
-    {
-        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
-        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
-        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
-        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
-        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
-        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
-        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
-    }
+
 }

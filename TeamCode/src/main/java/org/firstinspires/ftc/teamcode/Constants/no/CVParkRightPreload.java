@@ -1,9 +1,11 @@
-package org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no;
+package org.firstinspires.ftc.teamcode.Constants.no;
 
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.ComputerVision.AprilTag;
@@ -21,11 +23,13 @@ import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.ArrayList;
 
+@Disabled
 @Autonomous
-public class CVParkLeftPreload extends LinearOpMode
+public class CVParkRightPreload extends LinearOpMode
 {
     OpenCvCamera camera;
     AprilTag aprilTagDetectionPipeline;
@@ -180,31 +184,42 @@ public class CVParkLeftPreload extends LinearOpMode
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, drive));
         /* Actually do something useful */
-        if (tagOfInterest.id == RIGHT) {
-            intake.intake();
-            TrajectorySequence left = drive.trajectorySequenceBuilder(startPos)
-                    .strafeLeft(60)
+        if (tagOfInterest.id == LEFT) {
+            claw.openWide(); // CLOSES the claw
+            TrajectorySequence left1 = drive.trajectorySequenceBuilder(startPos)
+                    .strafeRight(70)
                     .addDisplacementMarker(20, () -> {
                         outtake.outtakeReadyHigh(timer);
                     })
-                    .addDisplacementMarker(59.99999999, () -> {
+                    .addDisplacementMarker(69.99999999, () -> {
                         outtake.outtake();
                     })
-                    .strafeRight(30)
-                    .addDisplacementMarker(65, () -> {
+                    .build();
+
+
+
+            TrajectorySequence left2 = drive.trajectorySequenceBuilder(startPos)
+                    .strafeLeft(30)
+                    .addDisplacementMarker(75, () -> {
                         intake.teleopIntake(timer);
                     })
-                    .back(25)
+                    .back(35)
                     .build();
-            drive.followTrajectorySequence(left);
+
+
+            drive.followTrajectorySequence(left1);
+            sleep(2000);
+            drive.followTrajectorySequence(left2);
+
+
         } else if (tagOfInterest == null || tagOfInterest.id == MIDDLE) {
             TrajectorySequence middle = drive.trajectorySequenceBuilder(startPos)
-                    .strafeLeft(75)
+                    .strafeRight(75)
                     .build();
             drive.followTrajectorySequence(middle);
-        } else if (tagOfInterest.id == LEFT) {
+        } else if (tagOfInterest.id == RIGHT) {
             TrajectorySequence right = drive.trajectorySequenceBuilder(startPos)
-                    .strafeLeft(75)
+                    .strafeRight(75)
                     .forward(25)
                     .build();
             drive.followTrajectorySequence(right);

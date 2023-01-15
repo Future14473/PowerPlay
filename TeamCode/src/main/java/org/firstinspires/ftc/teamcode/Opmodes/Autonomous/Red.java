@@ -267,6 +267,10 @@ public class Red extends LinearOpMode
 
         outtake.outtakeAuto(timer);
 
+        drive.setPower(0.5, 0,0);
+        timer.safeDelay(100);
+        drive.setPower(0,0,0);
+
         // START CYCLE 1
         // strafe to stack
 
@@ -282,7 +286,7 @@ public class Red extends LinearOpMode
                 if (initPos6 > targetAngle) {
                     drive.setPower(0,0,-0.5);
                     while (opModeIsActive()) {
-                        if (drive.getHeading() < targetAngle) {
+                        if (drive.getHeading() <= targetAngle) {
                             drive.setPower(0,0,0);
                             break;
                         }
@@ -290,7 +294,7 @@ public class Red extends LinearOpMode
                 } else {
                     drive.setPower(0,0,0.5);
                     while (opModeIsActive()) {
-                        if (drive.getHeading() > targetAngle) {
+                        if (drive.getHeading() >= targetAngle) {
                             drive.setPower(0,0,0);
                             break;
                         }
@@ -340,10 +344,12 @@ public class Red extends LinearOpMode
         // drive back from stack
         double initPos4 = drive.getPosition().get(0);
         drive.setPower(-linearY,-linearX,-linearR);
+        new Thread(() -> {outtake.outtakeReadyHigh(timer);}).start();
         while(opModeIsActive()) {
             double currPos = drive.getPosition().get(0);
             if(Math.abs(currPos - initPos4) >= moveBackFromStack) {
                 drive.setPower(0,0,0);
+
                 double initPos6 = drive.getHeading();
 
                 if (initPos6 > targetAngle) {
@@ -368,7 +374,7 @@ public class Red extends LinearOpMode
         }
 
         //turn to outtake and prepare subsystems
-        new Thread(() -> {outtake.outtakeReadyHigh(timer);}).start();
+
         drive.setPower(0,0,0.7);
 
         double initAngle2 = drive.getHeading();
@@ -465,6 +471,7 @@ public class Red extends LinearOpMode
         // drive back from stack
         double initPos420 = drive.getPosition().get(0);
         drive.setPower(-linearY,-linearX,-linearR);
+        new Thread(() -> {outtake.outtakeReadyHigh(timer);}).start();
         while(opModeIsActive()) {
             double currPos = drive.getPosition().get(0);
             if(Math.abs(currPos - initPos420) >= moveBackFromStack) {
@@ -473,7 +480,6 @@ public class Red extends LinearOpMode
 
                 if (initPos6 > targetAngle) {
                     drive.setPower(0,0,-0.5);
-                    new Thread(() -> {outtake.outtakeReadyHigh(timer);}).start();
                     while (opModeIsActive()) {
                         if (drive.getHeading() < targetAngle) {
                             drive.setPower(0,0,0);
@@ -482,7 +488,6 @@ public class Red extends LinearOpMode
                     }
                 } else {
                     drive.setPower(0,0,0.5);
-                    new Thread(() -> {outtake.outtakeReadyHigh(timer);}).start();
                     while (opModeIsActive()) {
                         if (drive.getHeading() > targetAngle) {
                             drive.setPower(0,0,0);

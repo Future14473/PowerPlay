@@ -1,9 +1,14 @@
 package org.firstinspires.ftc.teamcode.Hardware.Outtake;
 
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.OUT_POS_TURRET;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.SLIDES_OUT;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.V4B_OUT;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.TURRET_OUT;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.V4B_HOME;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.home;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.slidesDownToOuttake;
+
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Claw;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ServoTurret;
@@ -31,10 +36,6 @@ public class Outtake {
     //TODO condense to one function (use low/mid/high parameters)
     public void outtakeReadyLow(Timer timer) {
         slides.extendLow();
-        timer.safeDelay(SLIDES_OUT);
-        v4b.outtake();
-        timer.safeDelay(TURRET_OUT);
-        turret.setOut();
     }
 
     public void outtakeReadyMid(Timer timer) {
@@ -62,10 +63,13 @@ public class Outtake {
     }
 
     public void outtakeTeleOp(Timer timer) {
-        slides.setCustom(slides.getHeight() - 300);
-        timer.safeDelay(100);
-        this.outtake();
-        slides.setCustom(slides.getHeight() + 400);
+        if (slides.getHeight() > 400) {
+            int initPos = slides.getHeight();
+            slides.setCustom(initPos - slidesDownToOuttake);
+            timer.safeDelay(130);
+            this.outtake();
+            slides.setCustom(initPos);
+        }
     }
 
     public void outtakeReadyJunction() {

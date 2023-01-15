@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.home;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.junction;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.lowGoal;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.midGoal;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.retractVelocity;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.stack1;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.stack2;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.stack3;
@@ -23,6 +24,7 @@ public class Slides {
     DcMotorEx rightSlide;
 
     public static int incrementAmt = 50;
+
 
 
     public Slides(HardwareMap hardwareMap) {
@@ -133,8 +135,8 @@ public class Slides {
     public void retract() {
         leftSlide.setTargetPosition(home);
         rightSlide.setTargetPosition(home);
-        leftSlide.setVelocity(velocity);
-        rightSlide.setVelocity(velocity);
+        leftSlide.setVelocity(retractVelocity);
+        rightSlide.setVelocity(retractVelocity);
     }
 
     public void setCustom(int height) {

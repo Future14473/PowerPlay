@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no;
+package org.firstinspires.ftc.teamcode.Constants.no;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -12,9 +13,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Disabled
-// red side closest to the garage door
-@Autonomous(name = "BlueLeftRedRight",group = "!!!!!!!!!!!!!" )
-public class PreloadParkBlueLeftRedRight extends LinearOpMode {
+@Autonomous
+public class PreloadParkRedRight extends LinearOpMode {
 
     SampleMecanumDrive drive;
     Pose2d startPos;
@@ -27,55 +27,41 @@ public class PreloadParkBlueLeftRedRight extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         drive = new SampleMecanumDrive(hardwareMap);
         slides = new Slides(hardwareMap);
-        slides.resetEncoders();
+        v4b = new VirtualFourBar(hardwareMap);
         claw = new Claw(hardwareMap);
 
         claw.shutUp();
 
-        startPos = new Pose2d(-35, -72, Math.toRadians(90));
-        slides.resetEncoders();
+        startPos = new Pose2d(35, -72, Math.toRadians(90));
         waitForStart();
         drive.followTrajectorySequence(createTrajectory());
-
-        claw.shutUp();
-        slides.retract();
 
 
     }
 
     public TrajectorySequence createTrajectory() {
         TrajectorySequence traj = drive.trajectorySequenceBuilder(startPos)
+                .lineTo(new Vector2d(35, -12))
+                .turn(Math.toRadians(-95))
                 .addDisplacementMarker(() -> {
-                    claw.shutUp();
+                    claw.openWide();
                 })
-                .forward(36)
-//                .turn(Math.toRadians(105))
-//                .forward(8)
-//                .addDisplacementMarker(() -> {
-//                    claw.openWide();
-//                })
-//                .back(8)
-//
-//                .addDisplacementMarker(() -> {
-//                    slides.retract();
-//                    claw.shutUp();
-//                })
-//                .waitSeconds(1)
-//
-//                //revert to 0 ready for park
-//                .turn(Math.toRadians(-105))
-//                .addDisplacementMarker(() -> {
-//                    slides.incrementDown();
-//                    slides.EMERGENCY();
-//                })
-//
-//
-//                // prepare first outtake
-//                .addDisplacementMarker(35, () -> {
-//                    slides.extendHigh();
-//                })
+                .addDisplacementMarker(() -> {
+                    slides.retract();
+                    claw.shutUp();
+//                    v4b.setHome();
+                })
+                .waitSeconds(3)
 
+                //revert to 0 ready for park
+                .turn(Math.toRadians(95))
+                .back(30)
 
+                // prepare first outtake
+                .addDisplacementMarker(35, () -> {
+                    slides.extendHigh();
+                    v4b.setCustom(0.45);
+                })
 
                 .build();
 

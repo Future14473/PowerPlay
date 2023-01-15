@@ -96,6 +96,12 @@ public class Main extends LinearOpMode {
             if (gamepad1.y) {
                 outtake.outtakeReadyHigh(timer);
             }
+
+            if (gamepad1.left_trigger > 0) {
+                outtake.outtake();
+            }
+            telemetry.addData("slides", slides.getHeight());
+            telemetry.update();
         }
     }
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no;
+package org.firstinspires.ftc.teamcode.Constants.no;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -13,8 +13,8 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Disabled
 // red side closest to the garage door
-@Autonomous(name = "RedLeftBlueRight",group = "!!!!!!!!!!!!!" )
-public class PreloadParkRedLeftBlueRight extends LinearOpMode {
+@Autonomous(name = "BlueLeftRedRight",group = "!!!!!!!!!!!!!" )
+public class PreloadParkBlueLeftRedRight extends LinearOpMode {
 
     SampleMecanumDrive drive;
     Pose2d startPos;
@@ -27,7 +27,7 @@ public class PreloadParkRedLeftBlueRight extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         drive = new SampleMecanumDrive(hardwareMap);
         slides = new Slides(hardwareMap);
-        v4b = new VirtualFourBar(hardwareMap);
+        slides.resetEncoders();
         claw = new Claw(hardwareMap);
 
         claw.shutUp();
@@ -35,11 +35,11 @@ public class PreloadParkRedLeftBlueRight extends LinearOpMode {
         startPos = new Pose2d(-35, -72, Math.toRadians(90));
         slides.resetEncoders();
         waitForStart();
-        slides.resetEncoders();
         drive.followTrajectorySequence(createTrajectory());
 
         claw.shutUp();
         slides.retract();
+
 
     }
 
@@ -49,34 +49,33 @@ public class PreloadParkRedLeftBlueRight extends LinearOpMode {
                     claw.shutUp();
                 })
                 .forward(36)
-//                .turn(Math.toRadians(-100))
+//                .turn(Math.toRadians(105))
 //                .forward(8)
 //                .addDisplacementMarker(() -> {
 //                    claw.openWide();
 //                })
-//                .back(6)
+//                .back(8)
 //
 //                .addDisplacementMarker(() -> {
 //                    slides.retract();
 //                    claw.shutUp();
-//                    v4b.setHome();
 //                })
-//                .waitSeconds(3)
+//                .waitSeconds(1)
 //
 //                //revert to 0 ready for park
-//                .turn(Math.toRadians(100))
+//                .turn(Math.toRadians(-105))
 //                .addDisplacementMarker(() -> {
 //                    slides.incrementDown();
 //                    slides.EMERGENCY();
-//                    slides.retract();
 //                })
 //
 //
 //                // prepare first outtake
 //                .addDisplacementMarker(35, () -> {
 //                    slides.extendHigh();
-//                    v4b.setCustom(0.45);
 //                })
+
+
 
                 .build();
 
