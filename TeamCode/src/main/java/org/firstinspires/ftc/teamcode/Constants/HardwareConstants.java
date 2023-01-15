@@ -6,7 +6,7 @@ import com.acmerobotics.dashboard.config.Config;
 public class HardwareConstants {
 
 //  drivetrain
-    public static double rotMult = 0.8;
+    public static double rotMult = 0.7;
     public static double mvmtMult = 1.5;
 
 //  all servos
