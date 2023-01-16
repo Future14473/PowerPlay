@@ -13,7 +13,7 @@ public class Base {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
-        Pose2d startPos = new Pose2d(36, 72, Math.toRadians(-90));
+        Pose2d startPos = new Pose2d(36, 62, Math.toRadians(-90));
         Pose2d preloadOut = new Pose2d(36, 12, Math.toRadians(-135));
         Pose2d stackIn = new Pose2d(60, 12, Math.toRadians(0));
 
@@ -25,40 +25,10 @@ public class Base {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 11)
                 .followTrajectorySequence(drive ->
                                 drive.trajectorySequenceBuilder(startPos)
-                                        .lineToLinearHeading(preloadOut)
-                                        .waitSeconds(3)
-                                        .lineToLinearHeading(stackIn)
+                                        .lineToLinearHeading(new Pose2d(33, 10, Math.toRadians(45)))
+                                        .lineToLinearHeading(new Pose2d(60, 13, Math.toRadians(0)))
+                                        //^^this times 6
 
-
-//                                .back(24)
-//                                .waitSeconds(1)
-//                                .forward(24)
-//                                .waitSeconds(1)
-//                                .back(24)
-//                                .waitSeconds(1)
-//                                .forward(24)
-//                                .waitSeconds(1)
-//                                .back(24)
-//                                .waitSeconds(1)
-//                                .forward(24)
-//                                .waitSeconds(1)
-//                                .back(24)
-//                                .waitSeconds(1)
-//                                .forward(24)
-//                                .waitSeconds(1)
-//                                .back(24)
-
-
-//                               raise slides, prepare v4b outtake (FRONT)
-                                .addDisplacementMarker((startPos.getY() - preloadOut.getY()) / 2, () -> {
-                                })
-//                               open claw lock + lock on to pole (USE SERVO TURRET)
-                                .addDisplacementMarker(startPos.getY() - preloadOut.getY() - 0.0000001, () -> {
-                                })
-//                                reset to intake first cone
-                                .addDisplacementMarker(startPos.getY() - preloadOut.getY() + resetDist, () -> {})
-//                              intake first cone
-                                .addDisplacementMarker((startPos.getY() - preloadOut.getY()) + (stackIn.getX() - preloadOut.getX()) - 0.000001, () -> {})
                                 .build()
                 );
 
