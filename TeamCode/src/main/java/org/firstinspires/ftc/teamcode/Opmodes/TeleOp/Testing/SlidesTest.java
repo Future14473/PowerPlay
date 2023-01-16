@@ -19,19 +19,23 @@ public class SlidesTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Slides slides = new Slides(hardwareMap);
+        VirtualFourBar v4b = new VirtualFourBar(hardwareMap);
+
+        v4b.intake();
         slides.resetEncoders();
-
-
-
 
 
         waitForStart();
         while (opModeIsActive()) {
             if(gamepad1.a) {
+                slides.extendStack(1);
             } else if (gamepad1.x) {
-                slides.retract();
+                slides.extendStack(2);
             } else if (gamepad1.y) {
-                slides.extendHigh();
+                slides.extendStack(3);
+            }
+            else if (gamepad1.b) {
+                slides.retract();
             }
         }
 

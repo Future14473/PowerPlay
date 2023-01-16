@@ -1,12 +1,15 @@
 package org.firstinspires.ftc.teamcode.Constants;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 
 @Config
 public class AutoConstants {
 
+    public static Pose2d redStart = new Pose2d(-35, 72, Math.toRadians(0));
+
     //distance to drop preload
-    public static double preloadDistance = 38;
+    public static double preloadDistance = 60;
 
     //prepare for preload outtake
     public static double prepareForPreloadOuttake = 30;
