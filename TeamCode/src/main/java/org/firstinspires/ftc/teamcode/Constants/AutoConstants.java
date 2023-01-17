@@ -9,7 +9,7 @@ public class AutoConstants {
     public static Pose2d redStart = new Pose2d(-35, 72, Math.toRadians(0));
 
     //distance to drop preload
-    public static double preloadDistance = 60;
+    public static double preloadDistance = 50;
 
     //prepare for preload outtake
     public static double prepareForPreloadOuttake = 30;
@@ -17,10 +17,10 @@ public class AutoConstants {
     //turn angle to drop preload
     public static double preloadAngle = 90;
 
-    public static double moveBackIntoPole = 2;
+    public static double moveBackIntoPole = 1.8;
 
 
-    public static double moveStraightToStack = 20;
+    public static double moveStraightToStack = 22;
 
     public static double moveBackFromStack = 25;
 

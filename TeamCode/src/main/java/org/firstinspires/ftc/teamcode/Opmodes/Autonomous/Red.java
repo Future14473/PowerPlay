@@ -115,8 +115,6 @@ public class Red extends LinearOpMode
             }
         });
 
-        telemetry.setMsTransmissionInterval(50);
-
         /*
          * The INIT-loop:
          * This REPLACES waitForStart!
@@ -209,12 +207,15 @@ public class Red extends LinearOpMode
         double initPos = drive.getPosition().get(0);
 
         //drive to preload
-        drive.setPower(linearY,linearX,linearR);
+
         intake.intake();
         timer.safeDelay(100);
         slides.extendJunction();
+        drive.setPower(linearY,linearX,linearR);
         while (opModeIsActive()) {
             double currPos = drive.getPosition().get(0);
+            telemetry.addData("dist", Math.abs(currPos - initPos));
+            telemetry.update();
             if (Math.abs(currPos - initPos) >= prepareForPreloadOuttake) {
                 new Thread(() -> {outtake.outtakeReadyHigh(timer);}).start();
             }

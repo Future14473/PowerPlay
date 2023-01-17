@@ -12,10 +12,13 @@ public class Encoder {
     private final static int CPS_STEP = 0x10000;
 
     private static double inverseOverflow(double input, double estimate) {
-        double real = input;
-        while (Math.abs(estimate - real) > CPS_STEP / 2.0) {
-            real += Math.signum(estimate - real) * CPS_STEP;
-        }
+        // convert to uint16
+        int real = (int) input & 0xffff;
+        // initial, modulo-based correction: it can recover the remainder of 5 of the upper 16 bits
+        // because the velocity is always a multiple of 20 cps due to Expansion Hub's 50ms measurement window
+        real += ((real % 20) / 4) * CPS_STEP;
+        // estimate-based correction: it finds the nearest multiple of 5 to correct the upper bits by
+        real += Math.round((estimate - real) / (5 * CPS_STEP)) * 5 * CPS_STEP;
         return real;
     }
 
@@ -40,7 +43,8 @@ public class Encoder {
     private Direction direction;
 
     private int lastPosition;
-    private double velocityEstimate;
+    private int velocityEstimateIdx;
+    private double[] velocityEstimates;
     private double lastUpdateTime;
 
     public Encoder(DcMotorEx motor, NanoClock clock) {
@@ -50,7 +54,7 @@ public class Encoder {
         this.direction = Direction.FORWARD;
 
         this.lastPosition = 0;
-        this.velocityEstimate = 0.0;
+        this.velocityEstimates = new double[3];
         this.lastUpdateTime = clock.seconds();
     }
 
@@ -80,7 +84,8 @@ public class Encoder {
         if (currentPosition != lastPosition) {
             double currentTime = clock.seconds();
             double dt = currentTime - lastUpdateTime;
-            velocityEstimate = (currentPosition - lastPosition) / dt;
+            velocityEstimates[velocityEstimateIdx] = (currentPosition - lastPosition) / dt;
+            velocityEstimateIdx = (velocityEstimateIdx + 1) % 3;
             lastPosition = currentPosition;
             lastUpdateTime = currentTime;
         }
@@ -93,6 +98,9 @@ public class Encoder {
     }
 
     public double getCorrectedVelocity() {
-        return inverseOverflow(getRawVelocity(), velocityEstimate);
+        double median = velocityEstimates[0] > velocityEstimates[1]
+                ? Math.max(velocityEstimates[1], Math.min(velocityEstimates[0], velocityEstimates[2]))
+                : Math.max(velocityEstimates[0], Math.min(velocityEstimates[1], velocityEstimates[2]));
+        return inverseOverflow(getRawVelocity(), median);
     }
 }

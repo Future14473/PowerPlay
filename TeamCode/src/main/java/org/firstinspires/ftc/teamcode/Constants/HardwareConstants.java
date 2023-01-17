@@ -23,10 +23,10 @@ public class HardwareConstants {
     public static int velocity = 5000;
     public static int retractVelocity = 3000;
 
-    public static int stack1 = 350;
-    public static int stack2 = 300;
-    public static int stack3 = 250;
-    public static int stack4 = 300;
+    public static int stack1 = 490;
+    public static int stack2 = 450;
+    public static int stack3 = 275;
+    public static int stack4 = 180;
     public static int stack5 = 0;
 
 //  claw

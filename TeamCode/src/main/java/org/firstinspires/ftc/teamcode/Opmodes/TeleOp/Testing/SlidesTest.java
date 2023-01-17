@@ -28,9 +28,9 @@ public class SlidesTest extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             if(gamepad1.a) {
-                slides.extendStack(1);
+                slides.extendStack(4);
             } else if (gamepad1.x) {
-                slides.extendStack(2);
+                slides.extendStack(5);
             } else if (gamepad1.y) {
                 slides.extendStack(3);
             }
