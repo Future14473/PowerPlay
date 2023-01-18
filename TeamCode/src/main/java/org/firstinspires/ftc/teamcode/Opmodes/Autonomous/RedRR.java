@@ -70,8 +70,8 @@ public class RedRR extends LinearOpMode {
         intake.intake();
 
         //move straight to preload (RR PID)
-        TrajectorySequence moveStraightToPreload = drive.trajectorySequenceBuilder(redStart)
-                .strafeLeft(preloadDistance)
+        TrajectorySequence moveStraightToPreload = drive.trajectorySequenceBuilder(new Pose2d())
+                .forward(preloadDistance)
                 .addDisplacementMarker(preloadDistance / 2, () -> {
                     outtake.outtakeReadyHigh(timer);
                 })
