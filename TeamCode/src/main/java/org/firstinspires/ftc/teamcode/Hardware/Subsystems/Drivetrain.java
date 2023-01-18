@@ -5,9 +5,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.opmode.util.AxisDirection;
-import org.firstinspires.ftc.teamcode.drive.opmode.util.BNO055IMUUtil;
-import org.firstinspires.ftc.teamcode.drive.opmode.util.Encoder;
+import org.firstinspires.ftc.teamcode.util.AxisDirection;
+import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
+import org.firstinspires.ftc.teamcode.util.Encoder;
+
 
 import java.util.Arrays;
 import java.util.List;

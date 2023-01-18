@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Slides;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.VirtualFourBar;
 import org.firstinspires.ftc.teamcode.Hardware.util.Timer;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.opmode.TwoWheelTrackingLocalizer;
+import org.firstinspires.ftc.teamcode.drive.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous

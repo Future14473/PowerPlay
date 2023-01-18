@@ -14,7 +14,8 @@ import org.firstinspires.ftc.teamcode.Hardware.VSLAM.LockOnOuttake;
 import org.firstinspires.ftc.teamcode.Hardware.VSLAM.t265RRLocalizer;
 import org.firstinspires.ftc.teamcode.Hardware.util.Timer;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.opmode.TwoWheelTrackingLocalizer;
+import org.firstinspires.ftc.teamcode.drive.TwoWheelTrackingLocalizer;
+
 
 @TeleOp(name="Lockon shit", group="main")
 public class FullLockOnTestNoV4B extends LinearOpMode {

@@ -17,8 +17,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ServoTurret;
 import org.firstinspires.ftc.teamcode.Hardware.VSLAM.LockOnOuttake;
 import org.firstinspires.ftc.teamcode.Hardware.VSLAM.t265RRLocalizer;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.opmode.TwoWheelTrackingLocalizer;
 
 @TeleOp(name = "LockOnTEST", group = "Testing")
 public class LockOnTEST extends LinearOpMode {
