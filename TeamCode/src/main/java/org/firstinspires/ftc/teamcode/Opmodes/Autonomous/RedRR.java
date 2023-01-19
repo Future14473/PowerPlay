@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
 
-import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.moveBackFromStack;
-import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.moveBackIntoPole;
-import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.moveStraightToStack;
-import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.preloadAngle;
-import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.preloadDistance;
-import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.redStart;
-import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.strafeToStackFromPole;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.blueAllianceBlueStation;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.blueAllianceBlueStationPole;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.blueAllianceBlueStationStack;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.cycleReady;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.preloadReady;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.resetFromPole;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.outoftheboxrobotics.photoncore.PhotonCore;
@@ -21,11 +20,12 @@ import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Slides;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.VirtualFourBar;
 import org.firstinspires.ftc.teamcode.Hardware.util.Timer;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous
 public class RedRR extends LinearOpMode {
+
+    SampleMecanumDrive drive;
 
     Slides slides;
     Claw claw;
@@ -35,20 +35,15 @@ public class RedRR extends LinearOpMode {
     Intake intake;
     Outtake outtake;
 
-    SampleMecanumDrive drive;
-    TwoWheelTrackingLocalizer localizer;
-
-    double targetAngle;
-
+    Timer timer;
 
     @Override
     public void runOpMode() {
-        PhotonCore.enable();
 
-        Timer timer = new Timer(this);
+        timer = new Timer(this);
 
         drive = new SampleMecanumDrive(hardwareMap);
-        localizer = new TwoWheelTrackingLocalizer(hardwareMap, drive);
+        drive.setPoseEstimate(blueAllianceBlueStation);
 
         slides = new Slides(hardwareMap);
         claw = new Claw(hardwareMap);
@@ -59,123 +54,61 @@ public class RedRR extends LinearOpMode {
         outtake = new Outtake(slides, claw, v4b, servoTurret);
 
         intake.teleopIntakeReady();
-
-        targetAngle = localizer.getHeading()+90;
+        intake.intake();
 
         telemetry.addLine("Subsystems Initialized\nPlease work you monkey");
         telemetry.update();
 
         waitForStart();
 
-        intake.intake();
 
-        //move straight to preload (RR PID)
-        TrajectorySequence moveStraightToPreload = drive.trajectorySequenceBuilder(redStart)
-                .strafeLeft(preloadDistance)
-                .addDisplacementMarker(preloadDistance / 2, () -> {
+
+        slides.setCustom(400);
+        timer.safeDelay(150);
+
+
+
+        TrajectorySequence moveToPolePreload = drive.trajectorySequenceBuilder(blueAllianceBlueStation)
+                .lineToLinearHeading(blueAllianceBlueStationPole)
+                .addDisplacementMarker(preloadReady, () -> {
                     outtake.outtakeReadyHigh(timer);
                 })
                 .build();
 
-        drive.followTrajectorySequence(moveStraightToPreload);
-
-
-        //turn and move back to drop
-        setMotorPower(0,0,0.6);
-        double initAngle = localizer.getHeading();
-        while (opModeIsActive()) {
-            double currAngle = localizer.getHeading();
-
-            if(getRelativeAngle(initAngle, currAngle) >= preloadAngle) {
-                setMotorPower(0,0,0);
-                timer.safeDelay(50);
-                setMotorPower(-0.5,0,0);
-                double initPos = localizer.getWheelPositions().get(0);
-                while (opModeIsActive()) {
-                    double currPos = drive.getWheelPositions().get(0);
-                    if (Math.abs(currPos - initPos) > moveBackIntoPole) {
-                        setMotorPower(0,0,0);
-                        correctAngularError();
-                        break;
-                    }
-                }
-                break;
-            }
-        }
-
+        drive.followTrajectorySequence(moveToPolePreload);
+        timer.safeDelay(1000);
         outtake.outtakeAuto(timer);
 
-        setMotorPower(0.5, 0,0);
-        timer.safeDelay(100);
-        setMotorPower(0,0,0);
-
-        //strafe to stack
-        TrajectorySequence strafeToPole = drive.trajectorySequenceBuilder(new Pose2d())
-                .strafeLeft(strafeToStackFromPole)
-                .addDisplacementMarker(strafeToStackFromPole/2, () -> {
+        TrajectorySequence moveToStack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(blueAllianceBlueStationStack)
+                .addDisplacementMarker(resetFromPole, () -> {
                     intake.autoIntakeReady(1, timer);
                 })
                 .build();
 
-        drive.followTrajectorySequence(strafeToPole);
+        drive.followTrajectorySequence(moveToStack);
+        timer.safeDelay(1000);
+        intake.intake();
+        slides.setCustom(slides.getHeight()+250);
 
-        //move forward to stack
-        TrajectorySequence moveForwardToStack = drive.trajectorySequenceBuilder(new Pose2d())
-                .forward(moveStraightToStack)
+        TrajectorySequence moveToPoleFromStack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(blueAllianceBlueStationPole)
+                .addDisplacementMarker(cycleReady, () -> {
+                    outtake.outtakeReadyHigh(timer);
+                })
                 .build();
 
-        drive.followTrajectorySequence(moveForwardToStack);
+        drive.followTrajectorySequence(moveToPoleFromStack);
+        timer.safeDelay(1000);
+        outtake.outtakeAuto(timer);
 
-        //move back from stack
-        TrajectorySequence moveBackFromStackToPole = drive.trajectorySequenceBuilder(new Pose2d())
-                .back(moveBackFromStack)
+        TrajectorySequence reset = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(blueAllianceBlueStation)
+                .addDisplacementMarker(5, () -> {
+                    intake.teleopIntake(timer);
+                })
                 .build();
 
-
-        drive.followTrajectorySequence(moveBackFromStackToPole);
-
-
+        drive.followTrajectorySequence(reset);
     }
-
-    public void setMotorPower(double y, double x, double rx) {
-
-        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-        double leftFront = ((y + x + rx) / denominator);
-        double leftRear = ((y - x + rx) / denominator);
-        double rightRear = ((y + x - rx) / denominator);
-        double rightFront = ((y - x - rx) / denominator);
-
-        drive.setMotorPowers(leftFront, leftRear, rightRear, rightFront);
-    }
-
-    public void correctAngularError() {
-        double initHeading = localizer.getHeading();
-
-        if (initHeading > targetAngle) {
-            setMotorPower(0,0,-0.5);
-            while (opModeIsActive()) {
-                if (localizer.getHeading() < targetAngle) {
-                    setMotorPower(0,0,0);
-                    break;
-                }
-            }
-        } else {
-            setMotorPower(0,0,0.5);
-            while (opModeIsActive()) {
-                if (localizer.getHeading() > targetAngle) {
-                    setMotorPower(0,0,0);
-                    break;
-                }
-            }
-        }
-    }
-
-    public double getRelativeAngle(double init, double target) {
-        if (Math.abs(init - target) <= 180) {
-            return Math.abs(init - target);
-        } else {
-            return 360 - Math.abs(init - target);
-        }
-    }
-
 }

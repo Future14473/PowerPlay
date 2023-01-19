@@ -6,7 +6,22 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 @Config
 public class AutoConstants {
 
-    public static Pose2d redStart = new Pose2d(-35, 72, Math.toRadians(0));
+    public static Pose2d blueAllianceBlueStation = new Pose2d(-36, 62, Math.toRadians(-90));
+
+    public static double blueAllianceBlueStationPoleX = -32;
+    public static double blueAllianceBlueStationPoleY = 7.7;
+    public static double blueAllianceBlueStationPoleR = 135;
+    public static Pose2d blueAllianceBlueStationPole = new Pose2d(blueAllianceBlueStationPoleX, blueAllianceBlueStationPoleY, Math.toRadians(blueAllianceBlueStationPoleR));
+
+    public static double blueAllianceBlueStationStackX = -60;
+    public static double blueAllianceBlueStationStackY = 13;
+    public static double blueAllianceBlueStationStackR = 180;
+    public static Pose2d blueAllianceBlueStationStack = new Pose2d(blueAllianceBlueStationStackX, blueAllianceBlueStationStackY, Math.toRadians(blueAllianceBlueStationStackR));
+
+    public static double preloadReady = 20;
+    public static double cycleReady = 7;
+
+    public static double resetFromPole = 5;
 
     //distance to drop preload
     public static double preloadDistance = 50;
