@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.Opmodes.TeleOp;
 
 
-import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.mvmtMult;
-import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.rotMult;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -12,7 +9,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Hardware.Intake.Intake;
 import org.firstinspires.ftc.teamcode.Hardware.Outtake.Outtake;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Claw;
-import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ClawCompliant;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.OdoRetraction;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ServoTurret;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Slides;
@@ -59,6 +55,9 @@ public class Main extends LinearOpMode {
         intake.teleopIntakeReady();
         retraction.retract();
 
+        telemetry.addLine("Systems initialized. Don't be a monkey Rohan");
+        telemetry.update();
+
         waitForStart();
 
         drive();
@@ -100,8 +99,6 @@ public class Main extends LinearOpMode {
             if (gamepad1.left_trigger > 0) {
                 outtake.outtake();
             }
-            telemetry.addData("slides", slides.getHeight());
-            telemetry.update();
         }
     }
 
@@ -109,19 +106,12 @@ public class Main extends LinearOpMode {
     public void drive() {
         new Thread(() -> {
             while (opModeIsActive()) {
-                while (opModeIsActive()) {
-                    double y = -gamepad1.left_stick_y;
-                    double x = -gamepad1.left_stick_x;
-                    double rx = -gamepad1.right_stick_x * rotMult;
-
-                    double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-                    double leftFront = ((y + x + rx) / denominator) * mvmtMult;
-                    double leftRear = ((y - x + rx) / denominator) * mvmtMult;
-                    double rightRear = ((y + x - rx) / denominator) * mvmtMult;
-                    double rightFront = ((y - x - rx) / denominator) * mvmtMult;
-
-                    drive.setMotorPowers(leftFront, leftRear, rightRear, rightFront);
-                }
+                drive.setWeightedDrivePower(
+                        new Pose2d(
+                                -gamepad1.left_stick_y,
+                                -gamepad1.left_stick_x,
+                                -gamepad1.right_stick_x
+                        ));
             }
         }).start();
     }

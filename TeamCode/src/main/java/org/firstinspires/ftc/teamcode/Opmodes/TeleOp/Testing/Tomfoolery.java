@@ -9,6 +9,7 @@ import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.teleOpMoveS
 import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.teleOpReset;
 
 import com.outoftheboxrobotics.photoncore.PhotonCore;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -22,6 +23,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Slides;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.VirtualFourBar;
 import org.firstinspires.ftc.teamcode.Hardware.util.Timer;
 
+@Disabled
 @TeleOp
 public class Tomfoolery extends LinearOpMode {
     Slides slides;

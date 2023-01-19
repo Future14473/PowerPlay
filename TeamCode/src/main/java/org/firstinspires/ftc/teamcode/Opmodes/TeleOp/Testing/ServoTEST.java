@@ -5,12 +5,13 @@ import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.HOME_PO
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.OUT_V4B;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 //
-
+@Disabled
 @TeleOp(name = "ServoTEST", group = "Testing")
 public class ServoTEST extends LinearOpMode {
 

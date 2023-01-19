@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Opmodes.TeleOp.Testing;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.technototes.library.hardware.servo.Servo;
@@ -7,7 +8,7 @@ import com.technototes.library.hardware.servo.ServoProfiler;
 
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.MockServo;
 
-
+@Disabled
 @TeleOp
 public class servoProfileTest extends LinearOpMode {
 

@@ -7,6 +7,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,7 +18,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ServoTurret;
 import org.firstinspires.ftc.teamcode.Hardware.VSLAM.LockOnOuttake;
 import org.firstinspires.ftc.teamcode.Hardware.VSLAM.t265RRLocalizer;
-
+@Disabled
 @TeleOp(name = "LockOnTEST", group = "Testing")
 public class LockOnTEST extends LinearOpMode {
 
