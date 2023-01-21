@@ -8,18 +8,12 @@ public class AutoConstants {
 
     public static Pose2d blueAllianceBlueStation = new Pose2d(-36, 62, Math.toRadians(-90));
 
-    public static double blueAllianceBlueStationPoleX = -32;
-    public static double blueAllianceBlueStationPoleY = 7.7;
-    public static double blueAllianceBlueStationPoleR = 135;
-    public static Pose2d blueAllianceBlueStationPole = new Pose2d(blueAllianceBlueStationPoleX, blueAllianceBlueStationPoleY, Math.toRadians(blueAllianceBlueStationPoleR));
+    public static Pose2d blueAllianceBlueStationPole = new Pose2d(-29.5, 14, Math.toRadians(135));
 
-    public static double blueAllianceBlueStationStackX = -60;
-    public static double blueAllianceBlueStationStackY = 13;
-    public static double blueAllianceBlueStationStackR = 180;
-    public static Pose2d blueAllianceBlueStationStack = new Pose2d(blueAllianceBlueStationStackX, blueAllianceBlueStationStackY, Math.toRadians(blueAllianceBlueStationStackR));
+    public static Pose2d blueAllianceBlueStationStack = new Pose2d(-60, 16, Math.toRadians(180));
 
-    public static double preloadReady = 20;
-    public static double cycleReady = 7;
+    public static double preloadReady = 15;
+    public static double cycleReady = 3;
 
     public static double resetFromPole = 5;
 

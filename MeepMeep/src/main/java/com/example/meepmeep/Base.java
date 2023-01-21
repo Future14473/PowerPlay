@@ -2,6 +2,7 @@ package com.example.meepmeep;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
@@ -25,7 +26,10 @@ public class Base {
                 .setConstraints(40, 40, Math.toRadians(360), Math.toRadians(360), 11.5)
                 .followTrajectorySequence(drive ->
                                 drive.trajectorySequenceBuilder(startPos)
-                                        .lineToLinearHeading(new Pose2d(-30, 8, Math.toRadians(135)))
+                                        .lineTo(new Vector2d(-34,8))
+
+
+                                        .turn(Math.toRadians(-135))
                                         .lineToLinearHeading(new Pose2d(-60, 13, Math.toRadians(180)))
                                         //^^this times 6
 

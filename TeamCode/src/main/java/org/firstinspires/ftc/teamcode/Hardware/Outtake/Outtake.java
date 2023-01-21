@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Hardware.Outtake;
 
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.OUTTAKE;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.OUT_POS_TURRET;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.SLIDES_HOME;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.SLIDES_OUT;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.V4B_OUT;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.TURRET_OUT;
@@ -56,19 +58,18 @@ public class Outtake {
     }
 
     public void outtakeAuto(Timer timer) {
-        slides.setCustom(1300);
-        timer.safeDelay(130);
-        this.outtake();
-        slides.setCustom(1800);
+
     }
 
     public void outtakeTeleOp(Timer timer) {
         if (slides.getHeight() > 400) {
-            int initPos = slides.getHeight();
-            slides.setCustom(initPos - slidesDownToOuttake);
-            timer.safeDelay(130);
+            v4b.setCustom(OUTTAKE);
+            timer.safeDelay(100);
             this.outtake();
-            slides.setCustom(initPos);
+            timer.safeDelay(100);
+            v4b.intake();
+            timer.safeDelay(200);
+            turret.setHome();
         }
     }
 

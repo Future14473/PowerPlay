@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.Opmodes.TeleOp;
 
 
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.OUTTAKE;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.SLIDES_HOME;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -65,7 +68,13 @@ public class Main extends LinearOpMode {
         while (opModeIsActive()) {
 
             if (gamepad1.right_bumper) {
-                outtake.outtakeTeleOp(timer);
+                if (slides.getHeight() > 1150) {
+                    outtake.outtakeTeleOp(timer);
+                    intake.intake();
+                    slides.retract();
+                    timer.safeDelay(SLIDES_HOME);
+                    outtake.outtake();
+                }
             }
 
             if (gamepad1.left_bumper) {

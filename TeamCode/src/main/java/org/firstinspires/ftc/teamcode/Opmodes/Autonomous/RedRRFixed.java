@@ -5,14 +5,14 @@ import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.blueAllianc
 import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.blueAllianceBlueStationStack;
 import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.cycleReady;
 import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.preloadReady;
-import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.resetFromPole;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.SLIDES_HOME;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.outoftheboxrobotics.photoncore.PhotonCore;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Hardware.Intake.Intake;
 import org.firstinspires.ftc.teamcode.Hardware.Outtake.Outtake;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Claw;
@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous
-public class RedRR extends LinearOpMode {
+public class RedRRFixed extends LinearOpMode {
 
     SampleMecanumDrive drive;
 
@@ -61,33 +61,20 @@ public class RedRR extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
+        drive.setPoseEstimate(blueAllianceBlueStation);
 
 
+        TrajectorySequence moveToPolePreload = drive.trajectorySequenceBuilder(new Pose2d(0,0,0))
+                .lineTo(new Vector2d(-34,8))
+                .turn(Math.toRadians(-135))
+                .lineToLinearHeading(new Pose2d(-60, 13, Math.toRadians(180)))
 
-        slides.setCustom(900);
-        timer.safeDelay(100);
-
-
-
-        TrajectorySequence moveToPolePreload = drive.trajectorySequenceBuilder(blueAllianceBlueStation)
-                .lineToLinearHeading(blueAllianceBlueStationPole)
-                .addDisplacementMarker(preloadReady, () -> {
-                    outtake.outtakeReadyHigh(timer);
-                })
                 .build();
-
 
 
         drive.followTrajectorySequence(moveToPolePreload);
 
-        //OUTTAKE SEQUENCE
-        outtake.outtakeTeleOp(timer);
-        intake.intake();
-        slides.extendStack(1);
-        timer.safeDelay(SLIDES_HOME);
-        outtake.outtake();
-
-
+/*
         TrajectorySequence moveToStack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .lineToLinearHeading(blueAllianceBlueStationStack)
                 .build();
@@ -145,7 +132,7 @@ public class RedRR extends LinearOpMode {
         timer.safeDelay(SLIDES_HOME);
         outtake.outtake();
 
-//        timer.safeDelay(1000);
+//        timer.safeDelay(1000);*/
 
 
     }
