@@ -157,21 +157,21 @@ public class RedPark extends LinearOpMode
         Claw claw = new Claw(hardwareMap);
         if (tagOfInterest.id == LEFT) {
             TrajectorySequence left = drive.trajectorySequenceBuilder(startPos)
-                    .strafeLeft(64)
-                    .forward(40)
+                    .strafeLeft(3)
+                    .forward(3)
                     .build();
             claw.openWide();
             drive.followTrajectorySequence(left);
         } else if (tagOfInterest == null || tagOfInterest.id == MIDDLE) {
             TrajectorySequence middle = drive.trajectorySequenceBuilder(startPos)
-                    .strafeLeft(64)
+                    .forward(12)
                     .build();
             claw.openWide();
             drive.followTrajectorySequence(middle);
         } else if (tagOfInterest.id == RIGHT) {
             TrajectorySequence right = drive.trajectorySequenceBuilder(startPos)
-                    .strafeLeft(64)
-                    .back(30)
+                    .strafeRight(12)
+                    .forward(12)
                     .build();
             claw.openWide();
             drive.followTrajectorySequence(right);

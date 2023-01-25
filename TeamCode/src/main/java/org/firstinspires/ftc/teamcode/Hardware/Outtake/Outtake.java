@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Hardware.Outtake;
 
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.OUTTAKE;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.OUT_POS_TURRET;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.OUT_V4B_2;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.SLIDES_HOME;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.SLIDES_OUT;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.V4B_OUT;
@@ -47,6 +48,13 @@ public class Outtake {
         timer.safeDelay(TURRET_OUT);
         turret.setOut();
     }
+    public void outtakeReadyMid2(Timer timer) {
+        slides.extendMid();
+        timer.safeDelay(SLIDES_OUT);
+        v4b.setCustom(OUT_V4B_2);
+        timer.safeDelay(TURRET_OUT);
+        turret.setOut();
+    }
 
     public void outtakeReadyHigh(Timer timer) {
         slides.extendHigh();
@@ -57,11 +65,32 @@ public class Outtake {
 
     }
 
+    public void outtakeReadyHigh2(Timer timer) {
+        slides.extendHigh();
+        timer.safeDelay(V4B_OUT);
+        v4b.setCustom(OUT_V4B_2);
+        timer.safeDelay(TURRET_OUT);
+        turret.setOut();
+
+    }
+
     public void outtakeAuto(Timer timer) {
 
     }
 
     public void outtakeTeleOp(Timer timer) {
+        if (slides.getHeight() > 400) {
+            v4b.setCustom(OUTTAKE);
+            timer.safeDelay(100);
+            this.outtake();
+            timer.safeDelay(100);
+            v4b.intake();
+            timer.safeDelay(200);
+            turret.setHome();
+        }
+    }
+
+    public void outtakeTeleOp2(Timer timer) {
         if (slides.getHeight() > 400) {
             v4b.setCustom(OUTTAKE);
             timer.safeDelay(100);

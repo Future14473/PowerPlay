@@ -8,7 +8,7 @@ import com.technototes.library.hardware.servo.ServoProfiler;
 
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.MockServo;
 
-@Disabled
+
 @TeleOp
 public class servoProfileTest extends LinearOpMode {
 
@@ -29,6 +29,4 @@ public class servoProfileTest extends LinearOpMode {
             }
         }
     }
-
-
 }

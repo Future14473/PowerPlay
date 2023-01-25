@@ -12,7 +12,12 @@ public class AutoConstants {
 
     public static Pose2d blueAllianceBlueStationStack = new Pose2d(-60, 16, Math.toRadians(180));
 
-    public static double preloadReady = 15;
+    public static Pose2d redAllianceRedStation = new Pose2d(-36, -62, Math.toRadians(90));
+
+    public static Pose2d redAllianceRedStationPole = new Pose2d(-29.5, -14, Math.toRadians(135));
+
+    public static Pose2d redAllianceRedStationStack = new Pose2d(-60, -16, Math.toRadians(180));    public static double preloadReady = 15;
+
     public static double cycleReady = 3;
 
     public static double resetFromPole = 5;

@@ -14,9 +14,9 @@ public class Base {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
-        Pose2d startPos = new Pose2d(-36, 62, Math.toRadians(-90));
-        Pose2d preloadOut = new Pose2d(36, 12, Math.toRadians(-135));
-        Pose2d stackIn = new Pose2d(60, 12, Math.toRadians(0));
+        Pose2d startPos = new Pose2d(-36, -62, Math.toRadians(90));
+        Pose2d preloadOut = new Pose2d(36, -20, Math.toRadians(-45));
+        Pose2d stackIn = new Pose2d(60, -20, Math.toRadians(0));
 
         int resetDist = 7;
 
@@ -26,11 +26,23 @@ public class Base {
                 .setConstraints(40, 40, Math.toRadians(360), Math.toRadians(360), 11.5)
                 .followTrajectorySequence(drive ->
                                 drive.trajectorySequenceBuilder(startPos)
-                                        .lineTo(new Vector2d(-34,8))
+                                        .lineTo(new Vector2d(-36,-13))
+                                        .turn(Math.toRadians(135))
+                                        .lineTo(new Vector2d(-29.5,-5.5))
 
+                                        .lineToLinearHeading(new Pose2d(-61.5, -10, Math.toRadians(180)))
 
-                                        .turn(Math.toRadians(-135))
-                                        .lineToLinearHeading(new Pose2d(-60, 13, Math.toRadians(180)))
+                                        .lineToLinearHeading(new Pose2d(-29.5,-5.5, Math.toRadians(225)))
+
+                                        .lineToLinearHeading(new Pose2d(-61.5, -10, Math.toRadians(180)))
+
+                                        .lineToLinearHeading(new Pose2d(-29.5,-5.5, Math.toRadians(225)))
+
+                                        .lineToLinearHeading(new Pose2d(-61.5, -10, Math.toRadians(180)))
+
+                                        .lineToLinearHeading(new Pose2d(-29.5,-5.5, Math.toRadians(225)))
+
+                                        .forward(12)
                                         //^^this times 6
 
                                 .build()

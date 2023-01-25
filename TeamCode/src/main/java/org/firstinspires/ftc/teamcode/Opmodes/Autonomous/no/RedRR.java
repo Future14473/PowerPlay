@@ -1,13 +1,26 @@
-package org.firstinspires.ftc.teamcode.Opmodes.Autonomous;
+package org.firstinspires.ftc.teamcode.Opmodes.Autonomous.no;
 
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.blueAllianceBlueStation;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.preloadReady;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.redAllianceRedStation;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.redAllianceRedStationPole;
+import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.redAllianceRedStationStack;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.SLIDES_HOME;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.ComputerVision.AprilTag;
+import org.firstinspires.ftc.teamcode.Hardware.Intake.Intake;
+import org.firstinspires.ftc.teamcode.Hardware.Outtake.Outtake;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Claw;
+import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ServoTurret;
+import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Slides;
+import org.firstinspires.ftc.teamcode.Hardware.Subsystems.VirtualFourBar;
+import org.firstinspires.ftc.teamcode.Hardware.util.Timer;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.apriltag.AprilTagDetection;
@@ -18,8 +31,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
 @Autonomous
-public class BluePark extends LinearOpMode
-{
+public class RedRR extends LinearOpMode {
+
     OpenCvCamera camera;
     AprilTag aprilTagDetectionPipeline;
 
@@ -37,17 +50,50 @@ public class BluePark extends LinearOpMode
     // UNITS ARE METERS
     double tagsize = 0.166;
 
-    int LEFT = 1;
-    int MIDDLE = 2;
-    int RIGHT = 3;
+    int ONE = 1;
+    int TWO = 2;
+    int THREE = 3;
 
     AprilTagDetection tagOfInterest = null;
 
+    SampleMecanumDrive drive;
+
+    Slides slides;
+    Claw claw;
+    VirtualFourBar v4b;
+    ServoTurret servoTurret;
+
+    Intake intake;
+    Outtake outtake;
+
+    Timer timer;
+
     @Override
-    public void runOpMode()
-    {
+    public void runOpMode() {
+
+        timer = new Timer(this);
+
+        drive = new SampleMecanumDrive(hardwareMap);
+        drive.setPoseEstimate(redAllianceRedStation);
+
+        slides = new Slides(hardwareMap);
+        claw = new Claw(hardwareMap);
+        v4b = new VirtualFourBar(hardwareMap);
+        servoTurret = new ServoTurret(hardwareMap);
+
+        intake = new Intake(slides, claw, v4b, servoTurret);
+        outtake = new Outtake(slides, claw, v4b, servoTurret);
+
+        intake.teleopIntakeReady();
+        intake.intake();
+
+        telemetry.addLine("Subsystems Initialized\nPlease work you monkey");
+        telemetry.update();
+
+        slides.resetEncoders();
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "blue"), cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Main"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTag(tagsize, fx, fy, cx, cy);
 
         camera.setPipeline(aprilTagDetectionPipeline);
@@ -82,7 +128,7 @@ public class BluePark extends LinearOpMode
 
                 for(AprilTagDetection tag : currentDetections)
                 {
-                    if(tag.id == LEFT || tag.id == MIDDLE || tag.id == RIGHT)
+                    if(tag.id == ONE || tag.id == TWO || tag.id == THREE)
                     {
                         tagOfInterest = tag;
                         tagFound = true;
@@ -148,36 +194,103 @@ public class BluePark extends LinearOpMode
             telemetry.update();
         }
 
-        Pose2d startPos = new Pose2d(-35, 72, Math.toRadians(0));
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        /* Actually do something useful */
-        Claw claw = new Claw(hardwareMap);
-        if (tagOfInterest.id == LEFT) {
-            claw.openWide();
-            TrajectorySequence left = drive.trajectorySequenceBuilder(startPos)
-                    .strafeRight(3)
-                    .forward(3)
-                    .build();
-            drive.followTrajectorySequence(left);
-        } else if (tagOfInterest == null || tagOfInterest.id == MIDDLE) {
-            claw.openWide();
-            TrajectorySequence middle = drive.trajectorySequenceBuilder(startPos)
-                    .forward(3)
-                    .build();
-            drive.followTrajectorySequence(middle);
 
-        } else if (tagOfInterest.id == RIGHT) {
-            claw.openWide();
-            TrajectorySequence right = drive.trajectorySequenceBuilder(startPos)
-                    .strafeLeft(3)
-                    .forward(3)
+
+        slides.setCustom(250);
+        timer.safeDelay(50);
+
+
+
+        TrajectorySequence moveToPolePreload = drive.trajectorySequenceBuilder(redAllianceRedStation)
+                .lineTo(new Vector2d(-36,-13))
+                .turn(Math.toRadians(135))
+                .lineTo(new Vector2d(-35,-3.5))
+                .addDisplacementMarker(preloadReady, () -> {
+                    outtake.outtakeReadyHigh(timer);
+                })
+                .build();
+
+
+
+        drive.followTrajectorySequence(moveToPolePreload);
+
+        //OUTTAKE SEQUENCE
+        outtake.outtakeTeleOp(timer);
+        intake.intake();
+        slides.retract();
+        timer.safeDelay(SLIDES_HOME);
+        outtake.outtake();
+        slides.extendStack(1);
+
+
+        TrajectorySequence moveToStack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(new Pose2d(-61.5, -14, Math.toRadians(180)))
+                .build();
+
+        drive.followTrajectorySequence(moveToStack);
+
+        timer.safeDelay(10);
+        intake.intake();
+        timer.safeDelay(50);
+        slides.setCustom(slides.getHeight()+ 400);
+
+
+        TrajectorySequence moveToPoleFromStack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(new Pose2d(-35,-5.5, Math.toRadians(225)))
+                .addDisplacementMarker(3, () -> {
+                    outtake.outtakeReadyHigh(timer);
+                })
+                .build();
+
+        drive.followTrajectorySequence(moveToPoleFromStack);
+
+        //OUTTAKE SEQUENCE
+        outtake.outtakeTeleOp(timer);
+        intake.intake();
+        slides.retract();
+        timer.safeDelay(SLIDES_HOME);
+        outtake.outtake();
+        slides.extendStack(2);
+
+
+        drive.followTrajectorySequence(moveToStack);
+
+        timer.safeDelay(100);
+        intake.intake();
+        timer.safeDelay(100);
+        slides.setCustom(slides.getHeight()+400);
+
+        drive.followTrajectorySequence(moveToPoleFromStack);
+
+
+        //OUTTAKE SEQUENCE
+        outtake.outtakeTeleOp(timer);
+        intake.intake();
+        slides.retract();
+        timer.safeDelay(SLIDES_HOME);
+
+
+
+        if (tagOfInterest.id == ONE) {
+            TrajectorySequence parkOne = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .forward(12)
                     .build();
-            drive.followTrajectorySequence(right);
+            drive.followTrajectorySequence(parkOne);
+            intake.teleopIntake(timer);
+
+        } else if (tagOfInterest == null || tagOfInterest.id == TWO) {
+            intake.teleopIntake(timer);
+
+        } else if (tagOfInterest.id == THREE) {
+            TrajectorySequence parkThree = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .back(12)
+                    .build();
+            drive.followTrajectorySequence(parkThree);
 
         }
 
 
-        /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */}
+    }
 
     void tagToTelemetry(AprilTagDetection detection)
     {

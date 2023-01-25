@@ -69,7 +69,7 @@ public class Main extends LinearOpMode {
 
             if (gamepad1.right_bumper) {
                 if (slides.getHeight() > 1150) {
-                    outtake.outtakeTeleOp(timer);
+                    outtake.outtakeTeleOp2(timer);
                     intake.intake();
                     slides.retract();
                     timer.safeDelay(SLIDES_HOME);
@@ -98,11 +98,11 @@ public class Main extends LinearOpMode {
             }
 
             if (gamepad1.b) {
-                outtake.outtakeReadyMid(timer);
+                outtake.outtakeReadyMid2(timer);
             }
 
             if (gamepad1.y) {
-                outtake.outtakeReadyHigh(timer);
+                outtake.outtakeReadyHigh2(timer);
             }
 
             if (gamepad1.left_trigger > 0) {

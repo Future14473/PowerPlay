@@ -21,12 +21,12 @@ public class HardwareConstants {
 
     public static int home = 0;
     public static int velocity = 5000;
-    public static int retractVelocity = 1800;
+    public static int retractVelocity = 1300;
 
     public static int stack1 = 450;
-    public static int stack2 = 350;
-    public static int stack3 = 275;
-    public static int stack4 = 180;
+    public static int stack2 = 360;
+    public static int stack3 = 300;
+    public static int stack4 = 200;
     public static int stack5 = 0;
 
 //  claw
@@ -40,6 +40,7 @@ public class HardwareConstants {
 //   v4b
     public static double HOME_POS_V4B = 0;
     public static double OUT_V4B = 0.65;
+    public static double OUT_V4B_2 = 0.55;
     public static double OUTTAKE = 0.35;
 
 
@@ -61,7 +62,7 @@ public class HardwareConstants {
 
     public static double TURRET_HOME = 300;
     public static double V4B_HOME = 800;
-    public static double SLIDES_HOME = 700;
+    public static double SLIDES_HOME = 900;
 
 
     public static double SLIDES_OUT = 500;
