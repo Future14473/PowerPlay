@@ -12,12 +12,17 @@ import org.firstinspires.ftc.teamcode.Hardware.Subsystems.MockServo;
 @TeleOp
 public class servoProfileTest extends LinearOpMode {
 
-    Servo servo = new Servo(new MockServo()).startAt(0);
+    com.qualcomm.robotcore.hardware.Servo servo1;
+
+    Servo servo;
     ServoProfiler servoController;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
-        servoController = new ServoProfiler(servo).setConstraints(1, 0.6, 1);
+        servo1 = hardwareMap.get(com.qualcomm.robotcore.hardware.Servo.class, "s");
+        servo = new Servo(servo1).startAt(0);
+        servoController = new ServoProfiler(servo).setConstraints(2, 3, 2);
         waitForStart();
 
         while (opModeIsActive()) {
@@ -27,6 +32,7 @@ public class servoProfileTest extends LinearOpMode {
             if (gamepad1.a) {
                 servoController.setTargetPosition(1);
             }
+            servoController.update();
         }
     }
 }

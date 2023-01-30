@@ -1,11 +1,17 @@
 package org.firstinspires.ftc.teamcode.Opmodes.TeleOp.Testing;
 
+
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.util.MotionProfile;
 import org.firstinspires.ftc.teamcode.util.PIDController;
 
 @Config
@@ -13,8 +19,10 @@ import org.firstinspires.ftc.teamcode.util.PIDController;
 public class PIDControllerSlides extends LinearOpMode {
     DcMotorEx slideMotor;
 
+    private FtcDashboard dashboard = FtcDashboard.getInstance();
+
     //todo tune this
-    PIDController controller = new PIDController(0, 0, 0);
+    PIDController controller = new PIDController(0.023, 0.000098, 0.0008);
 
     public static double target;
     public static double currPosition;
@@ -23,17 +31,19 @@ public class PIDControllerSlides extends LinearOpMode {
         LIFT_IDLE,
         LIFT_START,
         LIFT_EXTEND,
+        LIFT_RETRACT
     }
 
-    ;
-
     LiftState liftState = LiftState.LIFT_IDLE;
+    ElapsedTime timer = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
-        slideMotor = hardwareMap.get(DcMotorEx.class, "rightSlide");
+        slideMotor = hardwareMap.get(DcMotorEx.class, "m");
         slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        Telemetry telemetry = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
 
         waitForStart();
 
@@ -41,40 +51,50 @@ public class PIDControllerSlides extends LinearOpMode {
             currPosition = slideMotor.getCurrentPosition();
             telemetry.addData("slide height", currPosition);
             telemetry.addData("lift state", liftState);
+            telemetry.addData("target", target);
+
             switch (liftState) {
 
                 case LIFT_IDLE:
                     slideMotor.setPower(0);
                     if (gamepad1.y) {
-                        target = 500;
-                        double command = controller.update(target, currPosition);
-                        slideMotor.setPower(command);
+                        target = 2000;
                         liftState = LiftState.LIFT_START;
                     }
                     break;
                 case LIFT_START:
-                    if (slideMotor.getCurrentPosition() != target) {
-                        double command = controller.update(target, currPosition);
-                        slideMotor.setPower(command);
-                    } else {
-                        liftState = LiftState.LIFT_EXTEND;
-                    }
+                    MotionProfile goToMax = new MotionProfile(75,100);
+                    double entireDT = goToMax.calculateEntiredt(target);
+                    double command = goToMax.generateMotionProfile(target, entireDT,timer.seconds());
+                    double power = controller.update(command, currPosition);
+                    telemetry.addData("power", power);
+                    telemetry.addData("motion profile", command);
+                    telemetry.addData("entireDT",entireDT);
+                    telemetry.addData("currentDT", timer.seconds());
+                    slideMotor.setPower(power);
+
                     break;
                 case LIFT_EXTEND:
-                    if (gamepad1.x) {
+                    if (gamepad1.a) {
                         target = 0;
-                        double command = controller.update(target, currPosition);
-                        slideMotor.setPower(command);
-                        liftState = LiftState.LIFT_START;
-//                    } else { //run the slides after motor has reached target position (EXPERIMENTAL USE ONLY IF BRAKING DOES NOT WORK)
-//                        double command = controller.update(target, currPosition);
-//                        slideMotor.setPower(command);
+                        liftState = LiftState.LIFT_RETRACT;
+                    } else { //run the slides after motor has reached target position )
+                        double command2 = controller.update(target, currPosition);
+                        slideMotor.setPower(command2);
                     }
                     break;
+                case LIFT_RETRACT:
+                    if (slideMotor.getCurrentPosition() != target) {
+//                        double command3 = generateMotionProfile(30.0, 30.0, target, timer.seconds());
+                        double power1 = controller.update(target, currPosition);
+                        slideMotor.setPower(power1);
+                    } else {
+                        liftState = LiftState.LIFT_IDLE;
+                    }
             }
 
             //cancel
-            if (gamepad1.a) {
+            if (gamepad1.x) {
                 liftState = LiftState.LIFT_IDLE;
             }
 

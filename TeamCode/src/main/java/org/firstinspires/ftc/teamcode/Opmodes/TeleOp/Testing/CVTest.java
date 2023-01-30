@@ -9,19 +9,21 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.ComputerVision.SleeveDetection;
+import org.firstinspires.ftc.teamcode.ComputerVision.YRCB;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Disabled
+@Config
 @TeleOp(name = "CVTest", group = "Testing")
 public class CVTest extends LinearOpMode {
 
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
+
     public OpenCvCamera camera;
-    public SleeveDetection cv;
-    String color = "";
+    public YRCB cv;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -35,41 +37,14 @@ public class CVTest extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive() && !isStopRequested()) {
-            computerVision(cv);
-            telemetry.addData("Color", color);
+            idle();
         }
-
-    }
-
-    public void computerVision(SleeveDetection cv) {
-        new Thread(() -> {
-            while (true) {
-                if (cv.getSleeveColor() == null) {
-                    telemetry.addData("Capstone Position", "Null");
-                } else {
-                    switch (cv.getSleeveColor()) {
-                        case PINK:
-                            color = "pink";
-                            break;
-                        case GREEN:
-                            color = "green";
-                            break;
-                        case ORANGE:
-                            color = "orange";
-                            break;
-                        case NONE:
-                            color = "none";
-                            break;
-                    }
-                }
-            }
-        }).start();
 
     }
 
     public OpenCvCamera cameraInit() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        return OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        return OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "main"), cameraMonitorViewId);
     }
 
     public void startStream() {
@@ -86,8 +61,8 @@ public class CVTest extends LinearOpMode {
                 requestOpModeStop();
             }
         });
-        dashboard.startCameraStream(camera, 0);
-        cv = new SleeveDetection(telemetry);
+        dashboard.startCameraStream(camera, 30);
+        cv = new YRCB(telemetry);
         camera.setPipeline(cv);
     }
 }

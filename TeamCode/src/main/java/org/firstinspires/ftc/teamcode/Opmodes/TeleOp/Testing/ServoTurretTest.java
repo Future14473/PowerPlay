@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ServoTurret;
-@Disabled
+
 @TeleOp
 public class ServoTurretTest extends LinearOpMode {
     Servo servoTurret;
@@ -25,8 +25,7 @@ public class ServoTurretTest extends LinearOpMode {
 
         while(opModeIsActive()) {
             if (gamepad1.x) {
-                servoTurret.setPosition(HOME_POS_TURRET);
-            }
+                servoTurret.setPosition(HOME_POS_TURRET);            }
             if (gamepad1.b) {
                 servoTurret.setPosition(OUT_POS_TURRET);
             }
