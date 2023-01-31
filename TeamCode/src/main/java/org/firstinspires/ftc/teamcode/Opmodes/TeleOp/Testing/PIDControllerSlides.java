@@ -26,6 +26,7 @@ public class PIDControllerSlides extends LinearOpMode {
 
     public static double target;
     public static double currPosition;
+    public static double currVelocity;
 
     public enum LiftState {
         LIFT_IDLE,
@@ -49,6 +50,7 @@ public class PIDControllerSlides extends LinearOpMode {
 
         while (opModeIsActive()) {
             currPosition = slideMotor.getCurrentPosition();
+            currVelocity = slideMotor.getVelocity();
             telemetry.addData("slide height", currPosition);
             telemetry.addData("lift state", liftState);
             telemetry.addData("target", target);
@@ -63,9 +65,9 @@ public class PIDControllerSlides extends LinearOpMode {
                     }
                     break;
                 case LIFT_START:
-                    MotionProfile goToMax = new MotionProfile(75,100);
+                    MotionProfile goToMax = new MotionProfile(telemetry,75,100);
                     double entireDT = goToMax.calculateEntiredt(target);
-                    double command = goToMax.generateMotionProfile(target, entireDT,timer.seconds());
+                    double command = goToMax.generateMotionProfile(target, entireDT, timer.seconds());
                     double power = controller.update(command, currPosition);
                     telemetry.addData("power", power);
                     telemetry.addData("motion profile", command);

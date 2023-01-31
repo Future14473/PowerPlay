@@ -1,13 +1,23 @@
 package org.firstinspires.ftc.teamcode.util;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class MotionProfile {
+    Telemetry telemetry;
 
     double maxAccel;
     double maxVel;
+    double target;
+    double linearAccelerationMultiplier;
 
-    public MotionProfile(double maxAccel, double maxVel) {
+
+    public MotionProfile(Telemetry t, double maxAccel, double maxVel, double linearAccelerationMultiplier) {
         this.maxAccel = maxAccel;
         this.maxVel = maxVel;
+        target = 0;
+        this.linearAccelerationMultiplier = linearAccelerationMultiplier;
+
+        telemetry = t;
     }
 
     public double calculateEntiredt(double distance) {
@@ -33,6 +43,31 @@ public class MotionProfile {
         return entire_dt;
     }
 
+    // time-based motion profile
+    // trapezoidal motion profile - symmetry
+    public double generateMotionProfile2(double distance, double curr_pos, double entire_dt, double current_dt) {
+        // time it takes to accelerate (v = v0 + at)
+        double accelTime = maxVel / maxAccel;
+
+        double accelDistance = 0.5 * maxAccel + Math.pow(accelTime, 2);
+        double cruise_distance = distance - 2 * accelDistance;
+        double cruise_dt = cruise_distance / maxVel;
+        double deacceleration_time = accelTime + cruise_dt;
+
+        //accelerate to max velocity
+        if (curr_pos < accelDistance) {
+            return curr_pos + (linearAccelerationMultiplier * curr_pos);
+        }
+
+        // maintain max velocity
+
+
+
+        //decelerate
+
+
+        return 0;
+    }
 
     public double generateMotionProfile(double distance, double entire_dt, double current_dt) {
         double acceleration_dt = maxVel / maxAccel;
@@ -51,6 +86,9 @@ public class MotionProfile {
         double cruise_distance = distance - 2 * acceleration_distance;
         double cruise_dt = cruise_distance / maxVel;
         double deacceleration_time = acceleration_dt + cruise_dt;
+
+        telemetry.addData("acceleration_dt", acceleration_dt);
+        telemetry.addData("deacceleration time", deacceleration_time);
 
 
         if (current_dt > entire_dt) {
