@@ -53,7 +53,7 @@ public class MotionProfile {
         double cruise_distance = distance - 2 * accelDistance;
         double cruise_dt = cruise_distance / maxVel;
         double deacceleration_time = accelTime + cruise_dt;
-
+        telemetry.addData("accelDist",accelDistance);
         //accelerate to max velocity
         if (curr_pos < accelDistance) {
             return curr_pos + (linearAccelerationMultiplier * curr_pos);

@@ -65,17 +65,15 @@ public class PIDControllerSlides extends LinearOpMode {
                     }
                     break;
                 case LIFT_START:
-                    MotionProfile goToMax = new MotionProfile(telemetry,75,100);
-                    double entireDT = goToMax.calculateEntiredt(target);
-                    double command = goToMax.generateMotionProfile(target, entireDT, timer.seconds());
-                    double power = controller.update(command, currPosition);
-                    telemetry.addData("power", power);
-                    telemetry.addData("motion profile", command);
-                    telemetry.addData("entireDT",entireDT);
-                    telemetry.addData("currentDT", timer.seconds());
+                    double power = controller.update(target, currPosition);
                     slideMotor.setPower(power);
+                    if (currPosition >= target) {
+                        liftState = LiftState.LIFT_EXTEND;
+                    }
 
                     break;
+
+
                 case LIFT_EXTEND:
                     if (gamepad1.a) {
                         target = 0;
