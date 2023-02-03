@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.util;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class MotionProfile {
@@ -10,11 +13,15 @@ public class MotionProfile {
     double target;
     double linearAccelerationMultiplier;
 
+    double delta;
+    private final ElapsedTime deltaTime;
+    double proportion = 0.5;
 
     public MotionProfile(Telemetry t, double maxAccel, double maxVel, double linearAccelerationMultiplier) {
         this.maxAccel = maxAccel;
         this.maxVel = maxVel;
         target = 0;
+        deltaTime = new ElapsedTime();
         this.linearAccelerationMultiplier = linearAccelerationMultiplier;
 
         telemetry = t;
@@ -43,6 +50,22 @@ public class MotionProfile {
         return entire_dt;
     }
 
+    public double generateMotionProfile3(double target, double currPos) {
+        if (currPos >= target) return target;
+        double pastDelta = delta;
+        double deltaSec = deltaTime.seconds();
+        double error = target - currPos;
+
+        deltaTime.reset();
+
+        delta = Range.clip(deltaSec * proportion * error,
+                Math.max(pastDelta - maxAccel*deltaSec, -maxVel*deltaSec),
+                Math.min(pastDelta + maxAccel*deltaSec, maxVel*deltaSec));
+
+        return currPos + delta;
+
+
+    }
     // time-based motion profile
     // trapezoidal motion profile - symmetry
     public double generateMotionProfile2(double distance, double curr_pos, double entire_dt, double current_dt) {

@@ -65,7 +65,9 @@ public class PIDControllerSlides extends LinearOpMode {
                     }
                     break;
                 case LIFT_START:
-                    double power = controller.update(target, currPosition);
+                    MotionProfile motionProfile = new MotionProfile(telemetry, 10, 10, 0.5);
+                    double motioncontroller = motionProfile.generateMotionProfile3(target, currPosition);
+                    double power = controller.update(motioncontroller, currPosition);
                     slideMotor.setPower(power);
                     if (currPosition >= target) {
                         liftState = LiftState.LIFT_EXTEND;
