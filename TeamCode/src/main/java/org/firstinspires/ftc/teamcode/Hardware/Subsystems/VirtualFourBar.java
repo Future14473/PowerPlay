@@ -17,6 +17,8 @@ public class VirtualFourBar {
     public VirtualFourBar(@NonNull HardwareMap hardwareMap) {
         leftv4b = hardwareMap.get(Servo.class, "leftv4b");
         rightv4b = hardwareMap.get(Servo.class, "rightv4b");
+        leftv4b.setDirection(Servo.Direction.REVERSE);
+        rightv4b.setDirection(Servo.Direction.REVERSE);
     }
 
 

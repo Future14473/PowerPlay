@@ -6,12 +6,13 @@ import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.strafeR;
 import static org.firstinspires.ftc.teamcode.Constants.AutoConstants.strafeX;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Drivetrain;
 
 /** Tests the trajectory of RED 1+5 auto */
-
+@Disabled
 @Autonomous(name="SCREW ROAD RUNNER", group = "drive")
 public class AutoTEST extends LinearOpMode {
 

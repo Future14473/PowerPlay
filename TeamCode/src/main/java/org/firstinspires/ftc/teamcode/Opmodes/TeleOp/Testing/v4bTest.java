@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.VirtualFourBar;
 
-@Disabled
 @TeleOp(name="V4B Test", group = "Testing")
 public class v4bTest extends LinearOpMode {
 
