@@ -15,7 +15,7 @@ public class MotionProfile {
 
     double delta;
     private final ElapsedTime deltaTime;
-    double proportion = 0.5;
+    double proportion = 1;
 
     public MotionProfile(Telemetry t, double maxAccel, double maxVel, double linearAccelerationMultiplier) {
         this.maxAccel = maxAccel;
@@ -51,18 +51,24 @@ public class MotionProfile {
     }
 
     public double generateMotionProfile3(double target, double currPos) {
-        if (currPos >= target) return target;
         double pastDelta = delta;
+        //get the change in time, then reset the timer instantly
         double deltaSec = deltaTime.seconds();
-        double error = target - currPos;
-
         deltaTime.reset();
 
-        delta = Range.clip(deltaSec * proportion * error,
-                Math.max(pastDelta - maxAccel*deltaSec, -maxVel*deltaSec),
-                Math.min(pastDelta + maxAccel*deltaSec, maxVel*deltaSec));
+        //generate the new change in servo pos.
+        //range.clip makes the change fit the max constraints
+        // the min and max make sure both constraints are hit
+        // the deltasec makes it independent of looptime
+        delta = Range.clip(deltaSec * 360 * proportion * (target - currPos),
+                Math.max(pastDelta -maxAccel*deltaSec, -maxVel*deltaSec),
+                Math.min(pastDelta +maxAccel*deltaSec, maxVel*deltaSec));
 
-        return currPos + delta;
+        telemetry.addData("deltasec", deltaSec);
+        telemetry.addData("delta", delta);
+        telemetry.addData("err", target - currPos);
+
+        return currPos+(delta*10000000)/360;
 
 
     }

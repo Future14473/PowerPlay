@@ -1,38 +1,51 @@
 package org.firstinspires.ftc.teamcode.Opmodes.TeleOp.Testing;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.HOME_POS_V4B;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.OUT_V4B;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.technototes.library.hardware.servo.Servo;
 import com.technototes.library.hardware.servo.ServoProfiler;
 
-import org.firstinspires.ftc.teamcode.Hardware.Subsystems.MockServo;
-
 
 @TeleOp
 public class servoProfileTest extends LinearOpMode {
 
-    com.qualcomm.robotcore.hardware.Servo servo1;
+    com.qualcomm.robotcore.hardware.Servo leftv4b;
+    com.qualcomm.robotcore.hardware.Servo rightv4b;
 
-    Servo servo;
-    ServoProfiler servoController;
+    Servo servoLeft;
+    Servo servoRight;
+    ServoProfiler servoControllerLeft;
+    ServoProfiler servoControllerRight;
 
 
     @Override
     public void runOpMode() throws InterruptedException {
-        servo1 = hardwareMap.get(com.qualcomm.robotcore.hardware.Servo.class, "s");
-        servo = new Servo(servo1).startAt(0);
-        servoController = new ServoProfiler(servo).setConstraints(2, 3, 2);
+        leftv4b = hardwareMap.get(com.qualcomm.robotcore.hardware.Servo.class, "leftv4b");
+        rightv4b = hardwareMap.get(com.qualcomm.robotcore.hardware.Servo.class, "rightv4b");
+
+        leftv4b.setDirection(com.qualcomm.robotcore.hardware.Servo.Direction.REVERSE);
+        rightv4b.setDirection(com.qualcomm.robotcore.hardware.Servo.Direction.REVERSE);
+        servoLeft = new Servo(leftv4b).startAt(0);
+        servoRight = new Servo(leftv4b).startAt(0);
+
+        servoControllerLeft = new ServoProfiler(servoLeft).setConstraints(2, 3, 2);
+        servoControllerRight = new ServoProfiler(servoLeft).setConstraints(2, 3, 2);
         waitForStart();
 
         while (opModeIsActive()) {
             if (gamepad1.x) {
-                servoController.setTargetPosition(0);
+                servoControllerLeft.setTargetPosition(HOME_POS_V4B);
+                servoControllerRight.setTargetPosition(HOME_POS_V4B);
             }
             if (gamepad1.a) {
-                servoController.setTargetPosition(1);
+                servoControllerLeft.setTargetPosition(OUT_V4B);
+                servoControllerRight.setTargetPosition(OUT_V4B);
             }
-            servoController.update();
+            servoControllerLeft.update();
+            servoControllerRight.update();
         }
     }
 }

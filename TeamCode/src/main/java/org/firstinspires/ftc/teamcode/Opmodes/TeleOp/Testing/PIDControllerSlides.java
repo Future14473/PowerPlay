@@ -42,6 +42,7 @@ public class PIDControllerSlides extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         slideMotor = hardwareMap.get(DcMotorEx.class, "m");
         slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
@@ -65,9 +66,8 @@ public class PIDControllerSlides extends LinearOpMode {
                     }
                     break;
                 case LIFT_START:
-                    MotionProfile motionProfile = new MotionProfile(telemetry, 10, 10, 0.5);
-                    double motioncontroller = motionProfile.generateMotionProfile3(target, currPosition);
-                    double power = controller.update(motioncontroller, currPosition);
+
+                    double power = controller.update(target, currPosition);
                     slideMotor.setPower(power);
                     if (currPosition >= target) {
                         liftState = LiftState.LIFT_EXTEND;
