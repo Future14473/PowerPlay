@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Hardware.Subsystems;
 
 
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.HOME_POS_V4B;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.IDLE_V4B;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.MAX_ROTATION_DEGREES;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.OUT_V4B;
 
@@ -37,6 +38,15 @@ public class VirtualFourBar {
    public void outtake() {
         leftv4b.setPosition(OUT_V4B);
         rightv4b.setPosition(OUT_V4B);
+   }
+
+   public void intakeIdle() {
+       leftv4b.setPosition(IDLE_V4B);
+       rightv4b.setPosition(IDLE_V4B);
+   }
+
+   public double getPostion() {
+        return rightv4b.getPosition();
    }
 
 

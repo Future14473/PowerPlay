@@ -31,8 +31,8 @@ public class servoProfileTest extends LinearOpMode {
         servoLeft = new Servo(leftv4b).startAt(0);
         servoRight = new Servo(leftv4b).startAt(0);
 
-        servoControllerLeft = new ServoProfiler(servoLeft).setConstraints(2, 3, 2);
-        servoControllerRight = new ServoProfiler(servoLeft).setConstraints(2, 3, 2);
+        servoControllerLeft = new ServoProfiler(servoLeft).setConstraints(10, 10, 10);
+        servoControllerRight = new ServoProfiler(servoLeft).setConstraints(10, 10, 10);
         waitForStart();
 
         while (opModeIsActive()) {

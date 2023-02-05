@@ -65,8 +65,7 @@ public class Tomfoolery extends LinearOpMode {
         servoTurret = new ServoTurret(hardwareMap);
         retraction = new OdoRetraction(hardwareMap);
 
-        intake = new Intake(slides, claw, v4b, servoTurret);
-        outtake = new Outtake(slides, claw, v4b, servoTurret);
+
         retraction.retract();
 
         intake.teleopIntakeReady();

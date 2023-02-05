@@ -89,8 +89,6 @@ public class Red extends LinearOpMode
         v4b = new VirtualFourBar(hardwareMap);
         servoTurret = new ServoTurret(hardwareMap);
 
-        intake = new Intake(slides, claw, v4b, servoTurret);
-        outtake = new Outtake(slides, claw, v4b, servoTurret);
 
         intake.teleopIntakeReady();
 

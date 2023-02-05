@@ -10,7 +10,7 @@ public class Claw {
     Servo openWide;
 
     public Claw(HardwareMap hardwareMap) {
-        openWide = hardwareMap.get(Servo.class, "openWide");
+        openWide = hardwareMap.get(Servo.class, "claw");
     }
 
     public double getPos() {

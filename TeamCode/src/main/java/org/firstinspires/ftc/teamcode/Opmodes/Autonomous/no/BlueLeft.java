@@ -37,8 +37,6 @@ public class BlueLeft extends LinearOpMode
         claw = new Claw(hardwareMap);
         servoTurret = new ServoTurret(hardwareMap);
         v4b = new VirtualFourBar(hardwareMap);
-        intake = new Intake(slides, claw, v4b, servoTurret);
-        outtake = new Outtake(slides, claw, v4b, servoTurret);
         timer = new Timer(this);
 
         intake.teleopIntakeReady();

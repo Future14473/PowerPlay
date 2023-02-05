@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Hardware.Intake.Intake;
 import org.firstinspires.ftc.teamcode.Hardware.Outtake.Outtake;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Claw;
+import org.firstinspires.ftc.teamcode.Hardware.Subsystems.IntakeWheels;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.OdoRetraction;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ServoTurret;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Slides;
@@ -32,12 +33,22 @@ public class Main extends LinearOpMode {
     Slides slides;
     Claw claw;
     VirtualFourBar v4b;
-    ServoTurret servoTurret;
+    IntakeWheels intakeWheels;
 
-    Intake intake;
-    Outtake outtake;
+    Boolean retracting = false;
+    Boolean override = false;
 
-    OdoRetraction retraction;
+    public enum RobotState {
+        IDLE,
+        INTAKING,
+        INTAKE_IDLE,
+        OUTTAKING_HIGH,
+        OUTTAKING_MID,
+        OUTTAKING_LOW,
+        OUTTAKE_IDLE
+    }
+
+    RobotState robotState = RobotState.IDLE;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -49,79 +60,124 @@ public class Main extends LinearOpMode {
         slides = new Slides(hardwareMap);
         claw = new Claw(hardwareMap);
         v4b = new VirtualFourBar(hardwareMap);
-        servoTurret = new ServoTurret(hardwareMap);
-        retraction = new OdoRetraction(hardwareMap);
+        intakeWheels = new IntakeWheels(hardwareMap);
 
-        intake = new Intake(slides, claw, v4b, servoTurret);
-        outtake = new Outtake(slides, claw, v4b, servoTurret);
 
-        intake.teleopIntakeReady();
-        retraction.retract();
+        v4b.intake();
+        slides.resetEncoders();
+        claw.openWide();
+        intakeWheels.idle();
 
-        telemetry.addLine("Systems initialized. Don't be a monkey Rohan");
+        telemetry.addLine("Systems initialized.");
         telemetry.update();
 
         waitForStart();
 
-        drive();
 
         while (opModeIsActive()) {
 
-            if (gamepad1.right_bumper) {
-                if (slides.getHeight() > 1150) {
-                    outtake.outtakeTeleOp2(timer);
-                    intake.intake();
-                    slides.retract();
-                    timer.safeDelay(SLIDES_HOME);
-                    outtake.outtake();
-                }
-            }
+            telemetry.addData("robot state", robotState);
 
-            if (gamepad1.left_bumper) {
-                intake.intake();
-            }
+            switch(robotState) {
 
-            if (gamepad1.x) {
-                intake.teleopIntake(timer);
+
+                case IDLE:
+                    intakeWheels.idle();
+
+                    if (gamepad1.x) {
+                        robotState = RobotState.INTAKING;
+                    }
+                    break;
+
+                case INTAKING:
+                    retracting = false;
+                    claw.openWide();
+//                    intakeWheels.intake();
+                    if (gamepad1.left_trigger > 0) {
+                        claw.shutUp();
+                        timer.safeDelay(100);
+                        robotState = RobotState.INTAKE_IDLE;
+                    }
+                    break;
+                case INTAKE_IDLE:
+
+//                    intakeWheels.outtake();
+                    if (v4b.getPostion() < 0.3) {
+                        slides.setCustom(200);
+                    }
+
+                    if (slides.getHeight() >= 130) {
+                        v4b.intakeIdle();
+                        intakeWheels.idle();
+                    }
+
+                    if (v4b.getPostion() >= 0.4) {
+                        slides.retract();
+                    }
+
+                    if (gamepad1.y && v4b.getPostion() >= 0.4) {
+                        robotState = RobotState.OUTTAKING_HIGH;
+                    }
+                    break;
+
+                case OUTTAKING_HIGH:
+                    slides.extendHigh();
+                    if (slides.getHeight() >= 1200) {
+                        v4b.outtake();
+                    }
+
+                    if (gamepad1.right_trigger > 0 && slides.getHeight() >= 1700) {
+                        claw.openWide();
+                        timer.safeDelay(50);
+                        robotState = RobotState.OUTTAKE_IDLE;
+                    }
+                    break;
+
+                case OUTTAKE_IDLE:
+
+                    telemetry.addData("retracting",retracting);
+                    if (gamepad1.x) {
+                        retracting = true;
+                    }
+
+                    if (retracting) {
+                        claw.shutUp();
+                        v4b.intake();
+                    }
+
+                    if (retracting && (v4b.getPostion() <= 0.2)) {
+                        slides.retract();
+                    }
+
+                    if (slides.getHeight() <= 50) {
+                        robotState = RobotState.INTAKING;
+                    }
+                    break;
+
+
+
             }
 
             if (gamepad1.dpad_down) {
-                outtake.outtakeReadyJunction();
+                override = true;
+                robotState = RobotState.INTAKING;
+                v4b.intake();
             }
 
-            if (gamepad1.dpad_left) {
-                outtake.outtake();
+            if (override && (v4b.getPostion() <= 0.2)) {
+                slides.retract();
             }
-
-            if (gamepad1.a) {
-                outtake.outtakeReadyLow(timer);
+            if (override && slides.getHeight() <= 50) {
+                override = false;
+                claw.openWide();
             }
-
-            if (gamepad1.b) {
-                outtake.outtakeReadyMid2(timer);
-            }
-
-            if (gamepad1.y) {
-                outtake.outtakeReadyHigh2(timer);
-            }
-
-            if (gamepad1.left_trigger > 0) {
-                outtake.outtake();
-            }
+            drive.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad1.left_stick_y,
+                            -gamepad1.left_stick_x,
+                            -gamepad1.right_stick_x
+                    ));
+            telemetry.update();
         }
-    }
-
-    //TODO make a strafe multiplier on left_stick_y
-    public void drive() {
-        new Thread(() -> {
-            while (opModeIsActive()) {
-                drive.setWeightedDrivePower(
-                        new Pose2d(
-                                -gamepad1.left_stick_y,
-                                -gamepad1.left_stick_x,
-                                -gamepad1.right_stick_x
-                        ));
-            }
-        }).start();
     }
 }

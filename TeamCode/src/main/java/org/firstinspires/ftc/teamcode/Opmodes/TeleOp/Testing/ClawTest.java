@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.Claw;
 import org.firstinspires.ftc.teamcode.Hardware.Subsystems.ClawCompliant;
 
-@Disabled
 @TeleOp(name="Claw Test", group="Testing")
 public class ClawTest extends LinearOpMode {
      Claw claw;
@@ -15,7 +14,7 @@ public class ClawTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         claw = new Claw(hardwareMap);
-
+        claw.shutUp();
         waitForStart();
 
         while (opModeIsActive()) {
