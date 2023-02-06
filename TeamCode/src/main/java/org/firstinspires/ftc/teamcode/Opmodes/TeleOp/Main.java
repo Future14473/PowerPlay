@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode.Opmodes.TeleOp;
 
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.OUTTAKE;
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.SLIDES_HOME;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.highGoal;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.lowGoal;
+import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.midGoal;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -20,8 +23,8 @@ import org.firstinspires.ftc.teamcode.Hardware.Subsystems.VirtualFourBar;
 import org.firstinspires.ftc.teamcode.Hardware.util.Timer;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-
-@TeleOp(name = "Main", group = "Linear Opmode")
+// ඞ
+@TeleOp(name = "Main", group = "ඞ")
 public class Main extends LinearOpMode {
     SampleMecanumDrive drive;
 
@@ -68,7 +71,26 @@ public class Main extends LinearOpMode {
         claw.openWide();
         intakeWheels.idle();
 
-        telemetry.addLine("Systems initialized.");
+        telemetry.addLine("Subsystems initialized .\n" +
+                "              ⣠⣤⣤⣤⣤⣤⣶⣦⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀ \n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⡿⠛⠉⠙⠛⠛⠛⠛⠻⢿⣿⣷⣤⡀⠀⠀⠀⠀⠀ \n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⠋⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⠈⢻⣿⣿⡄⠀⠀⠀⠀ \n" +
+                "⠀⠀⠀⠀⠀⠀⠀⣸⣿⡏⠀⠀⠀⣠⣶⣾⣿⣿⣿⠿⠿⠿⢿⣿⣿⣿⣄⠀⠀⠀ \n" +
+                "⠀⠀⠀⠀⠀⠀⠀⣿⣿⠁⠀⠀⢰⣿⣿⣯⠁⠀⠀⠀⠀⠀⠀⠀⠈⠙⢿⣷⡄⠀ \n" +
+                "⠀⠀⣀⣤⣴⣶⣶⣿⡟⠀⠀⠀⢸⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣷⠀ \n" +
+                "⠀⢰⣿⡟⠋⠉⣹⣿⡇⠀⠀⠀⠘⣿⣿⣿⣿⣷⣦⣤⣤⣤⣶⣶⣶⣶⣿⣿⣿⠀ \n" +
+                "⠀⢸⣿⡇⠀⠀⣿⣿⡇⠀⠀⠀⠀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠃⠀ \n" +
+                "⠀⣸⣿⡇⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠉⠻⠿⣿⣿⣿⣿⡿⠿⠿⠛⢻⣿⡇⠀⠀ \n" +
+                "⠀⣿⣿⠁⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣧⠀⠀ \n" +
+                "⠀⣿⣿⠀⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⠀⠀ \n" +
+                "⠀⣿⣿⠀⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⠀⠀ \n" +
+                "⠀⢿⣿⡆⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⡇⠀⠀ \n" +
+                "⠀⠸⣿⣧⡀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⠃⠀⠀ \n" +
+                "⠀⠀⠛⢿⣿⣿⣿⣿⣇⠀⠀⠀⠀⠀⣰⣿⣿⣷⣶⣶⣶⣶⠶⠀⢠⣿⣿⠀⠀⠀ \n" +
+                "⠀⠀⠀⠀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⣿⣿⡇⠀⣽⣿⡏⠁⠀⠀⢸⣿⡇⠀⠀⠀ \n" +
+                "⠀⠀⠀⠀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⣿⣿⡇⠀⢹⣿⡆⠀⠀⠀⣸⣿⠇⠀⠀⠀ \n" +
+                "⠀⠀⠀⠀⠀⠀⠀⢿⣿⣦⣄⣀⣠⣴⣿⣿⠁⠀⠈⠻⣿⣿⣿⣿⡿⠏⠀⠀⠀⠀ \n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠈⠛⠻⠿⠿⠿⠿⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
         telemetry.update();
 
         waitForStart();
@@ -101,7 +123,7 @@ public class Main extends LinearOpMode {
                     break;
                 case INTAKE_IDLE:
 
-//                    intakeWheels.outtake();
+                    intakeWheels.outtake();
                     if (v4b.getPostion() < 0.3) {
                         slides.setCustom(200);
                     }
@@ -122,20 +144,43 @@ public class Main extends LinearOpMode {
 
                 case OUTTAKING_HIGH:
                     slides.extendHigh();
-                    if (slides.getHeight() >= 1200) {
+                    if (slides.getHeight() >= highGoal - 600) {
                         v4b.outtake();
                     }
 
-                    if (gamepad1.right_trigger > 0 && slides.getHeight() >= 1700) {
+                    if (gamepad1.right_trigger > 0 && slides.getHeight() >= highGoal - 100) {
+                        claw.openWide();
+                        timer.safeDelay(50);
+                        robotState = RobotState.OUTTAKE_IDLE;
+                    }
+                    break;
+                case OUTTAKING_MID:
+                    slides.extendMid();
+                    if (slides.getHeight() >= midGoal - 600) {
+                        v4b.outtake();
+                    }
+
+                    if (gamepad1.right_trigger > 0 && slides.getHeight() >= midGoal - 100) {
                         claw.openWide();
                         timer.safeDelay(50);
                         robotState = RobotState.OUTTAKE_IDLE;
                     }
                     break;
 
+                case OUTTAKING_LOW:
+                    slides.extendLow();
+                    if (slides.getHeight() >= lowGoal - 600) {
+                        v4b.outtake();
+                    }
+
+                    if (gamepad1.right_trigger > 0 && slides.getHeight() >= lowGoal - 100) {
+                        claw.openWide();
+                        timer.safeDelay(50);
+                        robotState = RobotState.OUTTAKE_IDLE;
+                    }
+                    break;
                 case OUTTAKE_IDLE:
 
-                    telemetry.addData("retracting",retracting);
                     if (gamepad1.x) {
                         retracting = true;
                     }
