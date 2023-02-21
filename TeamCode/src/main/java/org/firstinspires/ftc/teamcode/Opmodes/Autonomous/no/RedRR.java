@@ -30,6 +30,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
+import java.security.spec.PSSParameterSpec;
 import java.util.ArrayList;
 
 @Autonomous
@@ -65,15 +66,7 @@ public class RedRR extends LinearOpMode {
     VirtualFourBar v4b;
     IntakeWheels intakeWheels;
 
-    public enum RobotState {
-        IDLE,
-        INTAKING,
-        INTAKE_IDLE,
-        OUTTAKING_MID,
-        OUTTAKE_IDLE
-    }
     Timer timer;
-    RobotState robotState = RobotState.IDLE;
 
 
     @Override
@@ -82,7 +75,7 @@ public class RedRR extends LinearOpMode {
         timer = new Timer(this);
 
         drive = new SampleMecanumDrive(hardwareMap);
-        drive.setPoseEstimate(new Pose2d(-36, 62, Math.toRadians(-90)));
+        drive.setPoseEstimate(new Pose2d(-36, 63, Math.toRadians(-90)));
 
         //subsystems
         slides = new Slides(hardwareMap);
@@ -101,38 +94,107 @@ public class RedRR extends LinearOpMode {
         waitForStart();
 
 
-        slides.setCustom(200);
+        slides.setCustom(1000);
         timer.safeDelay(150);
         v4b.intakeIdle();
 
         TrajectorySequence moveToPolePreload = drive.trajectorySequenceBuilder(blueAllianceBlueStation)
-                .lineTo(new Vector2d(-36,8))
-                .turn(Math.toRadians(-135))
-                .lineTo(new Vector2d(-27,5))
+                .lineToLinearHeading(new Pose2d(-36,14, Math.toRadians(-45)))
+                .lineTo(new Vector2d(-24,5))
                 .addDisplacementMarker(preloadReady, () -> {
                     slides.extendHigh();
                 })
                 .build();
         drive.followTrajectorySequence(moveToPolePreload);
 
-        v4b.setCustom(0.65);
-        timer.safeDelay(500);
-        claw.openWide();
-        timer.safeDelay(500);
-        v4b.setCustom(0.6);
-        slides.retract();
+        v4b.setCustom(0.2);
+        timer.safeDelay(250);
+        claw.setCustom(0.52);
+        timer.safeDelay(200);
+        v4b.setCustom(0.75);
+        slides.setCustom(170);
 
         TrajectorySequence moveToStack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(new Pose2d(-58.3, 8, Math.toRadians(0.00001)))
+                .lineToLinearHeading(new Pose2d(-56.6, 10, Math.toRadians(0)))
                 .build();
 
         drive.followTrajectorySequence(moveToStack);
-        v4b.setCustom(0.67);
+        claw.setCustom(0.52);
+        v4b.setCustom(1.0);
+        timer.safeDelay(250);
+        claw.shutUp();
+        timer.safeDelay(200);
+        slides.setCustom(600);
+        v4b.intakeIdle();
 
 
+        TrajectorySequence moveToMidPole = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(new Pose2d(-24,21, Math.toRadians(45)))
+                .addDisplacementMarker(10, () -> {
+                    slides.extendMid();
+                })
+                .build();
+
+        drive.followTrajectorySequence(moveToMidPole);
+
+        v4b.setCustom(0.15);
+        timer.safeDelay(500);
+        claw.openWide();
+        timer.safeDelay(250);
+        v4b.setCustom(0.7);
+        slides.setCustom(170);
+
+        TrajectorySequence moveToStack2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(new Pose2d(-56.6, 10, Math.toRadians(0)))
+                .build();
 
 
+        drive.followTrajectorySequence(moveToStack2);
+        v4b.setCustom(1.00);
+        timer.safeDelay(250);
+        claw.shutUp();
+        timer.safeDelay(200);
+        slides.setCustom(600);
+        v4b.intakeIdle();
 
+        TrajectorySequence moveToMidPole2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(new Pose2d(-27,21, Math.toRadians(45)))
+                .addDisplacementMarker(10, () -> {
+                    slides.extendMid();
+                })
+                .build();
+        drive.followTrajectorySequence(moveToMidPole2);
+
+        v4b.setCustom(0.15);
+        timer.safeDelay(500);
+        claw.openWide();
+        timer.safeDelay(250);
+        v4b.setCustom(0.62);
+        slides.retract();
+
+        TrajectorySequence moveToStack3 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(new Pose2d(-56.6, 10, Math.toRadians(0)))
+                .build();
+        drive.followTrajectorySequence(moveToStack3);
+        v4b.setCustom(0.9);
+        timer.safeDelay(150);
+        claw.shutUp();
+        timer.safeDelay(200);
+        slides.setCustom(600);
+        v4b.intakeIdle();
+
+        TrajectorySequence moveToLowPole = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(new Pose2d(-51, 17, Math.toRadians(45)))
+                .build();
+
+        drive.followTrajectorySequence(moveToLowPole);
+
+        v4b.setCustom(0.15);
+        timer.safeDelay(500);
+        claw.openWide();
+        timer.safeDelay(250);
+        v4b.setCustom(0.7);
+        slides.retract();
 
     }
 }

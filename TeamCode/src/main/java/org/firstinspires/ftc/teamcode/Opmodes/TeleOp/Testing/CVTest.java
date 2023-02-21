@@ -2,13 +2,13 @@ package org.firstinspires.ftc.teamcode.Opmodes.TeleOp.Testing;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.ComputerVision.SleeveDetection;
+
+import org.firstinspires.ftc.teamcode.ComputerVision.HSV;
 import org.firstinspires.ftc.teamcode.ComputerVision.YRCB;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -22,7 +22,7 @@ public class CVTest extends LinearOpMode {
 
 
     public OpenCvCamera camera;
-    public YRCB cv;
+    public HSV cv;
 
 
     @Override
@@ -44,15 +44,13 @@ public class CVTest extends LinearOpMode {
 
     public OpenCvCamera cameraInit() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        return OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "main"), cameraMonitorViewId);
+        return OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
     }
 
     public void startStream() {
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                // GPU-accelerated render!
-//                camera.setViewportRenderer(OpenCvCamera.ViewportRenderer.GPU_ACCELERATED);
                 camera.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
             }
 
@@ -62,7 +60,7 @@ public class CVTest extends LinearOpMode {
             }
         });
         dashboard.startCameraStream(camera, 30);
-        cv = new YRCB(telemetry);
+        cv = new HSV();
         camera.setPipeline(cv);
     }
 }

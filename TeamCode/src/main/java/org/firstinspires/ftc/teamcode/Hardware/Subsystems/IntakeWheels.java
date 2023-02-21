@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Hardware.Subsystems;
 
 import static org.firstinspires.ftc.teamcode.Constants.HardwareConstants.INTAKE_WHEEL_SPEED;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -15,6 +16,9 @@ public class IntakeWheels {
         rightDong = hardwareMap.get(DcMotorEx.class, "rightDong");
 
         leftDong.setDirection(DcMotorEx.Direction.REVERSE);
+
+        leftDong.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDong.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
 

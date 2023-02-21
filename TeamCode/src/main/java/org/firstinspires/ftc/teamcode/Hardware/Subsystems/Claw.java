@@ -21,6 +21,10 @@ public class Claw {
         openWide.setPosition(OUT_POS_CLAW);
     }
 
+    public void setCustom(double pos) {
+        openWide.setPosition(pos);
+    }
+
     public void shutUp() {
         openWide.setPosition(CLOSE_POS_CLAW);
     }
