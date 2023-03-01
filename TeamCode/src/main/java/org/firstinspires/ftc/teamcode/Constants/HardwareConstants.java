@@ -55,7 +55,7 @@ public class HardwareConstants {
     public static double ODO_DOWN = 0.5;
 
 // intake dongs
-    public static double INTAKE_WHEEL_SPEED = 0.5;
+    public static double INTAKE_WHEEL_SPEED = 1.0;
 
 
 //  intake timings

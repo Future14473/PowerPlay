@@ -150,103 +150,103 @@ public class AprilTag extends OpenCvPipeline {
             draw3dCubeMarker(input, tagsizeX, tagsizeX, tagsizeY, 5, pose.rvec, pose.tvec, cameraMatrix);
         }
 
-        //AFTER apriltag stuff is done
-
-        Core.inRange(base, lowThreshR, highThreshR, matR);
-        Core.inRange(base, lowThreshB, highThreshB, matB);
-        Core.inRange(base, lowThreshY, highThreshY, matY);
-
-        //threshold after hsv for initial noise removal
-        Imgproc.threshold(matR, matR, 0, 255, Imgproc.THRESH_OTSU);
-        Imgproc.threshold(matB, matB, 0, 255, Imgproc.THRESH_OTSU);
-        Imgproc.threshold(matY, matY, 0, 255, Imgproc.THRESH_OTSU);
-
-        // remove noise
-        Imgproc.morphologyEx(matR, matR, Imgproc.MORPH_OPEN, new Mat());
-        Imgproc.morphologyEx(matR, matR, Imgproc.MORPH_CLOSE, new Mat());
-        Imgproc.morphologyEx(matB, matB, Imgproc.MORPH_OPEN, new Mat());
-        Imgproc.morphologyEx(matB, matB, Imgproc.MORPH_CLOSE, new Mat());
-        Imgproc.morphologyEx(matY, matY, Imgproc.MORPH_OPEN, new Mat());
-        Imgproc.morphologyEx(matY, matY, Imgproc.MORPH_CLOSE, new Mat());
-
-        // contour detection
-        List<MatOfPoint> contoursR = new ArrayList<>();
-        Imgproc.findContours(matR, contoursR, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-
-        List<MatOfPoint> contoursB = new ArrayList<>();
-        Imgproc.findContours(matB, contoursB, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-
-        List<MatOfPoint> contoursY = new ArrayList<>();
-        Imgproc.findContours(matY, contoursY, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-
-        // draw bounding boxes and get cords
-        synchronized (sync) {
-            for (MatOfPoint contour : contoursR) {
-//              double area = Imgproc.contourArea(contour);
-                Point[] contourArray = contour.toArray();
-                if (contourArray.length >= 15) {
-                    Rect rect = Imgproc.boundingRect(contour);
-
-                    if (rect.area() > maxAreaR) {
-                        maxAreaR = rect.area();
-                        maxRectR = rect;
-                    }
-                }
-            }
-
-            for (MatOfPoint contour : contoursB) {
-//              double area = Imgproc.contourArea(contour);
-                Point[] contourArray = contour.toArray();
-                if (contourArray.length >= 15) {
-                    Rect rect = Imgproc.boundingRect(contour);
-                    if (rect.area() > maxAreaB) {
-                        maxAreaB = rect.area();
-                        maxRectB = rect;
-                    }
-                }
-            }
-
-            for (MatOfPoint contour : contoursY) {
-                Point[] contourArray = contour.toArray();
-                if (contourArray.length >= 15) {
-                    Rect rect = Imgproc.boundingRect(contour);
-                    if (rect.area() > maxAreaY) {
-                        maxAreaY = rect.area();
-                        maxRectY = rect;
-                    }
-                }
-            }
-        }
-
-        //get center X of item to lock on to
-
-        // todo change to height if incorrect center
-        if (maxAreaY >= MINPOLEFILTER) {
-            foundPole = true;
-            centerXY = (maxRectY.tl().x+maxRectY.br().x)/2;
-            frameCenter = input.width()/2;
-
-        } else {
-            foundPole = false;
-        }
-
-        // todo change to height if incorrect center
-        if (maxAreaR >= MINCONEFILTER) {
-            foundConeRed = true;
-            centerXR = (maxRectR.tl().x+maxRectR.br().x)/2;
-            frameCenter = input.width()/2;
-
-        } else {
-            foundConeRed = false;
-        }
-        if (maxAreaB >= MINCONEFILTER) {
-            foundConeBlue = true;
-            centerXB = (maxRectR.tl().x+maxRectR.br().x)/2;
-            frameCenter = input.width()/2;
-
-        } else {
-            foundConeBlue = false;
-        }
+//        //AFTER apriltag stuff is done
+//
+//        Core.inRange(base, lowThreshR, highThreshR, matR);
+//        Core.inRange(base, lowThreshB, highThreshB, matB);
+//        Core.inRange(base, lowThreshY, highThreshY, matY);
+//
+//        //threshold after hsv for initial noise removal
+//        Imgproc.threshold(matR, matR, 0, 255, Imgproc.THRESH_OTSU);
+//        Imgproc.threshold(matB, matB, 0, 255, Imgproc.THRESH_OTSU);
+//        Imgproc.threshold(matY, matY, 0, 255, Imgproc.THRESH_OTSU);
+//
+//        // remove noise
+//        Imgproc.morphologyEx(matR, matR, Imgproc.MORPH_OPEN, new Mat());
+//        Imgproc.morphologyEx(matR, matR, Imgproc.MORPH_CLOSE, new Mat());
+//        Imgproc.morphologyEx(matB, matB, Imgproc.MORPH_OPEN, new Mat());
+//        Imgproc.morphologyEx(matB, matB, Imgproc.MORPH_CLOSE, new Mat());
+//        Imgproc.morphologyEx(matY, matY, Imgproc.MORPH_OPEN, new Mat());
+//        Imgproc.morphologyEx(matY, matY, Imgproc.MORPH_CLOSE, new Mat());
+//
+//        // contour detection
+//        List<MatOfPoint> contoursR = new ArrayList<>();
+//        Imgproc.findContours(matR, contoursR, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+//
+//        List<MatOfPoint> contoursB = new ArrayList<>();
+//        Imgproc.findContours(matB, contoursB, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+//
+//        List<MatOfPoint> contoursY = new ArrayList<>();
+//        Imgproc.findContours(matY, contoursY, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+//
+//        // draw bounding boxes and get cords
+//        synchronized (sync) {
+//            for (MatOfPoint contour : contoursR) {
+////              double area = Imgproc.contourArea(contour);
+//                Point[] contourArray = contour.toArray();
+//                if (contourArray.length >= 15) {
+//                    Rect rect = Imgproc.boundingRect(contour);
+//
+//                    if (rect.area() > maxAreaR) {
+//                        maxAreaR = rect.area();
+//                        maxRectR = rect;
+//                    }
+//                }
+//            }
+//
+//            for (MatOfPoint contour : contoursB) {
+////              double area = Imgproc.contourArea(contour);
+//                Point[] contourArray = contour.toArray();
+//                if (contourArray.length >= 15) {
+//                    Rect rect = Imgproc.boundingRect(contour);
+//                    if (rect.area() > maxAreaB) {
+//                        maxAreaB = rect.area();
+//                        maxRectB = rect;
+//                    }
+//                }
+//            }
+//
+//            for (MatOfPoint contour : contoursY) {
+//                Point[] contourArray = contour.toArray();
+//                if (contourArray.length >= 15) {
+//                    Rect rect = Imgproc.boundingRect(contour);
+//                    if (rect.area() > maxAreaY) {
+//                        maxAreaY = rect.area();
+//                        maxRectY = rect;
+//                    }
+//                }
+//            }
+//        }
+//
+//        //get center X of item to lock on to
+//
+//        // todo change to height if incorrect center
+//        if (maxAreaY >= MINPOLEFILTER) {
+//            foundPole = true;
+//            centerXY = (maxRectY.tl().x+maxRectY.br().x)/2;
+//            frameCenter = input.width()/2;
+//
+//        } else {
+//            foundPole = false;
+//        }
+//
+//        // todo change to height if incorrect center
+//        if (maxAreaR >= MINCONEFILTER) {
+//            foundConeRed = true;
+//            centerXR = (maxRectR.tl().x+maxRectR.br().x)/2;
+//            frameCenter = input.width()/2;
+//
+//        } else {
+//            foundConeRed = false;
+//        }
+//        if (maxAreaB >= MINCONEFILTER) {
+//            foundConeBlue = true;
+//            centerXB = (maxRectR.tl().x+maxRectR.br().x)/2;
+//            frameCenter = input.width()/2;
+//
+//        } else {
+//            foundConeBlue = false;
+//        }
 
         return input;
     }

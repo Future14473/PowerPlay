@@ -69,12 +69,15 @@ public class Main extends LinearOpMode {
 
 
         v4b.intake();
+        while(v4b.getPostion() >= 0.2) {
+            continue;
+        }
         slides.resetEncoders();
         claw.openWide();
         intakeWheels.idle();
 
         telemetry.addLine("Subsystems initialized .\n" +
-                "                          ⣠⣤⣤⣤⣤⣤⣶⣦⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀ \n" +
+                "            ⣠⣤⣤⣤⣤⣤⣶⣦⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀ \n" +
                 "⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⡿⠛⠉⠙⠛⠛⠛⠛⠻⢿⣿⣷⣤⡀⠀⠀⠀⠀⠀ \n" +
                 "⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⠋⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⠈⢻⣿⣿⡄⠀⠀⠀⠀ \n" +
                 "⠀⠀⠀⠀⠀⠀⠀⣸⣿⡏⠀⠀⠀⣠⣶⣾⣿⣿⣿⠿⠿⠿⢿⣿⣿⣿⣄⠀⠀⠀ \n" +
@@ -109,7 +112,7 @@ public class Main extends LinearOpMode {
                     intakeWheels.idle();
                     driveSpeedModifier = 1;
 
-                    if (gamepad2.x) {
+                    if (gamepad1.x) {
                         robotState = RobotState.INTAKING;
                     }
                     break;
@@ -167,15 +170,15 @@ public class Main extends LinearOpMode {
                         slides.retract();
                     }
 
-                    if (gamepad2.y && v4b.getPostion() >= 0.4) {
+                    if (gamepad1.y && v4b.getPostion() >= 0.4) {
                         intakeWheels.idle();
                         robotState = RobotState.OUTTAKING_HIGH;
                     }
-                    if (gamepad2.b && v4b.getPostion() >= 0.4) {
+                    if (gamepad1.b && v4b.getPostion() >= 0.4) {
                         intakeWheels.idle();
                         robotState = RobotState.OUTTAKING_MID;
                     }
-                    if (gamepad2.a && v4b.getPostion() >= 0.4) {
+                    if (gamepad1.a && v4b.getPostion() >= 0.4) {
                         intakeWheels.idle();
                         robotState = RobotState.OUTTAKE_IDLE;
                     }
@@ -188,7 +191,7 @@ public class Main extends LinearOpMode {
                         v4b.outtake();
                     }
 
-                    if (gamepad2.right_trigger>0 && slides.getHeight() >= highGoal - 400) {
+                    if (gamepad1.right_bumper && slides.getHeight() >= highGoal - 400) {
                         claw.openWide();
                         timer.safeDelay(50);
                         robotState = RobotState.OUTTAKE_IDLE;
@@ -201,7 +204,7 @@ public class Main extends LinearOpMode {
                         v4b.outtake();
                     }
 
-                    if (gamepad2.right_trigger>0 & slides.getHeight() >= midGoal - 100) {
+                    if (gamepad1.right_trigger>0 & slides.getHeight() >= midGoal - 100) {
                         claw.openWide();
                         timer.safeDelay(50);
                         robotState = RobotState.OUTTAKE_IDLE;
@@ -215,7 +218,7 @@ public class Main extends LinearOpMode {
                         v4b.outtake();
                     }
 
-                    if (gamepad2.right_trigger>00 && slides.getHeight() >= lowGoal - 100) {
+                    if (gamepad1.right_trigger>00 && slides.getHeight() >= lowGoal - 100) {
                         claw.openWide();
                         timer.safeDelay(50);
                         robotState = RobotState.OUTTAKE_IDLE;
@@ -223,7 +226,7 @@ public class Main extends LinearOpMode {
                     break;
                 case OUTTAKE_IDLE:
                     driveSpeedModifier = 0.6;
-                    if (gamepad2.x) {
+                    if (gamepad1.x) {
                         driveSpeedModifier = 1;
                         retracting = true;
                     }
@@ -263,21 +266,21 @@ public class Main extends LinearOpMode {
 
                     }
 
-                    if (gamepad2.x) {
+                    if (gamepad1.x) {
                         drive.breakFollowing();
                         override = true;
                         robotState = RobotState.INTAKING;
                     }
                     break;
-
             }
 
-            if (gamepad2.dpad_down) {
+            if (gamepad1.dpad_down) {
                 driveSpeedModifier = 1;
                 override = true;
                 claw.shutUp();
                 robotState = RobotState.INTAKING;
             }
+
             if (override) {
                 v4b.intake();
             }
@@ -290,12 +293,13 @@ public class Main extends LinearOpMode {
                 claw.openWide();
             }
 
-            if (gamepad2.left_bumper) {
+            if (gamepad1.left_bumper) {
                 claw.openWide();
             }
-            if (gamepad2.right_bumper) {
+            if (gamepad1.right_bumper) {
                 claw.shutUp();
             }
+
             drive.setWeightedDrivePower(
                     new Pose2d(
                             -gamepad1.left_stick_y * driveSpeedModifier,

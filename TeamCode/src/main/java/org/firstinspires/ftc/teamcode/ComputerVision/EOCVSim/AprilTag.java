@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.ComputerVision.EOCVSim;
 
 
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -24,29 +23,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AprilTag extends OpenCvPipeline {
+    private long nativeApriltagPtr;
+    private Mat grey = new Mat();
+    private ArrayList<AprilTagDetection> detections = new ArrayList<>();
 
-// 106 for every 50 mm
-    //2.12 pixels for every mm
-    //cone/pole detection
+    private ArrayList<AprilTagDetection> detectionsUpdate = new ArrayList<>();
+    private final Object detectionsUpdateSync = new Object();
 
-    Mat base = new Mat();
-    Mat matR = new Mat();
-    Mat matB = new Mat();
-    Mat matY = new Mat();
+    Mat cameraMatrix;
 
-    public static Scalar lowThreshR = new Scalar(110, 62, 20);
-    public static Scalar highThreshR = new Scalar(179, 255, 255);
-    public static Scalar lowThreshB = new Scalar(0, 151, 20);
-    public static Scalar highThreshB = new Scalar(31, 222, 255);
-    public static Scalar lowThreshY = new Scalar(21, 100, 0);
-    public static Scalar highThreshY = new Scalar(34, 175, 255);
+    Scalar blue = new Scalar(7, 197, 235, 255);
+    Scalar red = new Scalar(255, 0, 0, 255);
+    Scalar green = new Scalar(0, 255, 0, 255);
+    Scalar white = new Scalar(255, 255, 255, 255);
+
+    double fy = 1401.5016106666671; //switched fx and fy
+    double fx = 1397.213884418929;
+    double cy = 350.1073619628849;// switched cx and cy
+    double cx = 671.6643921009859;
+
+    // UNITS ARE METERS
+    double tagsize = 0.166;
+    double tagsizeX = tagsize;
+    double tagsizeY = tagsize;
+
+    private float decimation;
+    private boolean needToSetDecimation;
+    private final Object decimationSync = new Object();
+
 
     double centerXY;
     double centerXR;
     double centerXB;
     double frameCenter;
 
-    private static int MINPOLEFILTER = 300;
+    private static int MINPOLEFILTER = 0;
     private static int MINCONEFILTER = 0;
 
     private double maxAreaR;
@@ -63,162 +74,358 @@ public class AprilTag extends OpenCvPipeline {
 
     private final Object sync = new Object();
 
-    Telemetry telemetry;
 
+    public AprilTag() {
 
-    public AprilTag(Telemetry telemetry) {
-        this.telemetry = telemetry;
+        constructMatrix();
+
+        // Allocate a native context object. See the corresponding deletion in the finalizer
+        nativeApriltagPtr = AprilTagDetectorJNI.createApriltagDetector(AprilTagDetectorJNI.TagFamily.TAG_36h11.string, 3, 3);
     }
+
+    @Override
+    public void finalize() {
+        // Might be null if createApriltagDetector() threw an exception
+        if (nativeApriltagPtr != 0) {
+            // Delete the native context we created in the constructor
+            AprilTagDetectorJNI.releaseApriltagDetector(nativeApriltagPtr);
+            nativeApriltagPtr = 0;
+        } else {
+            System.out.println("AprilTagDetectionPipeline.finalize(): nativeApriltagPtr was NULL");
+        }
+    }
+
     @Override
     public Mat processFrame(Mat input) {
-        maxAreaY = 0;
-        Imgproc.cvtColor(input, base, Imgproc.COLOR_RGB2HSV);
 
-        //AFTER apriltag stuff is done
+        Imgproc.cvtColor(input, grey, Imgproc.COLOR_RGBA2GRAY);
 
-        Core.inRange(base, lowThreshR, highThreshR, matR);
-        Core.inRange(base, lowThreshB, highThreshB, matB);
-        Core.inRange(base, lowThreshY, highThreshY, matY);
-
-        //threshold after hsv for initial noise removal
-        Imgproc.threshold(matR, matR, 0, 255, Imgproc.THRESH_OTSU);
-        Imgproc.threshold(matB, matB, 0, 255, Imgproc.THRESH_OTSU);
-        Imgproc.threshold(matY, matY, 0, 255, Imgproc.THRESH_OTSU);
-
-        // remove noise
-        Imgproc.morphologyEx(matR, matR, Imgproc.MORPH_OPEN, new Mat());
-        Imgproc.morphologyEx(matR, matR, Imgproc.MORPH_CLOSE, new Mat());
-        Imgproc.morphologyEx(matB, matB, Imgproc.MORPH_OPEN, new Mat());
-        Imgproc.morphologyEx(matB, matB, Imgproc.MORPH_CLOSE, new Mat());
-        Imgproc.morphologyEx(matY, matY, Imgproc.MORPH_OPEN, new Mat());
-        Imgproc.morphologyEx(matY, matY, Imgproc.MORPH_CLOSE, new Mat());
-
-        // contour detection
-        List<MatOfPoint> contoursR = new ArrayList<>();
-        Imgproc.findContours(matR, contoursR, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-
-        List<MatOfPoint> contoursB = new ArrayList<>();
-        Imgproc.findContours(matB, contoursB, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-
-        List<MatOfPoint> contoursY = new ArrayList<>();
-        Imgproc.findContours(matY, contoursY, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-
-
-
-        // draw bounding boxes and get cords
-        synchronized (sync) {
-            for (MatOfPoint contour : contoursR) {
-//              double area = Imgproc.contourArea(contour);
-                Point[] contourArray = contour.toArray();
-                if (contourArray.length >= 15) {
-                    Rect rect = Imgproc.boundingRect(contour);
-
-
-                    if (rect.area() > maxAreaR) {
-                        maxAreaR = rect.area();
-                        maxRectR = rect;
-                    }
-                }
-            }
-
-            for (MatOfPoint contour : contoursB) {
-//              double area = Imgproc.contourArea(contour);
-                Point[] contourArray = contour.toArray();
-                if (contourArray.length >= 15) {
-                    Rect rect = Imgproc.boundingRect(contour);
-                    if (rect.area() > maxAreaB) {
-                        maxAreaB = rect.area();
-                        maxRectB = rect;
-                    }
-                }
-            }
-
-            for (MatOfPoint contour : contoursY) {
-                Point[] contourArray = contour.toArray();
-                if (contourArray.length >= 15) {
-                    Rect rect = Imgproc.boundingRect(contour);
-
-                    if (rect.area() > maxAreaY) {
-                        maxAreaY = rect.area();
-                        maxRectY = rect;
-                    }
-                }
+        synchronized (decimationSync) {
+            if (needToSetDecimation) {
+                AprilTagDetectorJNI.setApriltagDetectorDecimation(nativeApriltagPtr, decimation);
+                needToSetDecimation = false;
             }
         }
 
-        //get center X of item to lock on to
-        Imgproc.rectangle (input, maxRectY.tl(), maxRectY.br(), new Scalar(255,0,0),2);
-        // todo change to height if incorrect center
-        if (maxAreaY >= MINPOLEFILTER) {
-            foundPole = true;
-            centerXY = (maxRectY.tl().x+maxRectY.br().x)/2;
-            frameCenter = input.width()/2;
+        // Run AprilTag
+        detections = AprilTagDetectorJNI.runAprilTagDetectorSimple(nativeApriltagPtr, grey, tagsize, fx, fy, cx, cy);
 
-            double dist = 0;
-            if (centerXY + 10 > frameCenter) {
-                dist = centerXY - frameCenter;
-            } else if (centerXY - 10 < frameCenter) {
-                dist = centerXY - frameCenter;
-            }
-
-
-
-            telemetry.addData("distPIXELS", dist);
-            telemetry.addData("distMM", dist/2.12);
-            telemetry.addData("rectWidth", maxRectY.width);
-            telemetry.update();
-
-
-
-        } else {
-            foundPole = false;
+        synchronized (detectionsUpdateSync) {
+            detectionsUpdate = detections;
         }
 
-        // todo change to height if incorrect center
-        if (maxAreaR >= MINCONEFILTER) {
-            foundConeRed = true;
-            centerXR = (maxRectR.tl().x+maxRectR.br().x)/2;
-            frameCenter = input.width()/2;
-
-        } else {
-            foundConeRed = false;
+        // For fun, use OpenCV to draw 6DOF markers on the image. We actually recompute the pose using
+        // OpenCV because I haven't yet figured out how to re-use AprilTag's pose in OpenCV.
+        for (AprilTagDetection detection : detections) {
+            Pose pose = poseFromTrapezoid(detection.corners, cameraMatrix, tagsizeX, tagsizeY);
+            drawAxisMarker(input, tagsizeY / 2.0, 6, pose.rvec, pose.tvec, cameraMatrix);
+            draw3dCubeMarker(input, tagsizeX, tagsizeX, tagsizeY, 5, pose.rvec, pose.tvec, cameraMatrix);
         }
-        if (maxAreaB >= MINCONEFILTER) {
-            foundConeBlue = true;
-            centerXB = (maxRectR.tl().x+maxRectR.br().x)/2;
-            frameCenter = input.width()/2;
 
-        } else {
-            foundConeBlue = false;
-        }
+//        //AFTER apriltag stuff is done
+//
+//        Core.inRange(base, lowThreshR, highThreshR, matR);
+//        Core.inRange(base, lowThreshB, highThreshB, matB);
+//        Core.inRange(base, lowThreshY, highThreshY, matY);
+//
+//        //threshold after hsv for initial noise removal
+//        Imgproc.threshold(matR, matR, 0, 255, Imgproc.THRESH_OTSU);
+//        Imgproc.threshold(matB, matB, 0, 255, Imgproc.THRESH_OTSU);
+//        Imgproc.threshold(matY, matY, 0, 255, Imgproc.THRESH_OTSU);
+//
+//        // remove noise
+//        Imgproc.morphologyEx(matR, matR, Imgproc.MORPH_OPEN, new Mat());
+//        Imgproc.morphologyEx(matR, matR, Imgproc.MORPH_CLOSE, new Mat());
+//        Imgproc.morphologyEx(matB, matB, Imgproc.MORPH_OPEN, new Mat());
+//        Imgproc.morphologyEx(matB, matB, Imgproc.MORPH_CLOSE, new Mat());
+//        Imgproc.morphologyEx(matY, matY, Imgproc.MORPH_OPEN, new Mat());
+//        Imgproc.morphologyEx(matY, matY, Imgproc.MORPH_CLOSE, new Mat());
+//
+//        // contour detection
+//        List<MatOfPoint> contoursR = new ArrayList<>();
+//        Imgproc.findContours(matR, contoursR, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+//
+//        List<MatOfPoint> contoursB = new ArrayList<>();
+//        Imgproc.findContours(matB, contoursB, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+//
+//        List<MatOfPoint> contoursY = new ArrayList<>();
+//        Imgproc.findContours(matY, contoursY, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+//
+//        // draw bounding boxes and get cords
+//        synchronized (sync) {
+//            for (MatOfPoint contour : contoursR) {
+////              double area = Imgproc.contourArea(contour);
+//                Point[] contourArray = contour.toArray();
+//                if (contourArray.length >= 15) {
+//                    Rect rect = Imgproc.boundingRect(contour);
+//
+//                    if (rect.area() > maxAreaR) {
+//                        maxAreaR = rect.area();
+//                        maxRectR = rect;
+//                    }
+//                }
+//            }
+//
+//            for (MatOfPoint contour : contoursB) {
+////              double area = Imgproc.contourArea(contour);
+//                Point[] contourArray = contour.toArray();
+//                if (contourArray.length >= 15) {
+//                    Rect rect = Imgproc.boundingRect(contour);
+//                    if (rect.area() > maxAreaB) {
+//                        maxAreaB = rect.area();
+//                        maxRectB = rect;
+//                    }
+//                }
+//            }
+//
+//            for (MatOfPoint contour : contoursY) {
+//                Point[] contourArray = contour.toArray();
+//                if (contourArray.length >= 15) {
+//                    Rect rect = Imgproc.boundingRect(contour);
+//                    if (rect.area() > maxAreaY) {
+//                        maxAreaY = rect.area();
+//                        maxRectY = rect;
+//                    }
+//                }
+//            }
+//        }
+//
+//        //get center X of item to lock on to
+//
+//        // todo change to height if incorrect center
+//        if (maxAreaY >= MINPOLEFILTER) {
+//            foundPole = true;
+//            centerXY = (maxRectY.tl().x+maxRectY.br().x)/2;
+//            frameCenter = input.width()/2;
+//
+//        } else {
+//            foundPole = false;
+//        }
+//
+//        // todo change to height if incorrect center
+//        if (maxAreaR >= MINCONEFILTER) {
+//            foundConeRed = true;
+//            centerXR = (maxRectR.tl().x+maxRectR.br().x)/2;
+//            frameCenter = input.width()/2;
+//
+//        } else {
+//            foundConeRed = false;
+//        }
+//        if (maxAreaB >= MINCONEFILTER) {
+//            foundConeBlue = true;
+//            centerXB = (maxRectR.tl().x+maxRectR.br().x)/2;
+//            frameCenter = input.width()/2;
+//
+//        } else {
+//            foundConeBlue = false;
+//        }
+
         return input;
     }
 
+
+
+    public double getPoleWidth() {
+        return maxRectY.width;
+    }
     /**
      * @param item 0 pole; 1 red; 2 blue
      */
     public double lockOnCV (int item) {
         double dist = 0;
         synchronized (sync) {
-
-
-            if (item == 1) {
-                if (centerXR + 10 > frameCenter) {
-                    dist = centerXR - frameCenter;
-                } else if (centerXR - 10 < frameCenter) {
-                    dist = centerXR - frameCenter;
+            if (foundPole) {
+                if (item == 0) {
+                    if (centerXY + 10 > frameCenter) {
+                        dist = centerXY - frameCenter;
+                    } else if (centerXY - 10 < frameCenter) {
+                        dist = centerXY - frameCenter;
+                    }
                 }
             }
-            if (item == 2) {
-                if (centerXB + 10 > frameCenter) {
-                    dist = centerXB - frameCenter;
-                } else if (centerXB - 10 < frameCenter) {
-                    dist = centerXB - frameCenter;
+            if (foundConeRed) {
+                if (item == 1) {
+                    if (centerXR + 10 > frameCenter) {
+                        dist = centerXR - frameCenter;
+                    } else if (centerXR - 10 < frameCenter) {
+                        dist = centerXR - frameCenter;
+                    }
                 }
             }
-
+            if (foundConeBlue) {
+                if (item == 2) {
+                    if (centerXB + 10 > frameCenter) {
+                        dist = centerXB - frameCenter;
+                    } else if (centerXB - 10 < frameCenter) {
+                        dist = centerXB - frameCenter;
+                    }
+                }
+            }
 
             return dist;
+        }
+    }
+
+    public void setDecimation(float decimation) {
+        synchronized (decimationSync) {
+            this.decimation = decimation;
+            needToSetDecimation = true;
+        }
+    }
+
+    public ArrayList<AprilTagDetection> getLatestDetections() {
+        return detections;
+    }
+
+    public ArrayList<AprilTagDetection> getDetectionsUpdate() {
+        synchronized (detectionsUpdateSync) {
+            ArrayList<AprilTagDetection> ret = detectionsUpdate;
+            detectionsUpdate = null;
+            return ret;
+        }
+    }
+
+    void constructMatrix() {
+        //     Construct the camera matrix.
+        //
+        //      --         --
+        //     | fx   0   cx |
+        //     | 0    fy  cy |
+        //     | 0    0   1  |
+        //      --         --
+        //
+
+        cameraMatrix = new Mat(3, 3, CvType.CV_32FC1);
+
+        cameraMatrix.put(0, 0, fx);
+        cameraMatrix.put(0, 1, 0);
+        cameraMatrix.put(0, 2, cx);
+
+        cameraMatrix.put(1, 0, 0);
+        cameraMatrix.put(1, 1, fy);
+        cameraMatrix.put(1, 2, cy);
+
+        cameraMatrix.put(2, 0, 0);
+        cameraMatrix.put(2, 1, 0);
+        cameraMatrix.put(2, 2, 1);
+    }
+
+    /**
+     * Draw a 3D axis marker on a detection. (Similar to what Vuforia does)
+     *
+     * @param buf          the RGB buffer on which to draw the marker
+     * @param length       the length of each of the marker 'poles'
+     * @param rvec         the rotation vector of the detection
+     * @param tvec         the translation vector of the detection
+     * @param cameraMatrix the camera matrix used when finding the detection
+     */
+    void drawAxisMarker(Mat buf, double length, int thickness, Mat rvec, Mat tvec, Mat cameraMatrix) {
+        // The points in 3D space we wish to project onto the 2D image plane.
+        // The origin of the coordinate space is assumed to be in the center of the detection.
+        MatOfPoint3f axis = new MatOfPoint3f(
+                new Point3(0, 0, 0),
+                new Point3(length, 0, 0),
+                new Point3(0, length, 0),
+                new Point3(0, 0, -length)
+        );
+
+        // Project those points
+        MatOfPoint2f matProjectedPoints = new MatOfPoint2f();
+        Calib3d.projectPoints(axis, rvec, tvec, cameraMatrix, new MatOfDouble(), matProjectedPoints);
+        Point[] projectedPoints = matProjectedPoints.toArray();
+
+        // Draw the marker!
+        Imgproc.line(buf, projectedPoints[0], projectedPoints[1], red, thickness);
+        Imgproc.line(buf, projectedPoints[0], projectedPoints[2], green, thickness);
+        Imgproc.line(buf, projectedPoints[0], projectedPoints[3], blue, thickness);
+
+        Imgproc.circle(buf, projectedPoints[0], thickness, white, -1);
+    }
+
+    void draw3dCubeMarker(Mat buf, double length, double tagWidth, double tagHeight, int thickness, Mat rvec, Mat tvec, Mat cameraMatrix) {
+        //axis = np.float32([[0,0,0], [0,3,0], [3,3,0], [3,0,0],
+        //       [0,0,-3],[0,3,-3],[3,3,-3],[3,0,-3] ])
+
+        // The points in 3D space we wish to project onto the 2D image plane.
+        // The origin of the coordinate space is assumed to be in the center of the detection.
+        MatOfPoint3f axis = new MatOfPoint3f(
+                new Point3(-tagWidth / 2, tagHeight / 2, 0),
+                new Point3(tagWidth / 2, tagHeight / 2, 0),
+                new Point3(tagWidth / 2, -tagHeight / 2, 0),
+                new Point3(-tagWidth / 2, -tagHeight / 2, 0),
+                new Point3(-tagWidth / 2, tagHeight / 2, -length),
+                new Point3(tagWidth / 2, tagHeight / 2, -length),
+                new Point3(tagWidth / 2, -tagHeight / 2, -length),
+                new Point3(-tagWidth / 2, -tagHeight / 2, -length));
+
+        // Project those points
+        MatOfPoint2f matProjectedPoints = new MatOfPoint2f();
+        Calib3d.projectPoints(axis, rvec, tvec, cameraMatrix, new MatOfDouble(), matProjectedPoints);
+        Point[] projectedPoints = matProjectedPoints.toArray();
+
+        // Pillars
+        for (int i = 0; i < 4; i++) {
+            Imgproc.line(buf, projectedPoints[i], projectedPoints[i + 4], blue, thickness);
+        }
+
+        // Base lines
+        //Imgproc.line(buf, projectedPoints[0], projectedPoints[1], blue, thickness);
+        //Imgproc.line(buf, projectedPoints[1], projectedPoints[2], blue, thickness);
+        //Imgproc.line(buf, projectedPoints[2], projectedPoints[3], blue, thickness);
+        //Imgproc.line(buf, projectedPoints[3], projectedPoints[0], blue, thickness);
+
+        // Top lines
+        Imgproc.line(buf, projectedPoints[4], projectedPoints[5], green, thickness);
+        Imgproc.line(buf, projectedPoints[5], projectedPoints[6], green, thickness);
+        Imgproc.line(buf, projectedPoints[6], projectedPoints[7], green, thickness);
+        Imgproc.line(buf, projectedPoints[4], projectedPoints[7], green, thickness);
+    }
+
+    /**
+     * Extracts 6DOF pose from a trapezoid, using a camera intrinsics matrix and the
+     * original size of the tag.
+     *
+     * @param points       the points which form the trapezoid
+     * @param cameraMatrix the camera intrinsics matrix
+     * @param tagsizeX     the original width of the tag
+     * @param tagsizeY     the original height of the tag
+     * @return the 6DOF pose of the camera relative to the tag
+     */
+    Pose poseFromTrapezoid(Point[] points, Mat cameraMatrix, double tagsizeX, double tagsizeY) {
+        // The actual 2d points of the tag detected in the image
+        MatOfPoint2f points2d = new MatOfPoint2f(points);
+
+        // The 3d points of the tag in an 'ideal projection'
+        Point3[] arrayPoints3d = new Point3[4];
+        arrayPoints3d[0] = new Point3(-tagsizeX / 2, tagsizeY / 2, 0);
+        arrayPoints3d[1] = new Point3(tagsizeX / 2, tagsizeY / 2, 0);
+        arrayPoints3d[2] = new Point3(tagsizeX / 2, -tagsizeY / 2, 0);
+        arrayPoints3d[3] = new Point3(-tagsizeX / 2, -tagsizeY / 2, 0);
+        MatOfPoint3f points3d = new MatOfPoint3f(arrayPoints3d);
+
+        // Using this information, actually solve for pose
+        Pose pose = new Pose();
+        Calib3d.solvePnP(points3d, points2d, cameraMatrix, new MatOfDouble(), pose.rvec, pose.tvec, false);
+
+        return pose;
+    }
+
+    /*
+     * A simple container to hold both rotation and translation
+     * vectors, which together form a 6DOF pose.
+     */
+    class Pose {
+        Mat rvec;
+        Mat tvec;
+
+        public Pose() {
+            rvec = new Mat();
+            tvec = new Mat();
+        }
+
+        public Pose(Mat rvec, Mat tvec) {
+            this.rvec = rvec;
+            this.tvec = tvec;
         }
     }
 }
